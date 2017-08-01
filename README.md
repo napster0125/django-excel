@@ -31,3 +31,13 @@ Please follow the below steps after cloning this repository:
     $ python createsuperuser   
     $ python manage.py runserver
    ```
+   - Setting up redis server
+   ```sh
+     $ wget http://download.redis.io/redis-stable.tar.gz
+     $ tar xvzf redis-stable.tar.gz
+     $ cd redis-stable
+     $ sudo make install
+     $ rm -rf ../redis-stable
+     $ redis-server
+   ```
+   
