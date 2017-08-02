@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>
+		Play signin
+	</title>
+	<meta name="google-signin-client_id" content="1085661962609-79u3us6bbkp6m9gponccdomgrlv7m9pv.apps.googleusercontent.com">
+	<script src="https://apis.google.com/js/platform.js" async defer></script>
+	<script src="https://cdn.jsdelivr.net/gh/jquery/jquery@3.1.0/dist/jquery.min.js"></script>
+	<script type="text/javascript">
+		function getCookie(name) {
+	    	var cookieValue = null;
+		    if (document.cookie && document.cookie != '') {
+		        var cookies = document.cookie.split(';');
+		        for (var i = 0; i < cookies.length; i++) {
+		            var cookie = jQuery.trim(cookies[i]);
+		            // Does this cookie string begin with the name we want?
+		            if (cookie.substring(0, name.length + 1) == (name + '=')) {
+		                cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+		                break;
+		            }
+		        }
+		    }
+		    return cookieValue;
+		}
+
+		function signOut() {
+		    var auth2 = gapi.auth2.getAuthInstance();
+		    auth2.signOut().then(function () {
+		        $.get('/signout');
+		    });
+		}
+
+		function onSignIn(googleUser) {
+			$.post('/signin',
+				{'token' : googleUser.getAuthResponse().id_token, 'csrfmiddlewaretoken' : getCookie('csrftoken')}
+			);
+		}
+		
+
+	</script>
+
+</head>
+
+<body>
+<div class="g-signin2" data-onsuccess="onSignIn"></div>
+<a href="#" onclick="signOut();">Sign out</a>
+</body>
+
+</html>
