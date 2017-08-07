@@ -28,7 +28,7 @@ Please follow the below steps after cloning this repository:
    ```sh
     $ python manage.py makemigrations
     $ python manage.py migrate
-    $ python createsuperuser   
+    $ python manage.py createsuperuser   
     $ python manage.py runserver
    ```
    - Setting up redis server
