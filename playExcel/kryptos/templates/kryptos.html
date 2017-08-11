@@ -1,0 +1,14 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>Kryptos</title>
+</head>
+
+
+<body>
+	<form action="/kryptos/submitanswer/" method="POST"  >
+		{% csrf_token %}
+		<input type="text" name="answer" id="answer">
+		<input type="submit" value="submit">
+	</form>
+</body>
