@@ -33,11 +33,7 @@ Please follow the below steps after cloning this repository:
    ```
    - Setting up redis server
    ```sh
-     $ wget http://download.redis.io/redis-stable.tar.gz
-     $ tar xvzf redis-stable.tar.gz
-     $ cd redis-stable
-     $ sudo make install
-     $ rm -rf ../redis-stable
-     $ redis-server
+     $ sudo apt-get install redis-server
+     $ sudo service redis-server start
    ```
    
