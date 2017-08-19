@@ -40,6 +40,7 @@ INSTALLED_APPS = [
 
     'common',
     'kryptos',
+    'binbash',
 ]
 
 MIDDLEWARE = [
