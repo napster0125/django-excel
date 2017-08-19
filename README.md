@@ -44,9 +44,9 @@ Runnning the server:
   - Use "localhost" in place of 127.0.0.1. Eg: http://localhost:8000/ instead of http://127.0.0.1:8000/
   
 Pushing to repository:
-  - while adding file to git:
+  - While adding file to git:
     - Please don't use ```git add . ```
-    - Use ```git status``` to list all the modified/deleted files. Add/remove only those files which needs pushed using ``` git add file_name [,filename]```
+    - Use ```git status``` to list all the modified/deleted files. Add/remove only those files which needs to be pushed, using the command ``` git add file_name [,filename]```
   - If you have used any additional packages. Please add it to requirements.txt
   - Don't push database_config.cnf file after you have filled in your database credentials.
   - Give suitable commit message.
