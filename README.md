@@ -5,6 +5,9 @@ Please follow the below steps after cloning this repository:
     - virtualenv
     - mysql
   - Create a virtualenv (one that would contain this repository)
+    ```sh
+    $ virtualenv --python=python3 <your_env_name>
+    ```
   - Install the requirements as follow
     ```sh
     $ pip install -r requirements.txt
@@ -36,4 +39,6 @@ Please follow the below steps after cloning this repository:
      $ sudo apt-get install redis-server
      $ sudo service redis-server start
    ```
+   
+   
    
