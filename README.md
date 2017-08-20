@@ -15,11 +15,11 @@ Please follow the below steps after cloning this repository:
   - Setup the MySQL db as follows
     - Open MySQL shell
       ```sh
-      $ sudo mysql
+      $ mysql -u <user> -p
       ```
     - Inside shell
       ```
-      >> create database <your_db_name>;
+      >> create database <your_db_name> character set utf8;
       >> create user <your_db_username> identified by '<your_db_pass>'
       >> grant all on <your_db_name>.* to <your_db_username>;
       >> flush privileges;
