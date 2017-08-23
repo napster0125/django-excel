@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>Binbash</title>
+	<script type="text/javascript">
+		(function(window, location) {
+		 history.replaceState(null, document.title, location.pathname+"#!/stealingyourhistory");
+		 history.pushState(null, document.title, location.pathname);
+	 
+		 window.addEventListener("popstate", function() {
+		   if(location.hash === "#!/stealingyourhistory") {
+				 history.replaceState(null, document.title, location.pathname);
+				 setTimeout(function(){
+				   location.replace(window.location.href);
+				 },0);
+		   }
+		 }, false);
+	 }(window, location));
+	</script>
+	<style type="text/css" media="screen">
+    #editor { 
+        position: absolute;
+        top: 0;
+        right: 0;
+        bottom: 0;
+        left: 50%;
+				width: 50%;
+				height: 75%;
+				float: right;
+    }
+</style>
+
+</head>
+
+
+<body>
+	<h3>{{problem}}</h3>
+	<form action="" method="POST"  >
+		{% csrf_token %}
+		<input type="text" name="answer" id="answer">
+		<input type="submit" value="submit">
+	</form>
+	<form action="" method="POST" >
+		{% csrf_token %}
+<div id="editor">{{form.field}}</div>
+		<input type="submit" value="Execute">
+	</form>
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/ace/1.2.8/ace.js" type="text/javascript" charset="utf-8"></script>
+	<script>
+		var editor = ace.edit("editor");
+		editor.setTheme("ace/theme/monokai");
+		editor.getSession().setMode("ace/mode/sh");
+		var result = editor.getValue();
+		editor.setValue("#Your Code Here");
+		function foo(document) {
+		document.getElementById('id_field').value = result;
+	}
+</script>
+</body>

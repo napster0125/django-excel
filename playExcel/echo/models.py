@@ -5,7 +5,7 @@ from django.db import models
 
 # Create your models here.
 
-class bbplayer(models.Model) :
+class echoplayer(models.Model) :
     playerId = models.CharField(primary_key = True, max_length = 200)
     playerLevel = models.IntegerField(default = 0)
     playerQn = models.IntegerField(default = 0)
@@ -13,7 +13,7 @@ class bbplayer(models.Model) :
     def __str__(self) :
         return str(self.playerId)
 
-class bblevel(models.Model) :
+class echolevel(models.Model) :
     levelId = models.IntegerField(default = 1)
     qnId = models.IntegerField(default = 1)
     qnDesc = models.CharField(max_length = 500)

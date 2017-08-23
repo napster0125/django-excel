@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Binbash</title>
+    <script type="text/javascript">
+   (function(window, location) {
+    history.replaceState(null, document.title, location.pathname+"#!/stealingyourhistory");
+    history.pushState(null, document.title, location.pathname);
+
+    window.addEventListener("popstate", function() {
+      if(location.hash === "#!/stealingyourhistory") {
+            history.replaceState(null, document.title, location.pathname);
+            setTimeout(function(){
+              location.replace(window.location.href);
+            },0);
+      }
+    }, false);
+}(window, location));
+    </script>
+</head>
+
+
+<body>
+	<h3>{{intro}}</h3>
+	<form action="" method="POST"  >
+		{% csrf_token %}
+		<input type="submit" name="proceed" value="Proceed">
+	</form>
+</body>
