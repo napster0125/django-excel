@@ -40,7 +40,8 @@ INSTALLED_APPS = [
 
     'common',
     'kryptos',
-    'binbash',
+    'echo',
+    'django_ace',
 ]
 
 MIDDLEWARE = [
