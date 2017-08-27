@@ -6,6 +6,7 @@ from django.views.decorators.csrf import csrf_exempt
 from django.http import JsonResponse
 from common.models import User
 from .models import level
+from .models import submittedanswer
 from .models import kryptosuser
 import json
 
@@ -19,21 +20,21 @@ def kryptoshome(request):
 	print usr.username
 	print loginUser
 	
-	print num
-	usrobj, created = kryptosuser.objects.get_or_create(user_id = usr.user_id,
+	
+	usrobj, created = kryptosuser.objects.get_or_create(user_id = usr,
     defaults={'user_level' : 1},)
 	levelint = usrobj.user_level
 	#check whether last level
-	last_level = 10
+	last_level = 3
 	if levelint > last_level :
 		levelint = 100
 		#image - 'new levels coming' 
 	#check for advanced levels here
 	levelobj = level.objects.get(level = levelint)
 	response = {'level':levelobj.level,'image':json.dumps(str(levelobj.level_image))}
-	return JsonResponse(response)
+	# return JsonResponse(response)
 
-	#return render(request,'kryptos.html')
+	return render(request,'kryptos.html')
 
 @csrf_exempt
 def matchanswer(request):
@@ -44,7 +45,9 @@ def matchanswer(request):
 	usr = User.objects.get(user_id=loginUser)
 	print usr.username
 	# print data['answer']
-	kryptosplayer = kryptosuser.objects.get(user_id=loginUser)
+	kryptosplayer = kryptosuser.objects.get(user_id=usr.user_id)
+	ans_obj = submittedanswer(user_id = kryptosplayer,submitted_answer = data['answer'])
+	ans_obj.save()
 	# print curr_level.user_level
 	curr_level = level.objects.get(level = kryptosplayer.user_level)
 	if curr_level.answer == data['answer']:
@@ -58,10 +61,6 @@ def matchanswer(request):
 	return JsonResponse(response)
 
 	# return render(request,'kryptos.html')
-@csrf_exempt
-def ranking(request):
-	#to find top five positions
-	
-	return True
+
 
 
