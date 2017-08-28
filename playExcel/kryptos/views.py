@@ -17,8 +17,8 @@ def kryptoshome(request):
 	loginUser = request.session['user']
 
 	usr = User.objects.get(user_id=loginUser)
-	print usr.username
-	print loginUser
+	print(usr.username)
+	print(loginUser)
 	
 	
 	usrobj, created = kryptosuser.objects.get_or_create(user_id = usr,
@@ -41,9 +41,9 @@ def matchanswer(request):
 	data = request.POST
 	# user = 'usertwo'
 	loginUser = request.session['user']
-	print loginUser
+	print(loginUser)
 	usr = User.objects.get(user_id=loginUser)
-	print usr.username
+	print(usr.username)
 	# print data['answer']
 	kryptosplayer = kryptosuser.objects.get(user_id=usr.user_id)
 	ans_obj = submittedanswer(user_id = kryptosplayer,submitted_answer = data['answer'])
