@@ -7,8 +7,10 @@ from django.db import models
 
 class echoplayer(models.Model) :
     playerId = models.CharField(primary_key = True, max_length = 200)
-    playerLevel = models.IntegerField(default = 0)
-    playerQn = models.IntegerField(default = 0)
+    playerLevel = models.IntegerField(default = 1)
+    playerQn = models.IntegerField(default = 1)
+    partCode = models.CharField(max_length = 1000, default = '')
+    startDate = models.DateTimeField(auto_now_add = True)
 
     def __str__(self) :
         return str(self.playerId)
