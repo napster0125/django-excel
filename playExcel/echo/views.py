@@ -7,7 +7,6 @@ from django.views.decorators.csrf import csrf_exempt
 from django.contrib.auth.decorators import login_required
 import json
 
-from .forms import ScriptForm
 from common.models import User
 from .models import echoplayer, echolevel
 

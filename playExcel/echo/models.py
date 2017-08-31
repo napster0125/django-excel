@@ -6,10 +6,10 @@ from django.db import models
 # Create your models here.
 
 class echoplayer(models.Model) :
-    playerId = models.CharField(primary_key = True, max_length = 200)
+    playerId = models.CharField(primary_key = True, max_length = 100)
     playerLevel = models.IntegerField(default = 1)
     playerQn = models.IntegerField(default = 1)
-    partCode = models.CharField(max_length = 1000, default = '')
+    partCode = models.TextField(default = '')
     startDate = models.DateTimeField(auto_now_add = True)
 
     def __str__(self) :
@@ -18,8 +18,8 @@ class echoplayer(models.Model) :
 class echolevel(models.Model) :
     levelId = models.IntegerField(default = 1)
     qnId = models.IntegerField(default = 1)
-    qnDesc = models.CharField(max_length = 500)
-    qnAns = models.CharField(max_length = 500)
+    qnDesc = models.TextField()
+    qnAns = models.TextField()
     
     def __str__(self) :
         return str(self.levelId + self.qnId)
