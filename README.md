@@ -47,7 +47,7 @@ Pushing to repository:
   - While adding file to git:
     - Please don't use ```git add . ```
     - Use ```git status``` to list all the modified/deleted files. Add/remove only those files which needs to be pushed, using the command ``` git add file_name [,filename]```
-    - Don't add migrations files to git.
+    - Don't add migration files to git.
   - If you have used any additional packages. Please add it to requirements.txt
   - Don't push database_config.cnf file after you have filled in your database credentials.
   - Give suitable commit message.
