@@ -42,6 +42,7 @@ INSTALLED_APPS = [
     'kryptos',
     'echo',
     'django_ace',
+    'hashinclude',
 ]
 
 MIDDLEWARE = [
@@ -126,7 +127,10 @@ USE_TZ = True
 
 STATIC_URL = '/static/'
 
-MEDIA_URL = '/media/'
+# Changed media-url to app/media
+
+MEDIA_URL = 'playExcel/app/media/'
+
 MEDIA_ROOT = os.path.join(BASE_DIR, "staticfiles", "media_root")
 
 # Redis session settings
@@ -135,3 +139,11 @@ SESSION_REDIS_HOST = 'localhost'
 SESSION_REDIS_PORT = 6379
 SESSION_REDIS_DB = 0
 SESSION_REDIS_PREFIX = 'session'
+
+# Celery Settings
+
+CELERY_BROKER_URL = 'redis://localhost:6379'
+CELERY_RESULT_BACKEND = 'redis://localhost:6379'
+CELERY_ACCEPT_CONTENT = ['application/json']
+CELERY_TASK_SERIALIZER = 'json'
+CELERY_RESULT_SERIALIZER = 'json'
