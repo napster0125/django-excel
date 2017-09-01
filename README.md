@@ -56,4 +56,10 @@ Other guidelines:
   - Go through the common.views file.
   - Please add suitable comments wherever needed. 
   - You can add details to readme.
+
+Hashinclude specific:
+
+  - Install docker 
+  - Start docker.service using `sudo systemctl start docker.service`
+  - Build the docker image from Dockerfile `docker build -t judge .` { Same directory as Dockerfile }
    
