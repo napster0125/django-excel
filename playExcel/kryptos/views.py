@@ -4,7 +4,9 @@ from __future__ import unicode_literals
 from django.shortcuts import render
 from django.views.decorators.csrf import csrf_exempt
 from django.http import JsonResponse
+from common.decorators import isLoggedIn
 from common.models import User
+import datetime
 from .models import level
 from .models import submittedanswer
 from .models import kryptosuser
@@ -12,6 +14,7 @@ import json
 
 # Create your views here.
 @csrf_exempt
+@isLoggedIn
 def kryptoshome(request):
 	#getuser and level ,render clue
 	loginUser = request.session['user']
@@ -19,10 +22,8 @@ def kryptoshome(request):
 	usr = User.objects.get(user_id=loginUser)
 	print(usr.username)
 	print(loginUser)
-	
-	
 	usrobj, created = kryptosuser.objects.get_or_create(user_id = usr,
-    defaults={'user_level' : 1},)
+    defaults={'user_level' : 1,'last_anstime':datetime.datetime.now()},)
 	levelint = usrobj.user_level
 	#check whether last level
 	last_level = 3
@@ -31,12 +32,13 @@ def kryptoshome(request):
 		#image - 'new levels coming' 
 	#check for advanced levels here
 	levelobj = level.objects.get(level = levelint)
-	response = {'level':levelobj.level,'image':json.dumps(str(levelobj.level_image))}
-	# return JsonResponse(response)
+	response = {'level':levelobj.level,'type':levelobj.filetype,'source':levelobj.source_hint ,'image':str(levelobj.level_file)}
+	return JsonResponse(response)
 
-	return render(request,'kryptos.html')
+	# return render(request,'kryptos.html')
 
 @csrf_exempt
+@isLoggedIn
 def matchanswer(request):
 	data = request.POST
 	# user = 'usertwo'
@@ -53,6 +55,7 @@ def matchanswer(request):
 	if curr_level.answer == data['answer']:
 		state = True
 		kryptosplayer.user_level = kryptosplayer.user_level + 1
+		kryptosplayer.last_anstime = datetime.datetime.now()
 		kryptosplayer.save()
 	else:
 		state = False	
