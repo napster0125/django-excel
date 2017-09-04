@@ -14,7 +14,7 @@ class level(models.Model):
 	level = models.IntegerField(default =1)
 	answer = models.TextField()
 	source_hint = models.TextField(blank=True,null=True)
-	level_file =  models.FileField(upload_to = 'level_images/')
+	level_file =  models.FileField(upload_to = 'level_images/',null=True)
 	filetype = models.CharField(max_length = 1,choices=options)
 	
 
