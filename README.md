@@ -59,7 +59,7 @@ Other guidelines:
 
 Hashinclude specific:
 
-  - Install docker 
+  - Install docker. `sudo apt-get install docker.io` 
   - Start docker.service using `sudo systemctl start docker.service`
-  - Build the docker image from Dockerfile `docker build -t judge .` { Same directory as Dockerfile }
+  - Build the docker image from Dockerfile `sudo docker build -t judge .` { Same directory as Dockerfile }
    
