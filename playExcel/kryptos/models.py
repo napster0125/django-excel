@@ -15,7 +15,7 @@ class level(models.Model):
 	answer = models.TextField()
 	source_hint = models.TextField(blank=True,null=True)
 	level_file =  models.FileField(upload_to = 'level_images/',null=True)
-	filetype = models.CharField(max_length = 1,choices=options)
+	filetype = models.CharField(max_length = 10,choices=options,default='Audio')
 	
 
 class kryptosuser(models.Model):
