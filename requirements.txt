@@ -17,4 +17,4 @@ redis==2.10.6
 rsa==3.4.2
 six==1.10.0
 vine==1.1.4
-django-cors-headers=2.1.0
+django-cors-headers==2.1.0
