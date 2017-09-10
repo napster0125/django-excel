@@ -29,7 +29,7 @@ def kryptoshome(request):
 	last_level = 20
 	if levelint > last_level :
 		levelint = 100
-		#image - 'new levels coming' 
+		#image - 'new levels coming'
 	try:
 		levelobj = level.objects.get(level = levelint)
 	except level.DoesNotExist:
@@ -58,7 +58,7 @@ def matchanswer(request):
 		kryptosplayer.last_anstime = datetime.datetime.now()
 		kryptosplayer.save()
 	else:
-		state = False	
+		state = False
 	response = {'valid' : state}
 	return JsonResponse(response)
 
@@ -78,6 +78,3 @@ def rank(request):
 		rank = rank +1
 	response = {'ranklist':ranklist,'myrank':myrank}
 	return JsonResponse(response)
-
-
-

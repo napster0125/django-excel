@@ -63,6 +63,7 @@ def testCache(request):
 # otherwise it would return -> JsonResponse({'error' : 'User not logged in'})
 @isLoggedIn
 def testLoginCheck(request):
+	print(request.META)
 	return JsonResponse({'message': 'this user in logged in'})
 
 
