@@ -30,7 +30,11 @@ def kryptoshome(request):
 	if levelint > last_level :
 		levelint = 100
 		#image - 'new levels coming' 
-	levelobj = level.objects.get(level = levelint)
+	try:
+		levelobj = level.objects.get(level = levelint)
+	except level.DoesNotExist:
+		levelobj = level(level=levelint)
+		levelobj.save()
 	response = {'level':levelobj.level,'type':levelobj.filetype,'source':levelobj.source_hint ,'image':str(levelobj.level_file)}
 	return JsonResponse(response)
 
