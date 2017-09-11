@@ -57,6 +57,13 @@ Other guidelines:
   - Please add suitable comments wherever needed. 
   - You can add details to readme.
 
+
+All the apps must follow the below instructions:
+  - call the function named
+    - ```pushChangesAppnameLeaderboard(rank_list)``` (eg: for kryptos, call pushChangesKryptosLeaderboard(rank_list) )
+    ,ranklist is a list (length=10) of details of players in the order of their rank. i.e       rank_list[0] -> details of player with rank 1. Call the function whenever there is any change in ranklist that affects the top 10 in ranklist. Import the same from common.utility
+
+
 Hashinclude specific:
 
   - Install docker. `sudo apt-get install docker.io` 
