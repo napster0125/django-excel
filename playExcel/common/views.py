@@ -64,7 +64,7 @@ def testCache(request):
 @isLoggedIn
 def testLoginCheck(request):
 	print(request.META)
-	return JsonResponse({'message': 'this user in logged in'})
+	return JsonResponse({'message': 'this user is logged in'})
 
 
 

@@ -10,10 +10,10 @@ import datetime
 from .models import level
 from .models import submittedanswer
 from .models import kryptosuser
+from common.utility import pushChangesKrytposLeaderboard
 import json
 
 # Create your views here.
-@csrf_exempt
 @isLoggedIn
 def kryptoshome(request):
 	#getuser and level ,render clue
@@ -40,7 +40,7 @@ def kryptoshome(request):
 
 	# return render(request,'kryptos.html')
 
-@csrf_exempt
+
 @isLoggedIn
 def matchanswer(request):
 	data = request.POST
@@ -57,16 +57,21 @@ def matchanswer(request):
 		kryptosplayer.user_level = kryptosplayer.user_level + 1
 		kryptosplayer.last_anstime = datetime.datetime.now()
 		kryptosplayer.save()
+		toptenkryptosusers = kryptosuser.objects.order_by('-user_level','last_anstime')[:10]
+		topten = []
+		for userobj in toptenkryptosusers:
+			topten.append(userobj.user_id.user_id)
+		pushChangesKrytposLeaderboard(topten)	
 	else:
 		state = False
 	response = {'valid' : state}
 	return JsonResponse(response)
 
-@csrf_exempt
+
 @isLoggedIn
 def rank(request):
 	loginUser = request.session['user']
-	allkryptosusers =kryptosuser.objects.order_by('user_level','last_anstime')
+	allkryptosusers =kryptosuser.objects.order_by('-user_level','last_anstime')
 	ranklist = []
 	rank=1
 	for userobj in allkryptosusers:
