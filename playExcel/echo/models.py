@@ -9,8 +9,8 @@ class echoplayer(models.Model) :
     playerId = models.CharField(primary_key = True, max_length = 100)
     playerLevel = models.IntegerField(default = 1)
     playerQn = models.IntegerField(default = 1)
-    partCode = models.TextField(default = '')
-    startDate = models.DateTimeField(auto_now_add = True)
+    partCode = models.CharField(max_length = 1000, default = '')
+    ansTime = models.DateTimeField(auto_now = True)
 
     def __str__(self) :
         return str(self.playerId)
