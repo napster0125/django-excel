@@ -7,7 +7,7 @@ from channels import Group
 def conn_kryptos_leader_channel(message):
 	Group('kryptos-leader-channel').add(message.reply_channel)
 	message.reply_channel.send({
-		'text' : json.dumps({"accept": True}) #{"close": True}
+		'text' : json.dumps({"accept": True}) #{ "close" : True }
 		})
 	print("New kryptos listener added!")
 

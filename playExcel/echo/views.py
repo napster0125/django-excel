@@ -4,17 +4,17 @@ from __future__ import unicode_literals
 from django.shortcuts import render
 from django.http import JsonResponse
 from django.views.decorators.csrf import csrf_exempt
-from django.contrib.auth.decorators import login_required
 import json
 
 from common.models import User
+from common.decorators import isLoggedIn
 from .models import echoplayer, echolevel
 
 import json
 import subprocess
 # Create your views here.
 
-# @login_required
+@isLoggedIn
 @csrf_exempt
 def echoHome(request) :
     loginUser = request.session.get('user')
