@@ -3,38 +3,30 @@ from __future__ import unicode_literals
 
 from django.shortcuts import render
 from django.http import JsonResponse
-from django.views.decorators.csrf import csrf_exempt
-import json
 
-from common.models import User
 from common.decorators import isLoggedIn
+from common.models import User
+
 from .models import echoplayer, echolevel
 
 import json
 import subprocess
+from threading import Timer
 # Create your views here.
 
 @isLoggedIn
-@csrf_exempt
 def echoHome(request) :
     loginUser = request.session.get('user')
 
-    # form = ScriptForm()
-    # print(loginUser)
-    usrObj = User.objects.get(user_id = loginUser)
-    
+    usrObj = User.objects.get(user_id = loginUser)   
     playerObj, created = echoplayer.objects.get_or_create(playerId = usrObj.user_id,
     defaults={'playerLevel' : 1, 'playerQn' : 1, 'partCode' : ''},
     ) 
-    # print(playerObj.playerQn)
+
     status = False
-    # requireHead = ['1-1', '1-4']
     levelObj = echolevel.objects.get(levelId = playerObj.playerLevel, qnId = playerObj.playerQn)
     if request.POST :
-        # print(form)
-        # print(request.POST)
         print(request.POST.get('field'))
-        # partCode = request.POST.get('field')
 
         #If Save Button is clicked       
         if 'save' in request.POST :
@@ -43,20 +35,24 @@ def echoHome(request) :
             
         #If Execute Button is clicked
         if 'execute' in request.POST :
-            playerObj.partCode = request.POST.get('field')
+            playerObj.partCode = request.POST.get('field').replace('\r', '')
             playerObj.save()
 
             #Script Execution
-            out = subprocess.Popen(str(playerObj.partCode), shell=True, executable="/bin/rbash", stdout=subprocess.PIPE)
-            tmp = open('echo/outputs/'+playerObj.playerId+'.txt','w')
-            tmp.write(out.stdout.read().decode('ascii'))
-            tmp.close()
+            with open(playerObj.playerId+'code.sh', 'w') as shcode :
+                shcode.write(playerObj.partCode)
+            out = subprocess.Popen(['rbash ', playerObj.playerId+'code.sh', '5'], executable="/bin/rbash", stdout=subprocess.PIPE)
+            timer = Timer(1, out.kill)
+            timer.start()
+
+            with open('echo/outputs/'+playerObj.playerId+'.txt','w') as tmp :
+                tmp.write(out.stdout.read().decode('ascii'))
+                print(playerObj.partCode)
+                print("Working!")
             fileName = str(playerObj.playerLevel*100+playerObj.playerQn*10+1)
             testComm = 'diff -w echo/outputs/'+str(playerObj.playerId)+'.txt echo/answers/'+fileName+'.txt'
             test = subprocess.Popen(testComm, shell=True, stdout=subprocess.PIPE)
             comp = test.stdout.read().decode('ascii')
-            print(comp)
-            print(testComm)
             if comp != '' :
                 status = False
             else :
@@ -69,7 +65,6 @@ def echoHome(request) :
                     status = False
                 else :
                     status = True
-            print(status)
             if status == True :
                 if playerObj.playerQn == 5 :
                     playerObj.playerLevel = playerObj.playerLevel + 1
@@ -79,26 +74,24 @@ def echoHome(request) :
                 playerObj.partCode = ''
                 playerObj.save()
  
-    json_data = open('echo/templates/intro.json')
-    data = json.load(json_data)
+    response = {'level' : playerObj.playerLevel, 'qno' : playerObj.playerQn, 'question' : levelObj.qnDesc, 'status' : status}
+    return JsonResponse(response)
 
-    #Player Ranking
-    allPlayers = echoplayer.objects.all()
+
+#Player Ranking
+
+@isLoggedIn
+def echoRank(request) :
+    loginUser = request.session.get('user')
+    allPlayers = echoplayer.objects.order_by('-playerLevel', '-playerQn', 'ansTime')
     rank = 1
-    leaderBoard = {}
-    print(allPlayers)
-    rankPlayers = sorted(allPlayers, key = lambda x: (x.playerLevel, x.playerQn, x.startDate), reverse = True)
-    for r in rankPlayers :
-        leaderBoard[rank] = r
+    leaderBoard = []
+    for player in allPlayers :
+        playerInfo = {'rank' : rank, 'userId' : player.playerId, 'level' : player.playerLevel, 'question' : player.playerQn}
+        leaderBoard.append(playerInfo)
+        if loginUser == player.playerId :
+            myrank = rank
         rank = rank + 1
     print(leaderBoard)
-
-    levelObj = echolevel.objects.get(levelId = playerObj.playerLevel, qnId = playerObj.playerQn)
-    context = {}
-    context['level'] = levelObj
-    context['player'] = playerObj
-    context['status'] = status
-    context['leaderboard'] = leaderBoard
-
-    return render(request, 'echohome.html', context)
-    # return JsonResponse(context)
+    response = {'ranklist' : leaderBoard, 'myrank' : myrank}
+    return JsonResponse(response)
