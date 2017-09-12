@@ -8,7 +8,7 @@ from common.decorators import isLoggedIn
 from common.models import User
 
 from .models import echoplayer, echolevel
-
+# from common.utilities import pushChangesEchoLeaderboard
 import json
 import subprocess
 from threading import Timer
@@ -23,6 +23,11 @@ def echoHome(request) :
     defaults={'playerLevel' : 1, 'playerQn' : 1, 'partCode' : ''},
     ) 
 
+    if created == True :
+        subprocess.Popen('mkdir ./echo/players/'+playerObj.playerId, shell=True, stdout=subprocess.PIPE)
+        subprocess.Popen('cp -r ./echo/home/* ./echo/players/'+playerObj.playerId, shell=True, stdout=subprocess.PIPE)
+        subprocess.Popen('cp ./echo/home/.bashrc ./echo/players/'+playerObj.playerId, shell=True, stdout=subprocess.PIPE)
+    termOut = ''
     status = False
     levelObj = echolevel.objects.get(levelId = playerObj.playerLevel, qnId = playerObj.playerQn)
     if request.POST :
@@ -45,6 +50,7 @@ def echoHome(request) :
             timer = Timer(1, out.kill)
             timer.start()
 
+            termOut = out.stdout.read().decode('ascii')
             with open('echo/outputs/'+playerObj.playerId+'.txt','w') as tmp :
                 tmp.write(out.stdout.read().decode('ascii'))
                 print(playerObj.partCode)
@@ -73,8 +79,13 @@ def echoHome(request) :
                     playerObj.playerQn = playerObj.playerQn + 1
                 playerObj.partCode = ''
                 playerObj.save()
- 
-    response = {'level' : playerObj.playerLevel, 'qno' : playerObj.playerQn, 'question' : levelObj.qnDesc, 'status' : status}
+                toptenplayers = echoplayer.objects.order_by('-playerLevel', '-playerQn', 'ansTime')
+                topten = []
+                for player in toptenplayers :
+                    topten.append(playerObj.playerId)
+                # pushChangesEchoLeaderboard(topten)
+
+    response = {'level' : playerObj.playerLevel, 'qno' : playerObj.playerQn, 'question' : levelObj.qnDesc, 'termOut' : termOut, 'status' : status}
     return JsonResponse(response)
 
 

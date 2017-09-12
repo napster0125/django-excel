@@ -19,10 +19,11 @@ class echolevel(models.Model) :
     levelId = models.IntegerField(default = 1)
     qnId = models.IntegerField(default = 1)
     qnDesc = models.TextField()
-    qnAns = models.TextField()
+    testArg1 = models.CharField(default = '', max_length = 100)
+    testArg1 = models.CharField(default = '', max_length = 100)
     
     def __str__(self) :
-        return str(self.levelId + self.qnId)
+        return str(self.levelId) + '-' + str(self.qnId)
     
     class Meta :
         unique_together = ('levelId', 'qnId')
