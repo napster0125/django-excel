@@ -24,6 +24,7 @@ class kryptosuser(models.Model):
 	user_id = models.OneToOneField(User,primary_key=True, on_delete=models.CASCADE)
 	user_level = models.IntegerField(default =1	)
 	last_anstime = models.DateTimeField()
+	rank = models.IntegerField()
 	def __str__(self):
 		return self.user_id.username
 	

@@ -23,7 +23,14 @@ def kryptoshome(request):
 	print(usr.username)
 	print(loginUser)
 	usrobj, created = kryptosuser.objects.get_or_create(user_id = usr,
-    defaults={'user_level' : 1,'last_anstime':datetime.datetime.now()},)
+    defaults={'user_level' : 1,'last_anstime':datetime.datetime.now(),'rank':10000},)
+
+	if created:
+		print('created')
+		print(kryptosuser.objects.all().count())
+		usrobj.rank = kryptosuser.objects.all().count()
+		usrobj.save()
+
 	levelint = usrobj.user_level
 	#check whether last level
 	last_level = 27
@@ -60,13 +67,22 @@ def matchanswer(request):
 		level_ans =  curr_level.answer
 	if level_ans == data['answer']:
 		state = True
+		samelevelusers = kryptosuser.objects.filter(user_level=kryptosplayer.user_level)
+		newrank = samelevelusers.order_by('last_anstime')[0]
+		# print ('newrank')
+		# print (newrank.rank)
+		for slu in samelevelusers:
+			if slu.last_anstime < kryptosplayer.last_anstime:
+				slu.rank = slu.rank+1
+				slu.save()
 		kryptosplayer.user_level = kryptosplayer.user_level + 1
 		kryptosplayer.last_anstime = datetime.datetime.now()
+		kryptosplayer.rank = newrank.rank
 		kryptosplayer.save()
-		toptenkryptosusers = kryptosuser.objects.order_by('-user_level','last_anstime')[:10]
+		toptenkryptosusers = kryptosuser.objects.order_by('rank')[:10]
 		topten = []
 		for userobj in toptenkryptosusers:
-			user = {'rank':rank,'pic':userobj.user_id.profile_picture,'username':userobj.user_id.username,'level':userobj.user_level}
+			user = {'rank':userobj.rank,'pic':userobj.user_id.profile_picture,'username':userobj.user_id.username,'level':userobj.user_level}
 			topten.append(user)
 		pushChangesKrytposLeaderboard(topten)	
 	else:
@@ -78,15 +94,23 @@ def matchanswer(request):
 @isLoggedIn
 def rank(request):
 	loginUser = request.session['user']
-	allkryptosusers =kryptosuser.objects.order_by('-user_level','last_anstime')
+	topkryptosusers =kryptosuser.objects.order_by('rank')
 	ranklist = []
-	rank=1
-	for userobj in allkryptosusers:
-		user = {'rank':rank,'pic':userobj.user_id.profile_picture,'username':userobj.user_id.username,'level':userobj.user_level}
+	# rank=1
+	myrank = kryptosuser.objects.get(user_id=loginUser).rank
+	for userobj in topkryptosusers:
+		user = {'rank':userobj.rank,'pic':userobj.user_id.profile_picture,'username':userobj.user_id.username,'level':userobj.user_level}
 		ranklist.append(user)
-		if userobj.user_id.user_id == loginUser:
-			print("Iam user")
-			myrank = rank
-		rank = rank +1
+		# if userobj.user_id.user_id == loginUser:
+		# 	print("Iam user")
+		# 	myrank = rank
+		# rank = rank +1
 	response = {'ranklist':ranklist,'myrank':myrank}
-return JsonResponse(response)
+	return JsonResponse(response)
+
+@isLoggedIn
+def myrank(request):
+	loginUser = request.session['user']
+	rank = kryptosuser.objects.get(user_id=loginUser).rank
+	response = {'rank':rank}
+	return JsonResponse(response)
