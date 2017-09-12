@@ -21,3 +21,22 @@ def kryptos_leader_channel_push(data):
 		{
 			'text': json.dumps(data,cls=DjangoJSONEncoder)
 		})
+
+
+def conn_echo_leader_channel(message):
+	Group('echo-leader-channel').add(message.reply_channel)
+	message.reply_channel.send({
+		'text' : json.dumps({"accept": True}) #{ "close" : True }
+		})
+	print("New echo listener added!")
+
+
+def disconn_echo_leader_channel(message):
+	Group('echo-leader-channel').discard(message.reply_channel)
+
+
+def echo_leader_channel_push(data):
+    Group('echo-leader-channel').send( 
+		{
+			'text': json.dumps(data,cls=DjangoJSONEncoder)
+		})
