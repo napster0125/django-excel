@@ -1,0 +1,4 @@
+[client]
+database = playExcel	
+user = aasokan
+password = db_pass
