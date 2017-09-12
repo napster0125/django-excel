@@ -26,7 +26,7 @@ def kryptoshome(request):
     defaults={'user_level' : 1,'last_anstime':datetime.datetime.now()},)
 	levelint = usrobj.user_level
 	#check whether last level
-	last_level = 20
+	last_level = 27
 	if levelint > last_level :
 		levelint = 100
 		#image - 'new levels coming'
@@ -66,7 +66,8 @@ def matchanswer(request):
 		toptenkryptosusers = kryptosuser.objects.order_by('-user_level','last_anstime')[:10]
 		topten = []
 		for userobj in toptenkryptosusers:
-			topten.append(userobj.user_id.user_id)
+			user = {'rank':rank,'pic':userobj.user_id.profile_picture,'username':userobj.user_id.username,'level':userobj.user_level}
+			topten.append(user)
 		pushChangesKrytposLeaderboard(topten)	
 	else:
 		state = False
@@ -88,4 +89,4 @@ def rank(request):
 			myrank = rank
 		rank = rank +1
 	response = {'ranklist':ranklist,'myrank':myrank}
-	return JsonResponse(response)
+return JsonResponse(response)
