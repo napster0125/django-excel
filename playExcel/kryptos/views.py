@@ -51,8 +51,14 @@ def matchanswer(request):
 	kryptosplayer = kryptosuser.objects.get(user_id=usr.user_id)
 	ans_obj = submittedanswer(user_id = kryptosplayer,submitted_answer = data['answer'])
 	ans_obj.save()
-	curr_level = level.objects.get(level = kryptosplayer.user_level)
-	if curr_level.answer == data['answer']:
+	if kryptosplayer.user_level == 9:
+		name = ''.join(kryptosplayer.user_id.username.split()).lower()
+		level_ans = name
+		print(name)
+	else :
+		curr_level = level.objects.get(level = kryptosplayer.user_level)
+		level_ans =  curr_level.answer
+	if level_ans == data['answer']:
 		state = True
 		kryptosplayer.user_level = kryptosplayer.user_level + 1
 		kryptosplayer.last_anstime = datetime.datetime.now()
