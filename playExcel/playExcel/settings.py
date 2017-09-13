@@ -131,7 +131,7 @@ USE_TZ = True
 
 STATIC_URL = '/static/'
 STATIC_ROOT = os.path.join(BASE_DIR, "static/")
-STATICFILES_DIRS =( os.path.join(BASE_DIR,'app','media'), )
+STATICFILES_DIRS = ( os.path.join(BASE_DIR,'app','media'), )
 # Changed media-url to app/media
 
 MEDIA_URL = 'playExcel/app/media/'
