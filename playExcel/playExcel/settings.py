@@ -130,12 +130,13 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/1.11/howto/static-files/
 
 STATIC_URL = '/static/'
-
+STATIC_ROOT = os.path.join(BASE_DIR, "static/")
+STATICFILES_DIRS =( os.path.join(BASE_DIR,'app','media'), )
 # Changed media-url to app/media
 
 MEDIA_URL = 'playExcel/app/media/'
 
-MEDIA_ROOT = os.path.join(BASE_DIR, "staticfiles", "media_root")
+MEDIA_ROOT = os.path.join(BASE_DIR, "app", "media")
 
 # Redis session settings
 SESSION_ENGINE = 'redis_sessions.session'
