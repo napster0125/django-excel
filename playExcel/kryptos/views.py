@@ -79,12 +79,13 @@ def matchanswer(request):
 		kryptosplayer.last_anstime = datetime.datetime.now()
 		kryptosplayer.rank = newrank.rank
 		kryptosplayer.save()
-		toptenkryptosusers = kryptosuser.objects.order_by('rank')[:10]
-		topten = []
-		for userobj in toptenkryptosusers:
-			user = {'rank':userobj.rank,'pic':userobj.user_id.profile_picture,'username':userobj.user_id.username,'level':userobj.user_level}
-			topten.append(user)
-		pushChangesKrytposLeaderboard(topten)	
+		# toptenkryptosusers = kryptosuser.objects.order_by('rank')[:10]
+		# topten = []
+		# for userobj in toptenkryptosusers:
+		# 	user = {'rank':userobj.rank,'pic':userobj.user_id.profile_picture,'username':userobj.user_id.username,'level':userobj.user_level}
+		# 	topten.append(user)
+		# pushChangesKrytposLeaderboard(topten)	
+		pushChangesKrytposLeaderboard(rank(request))
 	else:
 		state = False
 	response = {'valid' : state}
@@ -106,7 +107,7 @@ def rank(request):
 		# 	myrank = rank
 		# rank = rank +1
 	response = {'ranklist':ranklist,'myrank':myrank}
-	return JsonResponse(response)
+	return response
 
 @isLoggedIn
 def myrank(request):
