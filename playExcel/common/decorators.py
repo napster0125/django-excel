@@ -3,7 +3,6 @@ from django.http import JsonResponse
 
 def isLoggedIn(view_func):
 	def new_view_func(request):
-		print(request.COOKIES)
 		if request.session.get('logged_in',False):
 			return view_func(request)
 		else:
