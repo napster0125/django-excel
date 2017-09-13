@@ -19,12 +19,14 @@ from django.conf import settings
 from django.conf.urls.static import static
 
 
+
 urlpatterns = [
-    url(r'^dsjchsj87673yf787df6u2hc87wr/', admin.site.urls),
-    url(r'^kryptos', include('kryptos.urls')),
-    url(r'^echo', include('echo.urls')),
-    url(r'^', include('common.urls')),
+    url(r'^/api/dsjchsj87673yf787df6u2hc87wr/', admin.site.urls),
+    url(r'^/api/kryptos', include('kryptos.urls')),
+    url(r'^/api/echo', include('echo.urls')),
+    url(r'^/api/', include('common.urls')),
     
 ]   
+
 if settings.DEBUG:
     urlpatterns +=   static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
