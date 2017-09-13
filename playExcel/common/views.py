@@ -19,8 +19,8 @@ CLIENT_ID = "1085661962609-79u3us6bbkp6m9gponccdomgrlv7m9pv.apps.googleuserconte
 
 # This function (and the associated html,js) is temporary,
 # will be replaced once UI is ready.
-def home(request):
-	return render(request,'signup.html',{})
+# def home(request):
+# 	return render(request,'signup.html',{})
 
 # This function puts the login info inside request.session
 # from where all the other app can take the info like user_id
