@@ -21,10 +21,10 @@ from django.conf.urls.static import static
 
 
 urlpatterns = [
-    url(r'^/api/dsjchsj87673yf787df6u2hc87wr/', admin.site.urls),
-    url(r'^/api/kryptos', include('kryptos.urls')),
-    url(r'^/api/echo', include('echo.urls')),
-    url(r'^/api/', include('common.urls')),
+    url(r'^api/dsjchsj87673yf787df6u2hc87wr/', admin.site.urls),
+    url(r'^api/kryptos', include('kryptos.urls')),
+    url(r'^api/echo', include('echo.urls')),
+    url(r'^api/', include('common.urls')),
     
 ]   
 
