@@ -1,5 +1,5 @@
 from django.conf.urls import url
-from .views import signout,testCache,testLoginCheck,sign_in
+from .views import signout,testCache,testLoginCheck,sign_in,getUserCount
 urlpatterns = [
 	#url(r'signin', signin ),
 	url(r'sign_in', sign_in ),
@@ -7,5 +7,7 @@ urlpatterns = [
 	#url(r'test/(\d+)', test ),
 	url(r'testCache', testCache ),
 	url(r'testLoginCheck', testLoginCheck ),
+
+	url(r'getUserCount', getUserCount ),
 	#url(r'',home),
 ]

@@ -18,5 +18,15 @@ channel_routing = [
 	route('websocket.disconnect',
 		consumers.disconn_echo_leader_channel,
 		path = r'^/echo',
-     	)
+     	),
+
+	route('websocket.connect',
+    	consumers.conn_echo_leader_channel,
+    	path = r'^/getUserCount'
+     	),
+	
+	route('websocket.disconnect',
+		consumers.disconn_user_count_channel,
+		path = r'^/getUserCount',
+     	),
 	]

@@ -8,6 +8,7 @@ from django.views.decorators.cache import cache_page
 from django.views.decorators.csrf import csrf_exempt
 from common.decorators import isLoggedIn, playCookies
 from .models import *
+from .consumers import user_count_channel_push
 
 from urllib import request as rq
 import json
@@ -48,6 +49,9 @@ def sign_in(request):
 		email = data['email']
 		)
 
+	if created:
+		user_count_channel_push({'count': User.objects.all().count() })
+
 	if 'user' not in request.session:
 		request.session['user'] = obj.user_id
 
@@ -55,6 +59,12 @@ def sign_in(request):
 
 	return JsonResponse({ 'success' : True })
 
+
+
+@playCookies
+@isLoggedIn
+def getUserCount(request):
+	return JsonResponse({'count': User.objects.all().count() })
 
 @playCookies
 def signout(request):

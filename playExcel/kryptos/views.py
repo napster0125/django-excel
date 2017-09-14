@@ -34,7 +34,7 @@ def kryptoshome(request):
 
 	levelint = usrobj.user_level
 	#check whether last level
-	last_level = 27
+	last_level = 30
 	if levelint > last_level :
 		levelint = 100
 		#image - 'new levels coming'
@@ -92,8 +92,7 @@ def matchanswer(request):
 	response = {'valid' : state}
 	return JsonResponse(response)
 
-@playCookies
-@isLoggedIn
+
 def rank(request):
 	loginUser = request.session['user']
 	topkryptosusers =kryptosuser.objects.order_by('rank')
@@ -107,8 +106,15 @@ def rank(request):
 		# 	print("Iam user")
 		# 	myrank = rank
 		# rank = rank +1
-	response = JsonResponse({'ranklist':ranklist,'myrank':myrank})
+	response = {'ranklist':ranklist}
 	return response
+
+
+@playCookies
+@isLoggedIn
+def rankList(request):
+	return JsonResponse(rank(request))
+
 
 @playCookies
 @isLoggedIn

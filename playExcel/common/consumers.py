@@ -4,6 +4,26 @@ from channels import Group
 
 
 
+def conn_user_count_channel(message):
+	Group('user-count-channel').add(message.reply_channel)
+	message.reply_channel.send({
+		'text' : json.dumps({"accept": True}) #{ "close" : True }
+		})
+	return 
+
+
+def disconn_user_count_channel(message):
+	Group('user-count-channel').discard(message.reply_channel)
+
+
+def user_count_channel_push(data):
+    Group('user-count-channel').send( 
+		{
+			'text': json.dumps(data,cls=DjangoJSONEncoder)
+		})
+
+
+
 def conn_kryptos_leader_channel(message):
 	Group('kryptos-leader-channel').add(message.reply_channel)
 	message.reply_channel.send({
