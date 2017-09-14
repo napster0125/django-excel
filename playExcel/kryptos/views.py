@@ -4,7 +4,7 @@ from __future__ import unicode_literals
 from django.shortcuts import render
 from django.views.decorators.csrf import csrf_exempt
 from django.http import JsonResponse
-from common.decorators import isLoggedIn
+from common.decorators import isLoggedIn, playCookies
 from common.models import User
 import datetime
 from .models import level
@@ -14,6 +14,7 @@ from common.utility import pushChangesKrytposLeaderboard
 import json
 
 # Create your views here.
+@playCookies
 @isLoggedIn
 def kryptoshome(request):
 	#getuser and level ,render clue
@@ -47,7 +48,7 @@ def kryptoshome(request):
 
 	# return render(request,'kryptos.html')
 
-
+@playCookies
 @isLoggedIn
 def matchanswer(request):
 	data = request.POST
@@ -91,7 +92,7 @@ def matchanswer(request):
 	response = {'valid' : state}
 	return JsonResponse(response)
 
-
+@playCookies
 @isLoggedIn
 def rank(request):
 	loginUser = request.session['user']
@@ -109,6 +110,7 @@ def rank(request):
 	response = {'ranklist':ranklist,'myrank':myrank}
 	return response
 
+@playCookies
 @isLoggedIn
 def myrank(request):
 	loginUser = request.session['user']

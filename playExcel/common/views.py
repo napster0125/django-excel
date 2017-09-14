@@ -6,7 +6,7 @@ from django.http import JsonResponse,HttpResponse
 
 from django.views.decorators.cache import cache_page
 from django.views.decorators.csrf import csrf_exempt
-from common.decorators import isLoggedIn
+from common.decorators import isLoggedIn, playCookies
 from .models import *
 
 from urllib import request as rq
@@ -25,6 +25,9 @@ CLIENT_ID = "1085661962609-79u3us6bbkp6m9gponccdomgrlv7m9pv.apps.googleuserconte
 # This function puts the login info inside request.session
 # from where all the other app can take the info like user_id
 # by accessing request.session['user']
+
+@csrf_exempt
+@playCookies
 def sign_in(request):
 	if 'access_token' in request.POST:
 		access_token = request.POST['access_token']
@@ -53,6 +56,7 @@ def sign_in(request):
 	return JsonResponse({ 'success' : True })
 
 
+@playCookies
 def signout(request):
 	request.session.flush()
 	return JsonResponse({ 'success' : True })
@@ -60,6 +64,7 @@ def signout(request):
 
 
 #This is how we cache a view. Here the result of function will be cached for 10secs.
+@playCookies
 @cache_page(10)
 def testCache(request):
 	print('This func called')
@@ -69,13 +74,10 @@ def testCache(request):
 # This will ensure that the function testLoginCheck is 
 # only executed when user is logged in
 # otherwise it would return -> JsonResponse({'error' : 'User not logged in'})
+@playCookies
 @isLoggedIn
 def testLoginCheck(request):
 	return JsonResponse({'message': 'this user is logged in'})
-
-
-
-
 
 '''
 @csrf_exempt

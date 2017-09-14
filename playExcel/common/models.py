@@ -10,5 +10,7 @@ class User(models.Model):
 	username = models.CharField(max_length=100)
 	profile_picture = models.URLField()
 	email = models.EmailField()
-
+	
+	def __str__(self):
+		return self.username
 
