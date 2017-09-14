@@ -107,7 +107,7 @@ def rank(request):
 		# 	print("Iam user")
 		# 	myrank = rank
 		# rank = rank +1
-	response = {'ranklist':ranklist,'myrank':myrank}
+	response = JsonResponse({'ranklist':ranklist,'myrank':myrank})
 	return response
 
 @playCookies
