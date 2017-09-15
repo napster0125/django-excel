@@ -21,7 +21,7 @@ channel_routing = [
      	),
 
 	route('websocket.connect',
-    	consumers.conn_echo_leader_channel,
+    	consumers.conn_user_count_channel,
     	path = r'^/getUserCount'
      	),
 	
