@@ -75,7 +75,6 @@ def signout(request):
 
 #This is how we cache a view. Here the result of function will be cached for 10secs.
 @playCookies
-@cache_page(10)
 def testCache(request):
 	print('This func called')
 	return JsonResponse({'message': 'Testing django cache'})
