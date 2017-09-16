@@ -34,10 +34,10 @@ def kryptoshome(request):
 
 	levelint = usrobj.user_level
 	#check whether last level
-	last_level = 30
-	if levelint > last_level :
-		levelint = 100
-		#image - 'new levels coming'
+	# last_level = 30
+	# if levelint > last_level :
+	# 	levelint = 100
+	# 	#image - 'new levels coming'
 	try:
 		levelobj = level.objects.get(level = levelint)
 	except level.DoesNotExist:
@@ -110,6 +110,16 @@ def rank(request):
 	response = {'ranklist':ranklist}
 	return response
 
+
+def allplayersrank(request):
+	topkryptosusers =kryptosuser.objects.order_by('rank')
+	ranklist = []
+	for userobj in topkryptosusers:
+		user = {'rank':userobj.rank,'username':userobj.user_id.username,'level':userobj.user_level}
+		ranklist.append(user)
+		
+	response = {'ranklist':ranklist}
+	return JsonResponse(response)
 
 @playCookies
 @isLoggedIn
