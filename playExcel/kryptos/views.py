@@ -68,6 +68,7 @@ def matchanswer(request):
 		level_ans =  curr_level.answer
 	if level_ans == data['answer']:
 		state = True
+		submittedanswer.objects.filter(user_id=kryptosplayer).delete()
 		samelevelusers = kryptosuser.objects.filter(user_level=kryptosplayer.user_level)
 		newrank = samelevelusers.order_by('last_anstime')[0]
 		# print ('newrank')
@@ -95,7 +96,7 @@ def matchanswer(request):
 
 def rank(request):
 	loginUser = request.session['user']
-	topkryptosusers =kryptosuser.objects.order_by('rank')
+	topkryptosusers =kryptosuser.objects.order_by('rank')[:10]
 	ranklist = []
 	# rank=1
 	myrank = kryptosuser.objects.get(user_id=loginUser).rank
