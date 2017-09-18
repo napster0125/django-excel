@@ -6,6 +6,7 @@ from django.http import JsonResponse
 
 from common.decorators import isLoggedIn
 from common.models import User
+from common.utility import pushChangesEchoLeaderboard
 
 from .models import echoplayer,echolevel
 
@@ -23,12 +24,12 @@ def echoHome(request) :
     defaults={'playerLevel' : 1, 'playerQn' : 1, 'partCode' : ''},
     ) 
 
-    if created == True :
-        subprocess.Popen('mkdir ./echo/players/'+playerObj.playerId, shell=True, stdout=subprocess.PIPE)
-        subprocess.Popen('cp -r ./echo/home/* ./echo/players/'+playerObj.playerId, shell=True, stdout=subprocess.PIPE)
-        subprocess.Popen('cp ./echo/home/.bashrc ./echo/players/'+playerObj.playerId, shell=True, stdout=subprocess.PIPE)
-    termOut = ''
-    status = False
+    # if created == True :
+    #     subprocess.Popen('mkdir ./echo/players/'+playerObj.playerId, shell=True, stdout=subprocess.PIPE)
+    #     subprocess.Popen('cp -r ./echo/home/* ./echo/players/'+playerObj.playerId, shell=True, stdout=subprocess.PIPE)
+    #     subprocess.Popen('cp ./echo/home/.bashrc ./echo/players/'+playerObj.playerId, shell=True, stdout=subprocess.PIPE)
+    # termOut = ''
+    # status = False
     levelObj = echolevel.objects.get(levelId = playerObj.playerLevel, qnId = playerObj.playerQn)
     if request.POST :
         print(request.POST.get('field'))
@@ -44,33 +45,35 @@ def echoHome(request) :
             playerObj.save()
 
             #Script Execution
-            with open(playerObj.playerId+'code.sh', 'w') as shcode :
-                shcode.write(playerObj.partCode)
-            out = subprocess.Popen(['rbash ', playerObj.playerId+'code.sh', '5'], executable="/bin/rbash", stdout=subprocess.PIPE)
-            timer = Timer(1, out.kill)
-            timer.start()
+            # with open(playerObj.playerId+'code.sh', 'w') as shcode :
+            #     shcode.write(playerObj.partCode)
+            # out = subprocess.Popen(['rbash ', playerObj.playerId+'code.sh', '5'], executable="/bin/rbash", stdout=subprocess.PIPE)
+            # timer = Timer(1, out.kill)
+            # timer.start()
 
-            termOut = out.stdout.read().decode('ascii')
-            with open('echo/outputs/'+playerObj.playerId+'.txt','w') as tmp :
-                tmp.write(out.stdout.read().decode('ascii'))
-                print(playerObj.partCode)
-                print("Working!")
-            fileName = str(playerObj.playerLevel*100+playerObj.playerQn*10+1)
-            testComm = 'diff -w echo/outputs/'+str(playerObj.playerId)+'.txt echo/answers/'+fileName+'.txt'
-            test = subprocess.Popen(testComm, shell=True, stdout=subprocess.PIPE)
-            comp = test.stdout.read().decode('ascii')
-            if comp != '' :
-                status = False
-            else :
-                print("Step1")
-                fileName = str(playerObj.playerLevel*100+playerObj.playerQn*10+2)
-                testComm = "diff -w echo/outputs/"+str(playerObj.playerId)+".txt echo/answers/"+fileName+".txt"
-                test = subprocess.Popen(testComm, shell=True, stdout=subprocess.PIPE)
-                comp = test.stdout.read().decode('ascii')
-                if comp != '' :
-                    status = False
-                else :
-                    status = True
+            # termOut = out.stdout.read().decode('ascii')
+            # with open('echo/outputs/'+playerObj.playerId+'.txt','w') as tmp :
+            #     tmp.write(out.stdout.read().decode('ascii'))
+            #     print(playerObj.partCode)
+            #     print("Working!")
+            # fileName = str(playerObj.playerLevel*100+playerObj.playerQn*10+1)
+            # testComm = 'diff -w echo/outputs/'+str(playerObj.playerId)+'.txt echo/answers/'+fileName+'.txt'
+            # test = subprocess.Popen(testComm, shell=True, stdout=subprocess.PIPE)
+            # comp = test.stdout.read().decode('ascii')
+            # if comp != '' :
+            #     status = False
+            # else :
+            #     print("Step1")
+            #     fileName = str(playerObj.playerLevel*100+playerObj.playerQn*10+2)
+            #     testComm = "diff -w echo/outputs/"+str(playerObj.playerId)+".txt echo/answers/"+fileName+".txt"
+            #     test = subprocess.Popen(testComm, shell=True, stdout=subprocess.PIPE)
+            #     comp = test.stdout.read().decode('ascii')
+            #     if comp != '' :
+            #         status = False
+            #     else :
+            #         status = True
+
+            
             if status == True :
                 if playerObj.playerQn == 5 :
                     playerObj.playerLevel = playerObj.playerLevel + 1
@@ -83,7 +86,7 @@ def echoHome(request) :
                 topten = []
                 for player in toptenplayers :
                     topten.append(playerObj.playerId)
-                # pushChangesEchoLeaderboard(topten)
+                pushChangesEchoLeaderboard(topten)
 
     response = {'level' : playerObj.playerLevel, 'qno' : playerObj.playerQn, 'question' : levelObj.qnDesc, 'termOut' : termOut, 'status' : status}
     return JsonResponse(response)
