@@ -62,12 +62,10 @@ class judge:
 		with open(self.cwd+"/tmp/err.txt","w") as err:
 			cmd=self.langarray[lang]["compile"]
 			cmd=cmd.replace("[filename]",fid)
-			print(cmd)
 			t=subprocess.Popen(shlex.split(cmd),preexec_fn=os.setsid,cwd=os.getcwd(),stderr=err)
 			t.communicate()
 			response=t.returncode
 			t.kill()
-			print(response)
 			if response==0:
 				return "CS"
 			else:
@@ -108,7 +106,6 @@ class judge:
 						cmd=cmd.replace("[filename]",fid[1])
 					else:
 						cmd=cmd.replace("[filename]",fid)
-					print(cmd)
 					start=time.time()
 					t=0
 					process=subprocess.Popen(shlex.split(cmd),preexec_fn=os.setsid,cwd=os.getcwd(),stdin=input,stdout=output,stderr=err)
@@ -119,7 +116,6 @@ class judge:
 					end=time.time()
 					exec_resp=process.returncode
 					process.kill()
-					print(t,exec_resp)
 					if t==124:
 						return "TLE"
 					elif exec_resp==1:
