@@ -10,10 +10,6 @@ RUN apt-get update && apt-get install -y \
   python3 \
   python3-pip
 
-COPY requirements.txt /tmp/
-
-RUN pip3 install -r /tmp/requirements.txt
-
 COPY app/. /app/
 
 WORKDIR /app/
