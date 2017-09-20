@@ -1,6 +1,8 @@
 from django.db import models
 from common.models import User
 
+import datetime
+
 class problems(models.Model):
         pid=models.IntegerField(primary_key=True)
         points=models.IntegerField()
@@ -17,4 +19,5 @@ class Submission(models.Model):
         user_id=models.ForeignKey(hiuser,on_delete=models.CASCADE)
         pid=models.ForeignKey(problems,on_delete=models.CASCADE)
         fid=models.FileField(upload_to='')
-        lang=models.CharField(max_length=9,default='C++')
+        lang=models.CharField(max_length=9)
+        sub_time=models.DateTimeField(auto_now_add=True,blank=True)

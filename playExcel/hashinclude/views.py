@@ -17,9 +17,10 @@ from .tasks import run
 @csrf_exempt
 def submit(request):
         if request.method=='POST':
+                loginUser=request.session['User']    
                 form=SubmissionForm(request.POST,request.FILES)
                 if form.is_valid():
-                        obj=Submission(pid=10,fid=request.FILES['cfile'],lang=request.POST['lang'])
+                        obj=Submission(user_id=loginUser,pid=request.POST['pid'],fid=request.FILES['cfile'],lang=request.POST['lang'])
                         obj.save()
                         res=run.delay(str(obj.pid),obj.fid.name,obj.lang)
                         print(res)
@@ -39,7 +40,7 @@ def get_ranklist(request):
         user={'rank':user_obj.rank,'pic':user_obj.user_id.profile_picture,'username':user_obj.user_id.username,'points':user_obj.points}
         ranklist.append(user)
     response={'ranklist':ranklist}
-    return JsonResponse(ranklist)
+    return JsonResponse(response)
 
 @playCookies
 @isLoggedIn
@@ -47,4 +48,16 @@ def user_rank(request):
     loginUser=request.session['User']
     rank=hiuser.objects.get(user_id=loginUser).rank
     response={'rank':rank}
+    return JsonResponse(response)
+
+@playCookies
+@isLoggedIn
+def recent_submissions(request):
+    loginUser=request.session['User']
+    recent_submissions=(Submissions.objects.order_by('sub_time')).filter(user_id=loginUser)[:5]
+    sub_list=[]
+    for sub_obj in recent_submissions:
+        sub={'pid':sub_obj.pid,'fid':sub_obj.fid,'lang':sub_obj.lang}
+        sub_list.append(sub)
+    response={'sublist':sub_list}
     return JsonResponse(response)
