@@ -25,7 +25,7 @@ urlpatterns = [
     url(r'^api/kryptos', include('kryptos.urls')),
     url(r'^api/echo', include('echo.urls')),
     url(r'^api/', include('common.urls')),    
-    url(r'^hi/',include('hashinclude.urls')),
+    url(r'^api/hashinclude',include('hashinclude.urls')),
 ]   
 
 if settings.DEBUG:
