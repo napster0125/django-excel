@@ -1,5 +1,5 @@
 from django.conf.urls import url
-from .views import submit
+from .views import *
 
 urlpatterns=[
         url(r'submitanswer',submit),
