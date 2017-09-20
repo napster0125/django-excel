@@ -22,6 +22,7 @@ def submit(request):
                         obj=Submission(pid=10,fid=request.FILES['cfile'],lang=request.POST['lang'])
                         obj.save()
                         res=run.delay(str(obj.pid),obj.fid.name,obj.lang)
+                        print(res)
                         return JsonResponse({'result':'Success'})	
                 else:
                         return JsonResponse({'result':'Failed'})

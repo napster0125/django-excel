@@ -2,7 +2,7 @@ from django.db import models
 from common.models import User
 
 class problems(models.Model):
-        problems=models.IntegerField(primary_key=True)
+        pid=models.IntegerField(primary_key=True)
         points=models.IntegerField()
 
 class hiuser(models.Model):
@@ -15,6 +15,6 @@ class hiuser(models.Model):
 
 class Submission(models.Model):
         user_id=models.ForeignKey(hiuser,on_delete=models.CASCADE)
-        pid=models.IntegerField(default=1)
+        pid=models.ForeignKey(problems,on_delete=models.CASCADE)
         fid=models.FileField(upload_to='')
         lang=models.CharField(max_length=9,default='C++')
