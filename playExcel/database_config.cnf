@@ -1,4 +1,4 @@
 [client]
-database = echo
-user = echo
-password = password
+database = <your_db_name>
+user = <your_db_username>
+password = <your_db_pass>
