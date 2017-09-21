@@ -59,7 +59,7 @@ def get_ranklist(request):
     leaderboard=hiuser.objects.order_by('rank')[:10]
     ranklist=[]
     for user_obj in leaderboard:
-        user={'rank':user_obj.rank,'pic':user_obj.user_id.profile_picture,'username':user_obj.user_id.username,'points':user_obj.points}
+        user={'rank':user_obj.rank,'pic':user_obj.user_id.profile_picture,'username':user_obj.user_id.username,'points':user_obj.total_points}
         ranklist.append(user)
     response={'ranklist':ranklist}
     return JsonResponse(response)
