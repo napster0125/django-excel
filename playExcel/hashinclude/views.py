@@ -19,7 +19,7 @@ def home(request):
     usr=User.objects.get(user_id=loginUser)
     try:
         obj=hiuser.objects.get(user_id=usr.user_id)
-    except hiuser.DoesNotExist
+    except hiuser.DoesNotExist:
         obj=hiuser(user_id=usr.user_id,rank=(hiuser.objects.count()+1))
         obj.save()
 
@@ -32,7 +32,7 @@ def submit(request):
                 usr=User.objects.get(user_id=loginUser)
                 form=SubmissionForm(request.POST,request.FILES)
                 if form.is_valid():
-                        obj=Submission.(user_id=usr.user_id,pid=request.POST['pid'],fid=request.FILES['cfile'],lang=request.POST['lang'])
+                        obj=Submission(user_id=usr.user_id,pid=request.POST['pid'],fid=request.FILES['cfile'],lang=request.POST['lang'])
                         obj.save()
                         res=run.delay(str(obj.pid),obj.fid.name,obj.lang)
                         print(res)

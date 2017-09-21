@@ -1,7 +1,6 @@
 from django.db import models
 from common.models import User
-
-import django.utils.timezone import now
+from django.utils import timezone
 
 class problems(models.Model):
         pid=models.IntegerField(primary_key=True)
