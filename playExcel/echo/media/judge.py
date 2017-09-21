@@ -41,6 +41,7 @@ class judge :
             Execute the script in restricted bash
 
         '''
+        req_res = ['7', '8']
         tout = False
         # print(code)
         # codearr = code.splitlines()
@@ -52,7 +53,7 @@ class judge :
             #     file.write(line)
 
         out = subprocess.Popen(['chmod', '+x', self.workdir+'code.sh'])
-   
+
         with open(self.workdir+'output.txt', 'w') as output :
             with open(self.workdir+'error.txt', 'w') as error :
                 # cmd = 
@@ -64,6 +65,7 @@ class judge :
             
                 if tout :
                     error.write('Script Execution Timed Out!')
+
         t = ''
         with open(self.workdir+'output.txt', 'r') as output :
             t = output.read()
@@ -78,10 +80,12 @@ class judge :
         # levelId = str(level) + str(question)
         testfile = os.path.join(os.path.join(self.cwd, 'testcases/'), level+'1.txt')  
         if not tout :
-            state = self.validate(self.playerId, testfile)
+            state = self.validate(self.playerId, testfile, level)
 
         if state :
             state = False
+            if level in req_res :
+                subprocess.Popen(['cp', '-r', '/media/reserve/'+level+'/*', os.getcwd()+'home/'+level+'/'], stdout=subprocess.PIPE)
             with open(self.workdir+'output.txt', 'w') as output :
                 with open(self.workdir+'error.txt', 'w') as error :
                     out = subprocess.Popen(['rbash', self.workdir+'code.sh', arg2], stdout=output, stderr=error)
@@ -101,13 +105,23 @@ class judge :
         
         return state
 
-    def validate(self, playerId, testfile) :
+    def validate(self, playerId, testfile, level) :
         '''
             Compare output with the testcases
 
         '''
-        valid = filecmp.cmp(self.workdir+'output.txt', testfile)
-        
+        valid = False
+        req_res = ['7', '8']
+        if level not in req_res :
+            valid = filecmp.cmp(self.workdir+'output.txt', testfile)
+        else :
+            val = ''
+            with open(self.workdir+'output.txt', 'w') as out :
+                subprocess.Popen(['/media/reserve/'+level+'.sh'], stdout=out)
+            with open(self.workdir+'output.txt', 'r') as out :
+                val = out.read()
+            if val == 'True' :
+                valid = True
         return valid
 
 def main() :

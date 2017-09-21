@@ -32,8 +32,8 @@ def echoHome(request) :
     if not os.path.exists(os.path.join(os.getcwd(), 'echo/media/players/'+playerObj.playerId+'/')) :
         os.makedirs(os.path.join(os.getcwd(), 'echo/media/players/'+playerObj.playerId+'/'))
 
-    subprocess.Popen(['cp', '-r' , os.path.join(os.getcwd(), 'echo/skel/home/'), os.path.join(os.getcwd(), 'echo/media/players/'+playerObj.playerId+'/')])
-    
+        subprocess.Popen(['cp', '-r' , os.path.join(os.getcwd(), 'echo/skel/home/'), os.path.join(os.getcwd(), 'echo/media/players/'+playerObj.playerId+'/')])
+    # subprocess.Popen(['cp', '-r', os.path.join(os.getcwd(), 'echo/skel/level'+str(playerObj.playerLevel)+'/'), os.path.join(os.getcwd(), 'echo/media/players/'+playerObj.playerId+'/home/')])
     termStatus = False
     # if created == True :
     #     subprocess.Popen('mkdir ./echo/players/'+playerObj.playerId, shell=True, stdout=subprocess.PIPE)
@@ -53,7 +53,7 @@ def echoHome(request) :
             termIn = request.POST.get('term')
             trm = ''
             with open('/tmp/'+playerObj.playerId+'.txt', 'w') as temp :
-                t = subprocess.Popen([os.path.join(os.getcwd(),'echo/dockerscript.sh'), str(termStatus), playerObj.playerId, termIn], stdout=temp, stderr=temp)
+                t = subprocess.Popen([os.path.join(os.getcwd(),'echo/dockerscript.sh'), str(termStatus), playerObj.playerId, str(playerObj.playerLevel), termIn], stdout=temp, stderr=temp)
             # with open('/tmp/'+playerObj.playerId+'.txt', 'r') as tmp :
                 try :
                     t.communicate(timeout=5)

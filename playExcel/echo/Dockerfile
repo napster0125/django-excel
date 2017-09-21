@@ -2,6 +2,8 @@ FROM alpine
 
 RUN apk add --update bash
 RUN apk add --update python3
+RUN apk add --update mkvtoolnix
+RUN apk add --update curl
 
 ENV PATH="${PATH}:/media/programs"
 
