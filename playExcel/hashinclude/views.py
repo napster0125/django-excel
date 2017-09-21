@@ -59,7 +59,7 @@ def get_ranklist(request):
     leaderboard=hiuser.objects.order_by('rank')[:10]
     ranklist=[]
     for user_obj in leaderboard:
-        user={'rank':user_obj.rank,'pic':user_obj.user_id.profile_picture,'username':user_obj.user_id.username,'points':user_obj.points}
+        user={'rank':user_obj.rank,'pic':user_obj.user_id.profile_picture,'username':user_obj.user_id.username,'points':user_obj.total_points}
         ranklist.append(user)
     response={'ranklist':ranklist}
     return JsonResponse(response)
@@ -76,7 +76,8 @@ def user_rank(request):
 @isLoggedIn
 def recent_submissions(request):
     loginUser=request.session['user']
-    recent_submissions=(Submissions.objects.order_by('sub_time')).filter(user_id=loginUser)[:5]
+    usr=hiuser.objects.get(user_id=loginUser)
+    recent_submissions=(Submission.objects.order_by('sub_time')).filter(user_id=usr)[:5]
     sub_list=[]
     for sub_obj in recent_submissions:
         sub={'pid':sub_obj.pid,'fid':sub_obj.fid,'lang':sub_obj.lang}
