@@ -8,14 +8,12 @@ from django.views.decorators.cache import cache_page
 from django.views.decorators.csrf import csrf_exempt
 from common.decorators import isLoggedIn, playCookies
 from .models import *
-from .consumers import user_count_channel_push
+from .consumers import user_count_channel_push, disconnectAll
 
 from urllib import request as rq
 import json
 
 # Create your views here.
-
-CLIENT_ID = "1085661962609-79u3us6bbkp6m9gponccdomgrlv7m9pv.apps.googleusercontent.com"
 
 
 # This function (and the associated html,js) is temporary,
@@ -52,8 +50,7 @@ def sign_in(request):
 	if created:
 		user_count_channel_push({'count': User.objects.all().count() })
 
-	if 'user' not in request.session:
-		request.session['user'] = obj.user_id
+	request.session['user'] = obj.user_id
 
 	request.session['logged_in'] = True
 
@@ -68,6 +65,7 @@ def getUserCount(request):
 
 @playCookies
 def signout(request):
+	disconnectAll(request.session['user'])
 	request.session.flush()
 	return JsonResponse({ 'success' : True })
 

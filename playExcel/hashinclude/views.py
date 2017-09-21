@@ -7,11 +7,19 @@ from common.models import User
 import datetime
 import json
 
-from .models import Submission
+from .models import Submission,problems
 from .models import hiuser
 from .forms import SubmissionForm
 from .tasks import run
+from common.consumers import userDataPush
 
+
+#send data to specific user by calling userDataPush. Eg: userDataPush( 
+#                                                                      {
+#                                                                           'hashinclude':  { 'submit_result' : "....." }
+#                                                                      }
+#                                                                     )
+#
 @playCookies
 @isLoggedIn
 def home(request):
@@ -20,23 +28,25 @@ def home(request):
     try:
         obj=hiuser.objects.get(user_id=usr.user_id)
     except hiuser.DoesNotExist:
-        obj=hiuser(user_id=usr.user_id,rank=(hiuser.objects.count()+1))
+        obj=hiuser(user_id=usr,rank=(hiuser.objects.count()+1))
         obj.save()
+    return JsonResponse({'result' : 'user added hashinclude_db'})
 
+@csrf_exempt
 @playCookies
 @isLoggedIn
-@csrf_exempt
 def submit(request):
         if request.method=='POST':
                 loginUser=request.session['user']    
-                usr=User.objects.get(user_id=loginUser)
+                usr=hiuser.objects.get(user_id=loginUser)
                 form=SubmissionForm(request.POST,request.FILES)
                 if form.is_valid():
-                        obj=Submission(user_id=usr.user_id,pid=request.POST['pid'],fid=request.FILES['cfile'],lang=request.POST['lang'])
+                        prob = problems.objects.get(pid=request.POST['pid'])
+                        obj=Submission(user_id=usr,pid=prob,fid=request.FILES['cfile'],lang=request.POST['lang'])
                         obj.save()
                         res=run.delay(str(obj.pid),obj.fid.name,obj.lang)
                         print(res)
-                        return JsonResponse({'result':'Success'})	
+                        return JsonResponse({'result':'Success'})   
                 else:
                         return JsonResponse({'result':'Failed'})
         else:

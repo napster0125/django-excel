@@ -1,10 +1,10 @@
 <html>
 	<head></head>
 	<body>
-		<form action="http://localhost:8000/submitanswer" enctype="multipart/form-data" method="post">
-			<input type="text" id="pid">
-			<input type="text" id="lang">
-			<input type="file" id="cfile">
+		<form action="/api/hashinclude/submitanswer" enctype="multipart/form-data" method="post">
+			<input type="text" name="pid">
+			<input type="text" name="lang">
+			<input type="file" name="cfile">
 			<input type="submit" name="submit">
 		</form>
 	</body>

@@ -1,7 +1,9 @@
 from django.core.serializers.json import DjangoJSONEncoder
 import json
 from channels import Group
-
+from channels.auth import http_session_user
+import redis
+redis_conn = redis.Redis("localhost", 6379)
 
 
 def conn_user_count_channel(message):
@@ -21,8 +23,6 @@ def user_count_channel_push(data):
 		{
 			'text': json.dumps(data,cls=DjangoJSONEncoder)
 		})
-
-
 
 def conn_kryptos_leader_channel(message):
 	Group('kryptos-leader-channel').add(message.reply_channel)
@@ -60,3 +60,40 @@ def echo_leader_channel_push(data):
 		{
 			'text': json.dumps(data,cls=DjangoJSONEncoder)
 		})
+
+
+
+
+
+@http_session_user
+def connect_to_user_channel(message):
+	try:
+		userid = message.http_session['user']
+		redis_conn.hset("online-users",
+			userid,
+			message.reply_channel.name)
+		print('New user listener added!')
+	except:
+		print("user not logged in, can't connect to user channel!")
+		pass
+
+
+@http_session_user
+def disconnect_from_user_channel(message):
+	try:
+		userid = message.http_session['user']
+		redis_conn.hdel("online-users",userid)
+	except:
+		pass
+
+
+def userDataPush(userid,data):
+	Channel( redis_conn.hget("online-users",userid) ).send(
+		{
+		'text' : json.dumps(sellData,cls=DjangoJSONEncoder)
+		}
+	)
+
+
+def disconnectAll(userid):
+	redis_conn.hdel("online-users",userid)

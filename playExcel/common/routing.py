@@ -3,21 +3,21 @@ from . import consumers
 channel_routing = [
 	route('websocket.connect',
     	consumers.conn_kryptos_leader_channel,
-    	path = r'^/kryptos'
+    	path = r'^/leaderboard/kryptos'
      	),
 	
 	route('websocket.disconnect',
 		consumers.disconn_kryptos_leader_channel,
-		path = r'^/kryptos',
+		path = r'^/leaderboard/kryptos',
      	),
 	route('websocket.connect',
     	consumers.conn_echo_leader_channel,
-    	path = r'^/echo'
+    	path = r'^/leaderboard/echo'
      	),
 	
 	route('websocket.disconnect',
 		consumers.disconn_echo_leader_channel,
-		path = r'^/echo',
+		path = r'^/leaderboard/echo',
      	),
 
 	route('websocket.connect',
@@ -28,5 +28,15 @@ channel_routing = [
 	route('websocket.disconnect',
 		consumers.disconn_user_count_channel,
 		path = r'^/getUserCount',
+     	),
+
+
+	route('websocket.connect',
+    	consumers.connect_to_user_channel,
+    	path = r'^/userChannel/'
+     	),
+	route('websocket.disconnect',
+		consumers.disconnect_from_user_channel,
+		path = r'^/userChannel/'
      	),
 	]
