@@ -14,10 +14,20 @@ from .tasks import run
 
 @playCookies
 @isLoggedIn
+def home(request):
+    loginUser=request.session['user']
+    try:
+        obj=hiuser.objects.get(user_id=loginUser)
+    except hiuser.DoesNotExist
+        obj=hiuser(user_id=loginUser,rank=(hiuser.objects.count()+1))
+        obj.save()
+
+@playCookies
+@isLoggedIn
 @csrf_exempt
 def submit(request):
         if request.method=='POST':
-                loginUser=request.session['User']    
+                loginUser=request.session['user']    
                 form=SubmissionForm(request.POST,request.FILES)
                 if form.is_valid():
                         obj=Submission(user_id=loginUser,pid=request.POST['pid'],fid=request.FILES['cfile'],lang=request.POST['lang'])
@@ -33,7 +43,7 @@ def submit(request):
 @playCookies
 @isLoggedIn
 def get_ranklist(request):
-    loginUser=request.session['User']
+    loginUser=request.session['user']
     leaderboard=hiuser.objects.order_by('rank')[:10]
     ranklist=[]
     for user_obj in leaderboard:
@@ -45,7 +55,7 @@ def get_ranklist(request):
 @playCookies
 @isLoggedIn
 def user_rank(request):
-    loginUser=request.session['User']
+    loginUser=request.session['user']
     rank=hiuser.objects.get(user_id=loginUser).rank
     response={'rank':rank}
     return JsonResponse(response)
@@ -53,7 +63,7 @@ def user_rank(request):
 @playCookies
 @isLoggedIn
 def recent_submissions(request):
-    loginUser=request.session['User']
+    loginUser=request.session['user']
     recent_submissions=(Submissions.objects.order_by('sub_time')).filter(user_id=loginUser)[:5]
     sub_list=[]
     for sub_obj in recent_submissions:

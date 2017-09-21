@@ -1,7 +1,7 @@
 from django.db import models
 from common.models import User
 
-import datetime
+import django.utils.timezone import now
 
 class problems(models.Model):
         pid=models.IntegerField(primary_key=True)
@@ -9,8 +9,8 @@ class problems(models.Model):
 
 class hiuser(models.Model):
         user_id=models.OneToOneField(User,primary_key=True,on_delete=models.CASCADE)
-        last_sub=models.DateTimeField()
-        points=models.IntegerField()
+        last_sub=models.DateTimeField(default=timezone.now)
+        total_points=models.IntegerField(default=0)
         rank=models.IntegerField()
         def __str__(self):
             return self.user_id.username
