@@ -34,26 +34,18 @@
 
 
 <body>
-	<h3>{{problem}}</h3>
+	<h3>{{question}}</h3>
 	<form action="" method="POST"  >
 		{% csrf_token %}
-		<input type="text" name="answer" id="answer">
-		<input type="submit" value="submit">
+		<textarea cols="40" rows="20" name="code">{{partCode}}</textarea>
+		<input type="submit" value="Execute" name="execute"/>
+		<input type="submit" value="Save" name="save"/>
 	</form>
-	<form action="" method="POST" >
+	<form action="" method="POST"  >
 		{% csrf_token %}
-<div id="editor">{{form.field}}</div>
-		<input type="submit" value="Execute">
+		<input type="text" name="term"/>
+		<input type="submit" value="Command" name="save"/>
 	</form>
-	<script src="https://cdnjs.cloudflare.com/ajax/libs/ace/1.2.8/ace.js" type="text/javascript" charset="utf-8"></script>
-	<script>
-		var editor = ace.edit("editor");
-		editor.setTheme("ace/theme/monokai");
-		editor.getSession().setMode("ace/mode/sh");
-		var result = editor.getValue();
-		editor.setValue("#Your Code Here");
-		function foo(document) {
-		document.getElementById('id_field').value = result;
-	}
-</script>
+
+	<strong>{{termOut}}</strong>
 </body>

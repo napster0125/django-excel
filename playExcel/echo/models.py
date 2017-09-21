@@ -20,7 +20,7 @@ class echolevel(models.Model) :
     # qnId = models.IntegerField(default = 1)
     qnDesc = models.TextField()
     testArg1 = models.CharField(default = '', max_length = 100)
-    testArg1 = models.CharField(default = '', max_length = 100)
+    testArg2 = models.CharField(default = '', max_length = 100)
     
     def __str__(self) :
         # return str(self.levelId) + '-' + str(self.qnId)

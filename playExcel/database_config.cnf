@@ -1,4 +1,4 @@
 [client]
-database = playExcel
-user = aasokan
-password = db_pass
+database = echo
+user = echo
+password = password

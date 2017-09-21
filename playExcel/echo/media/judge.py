@@ -1,4 +1,4 @@
-import os, filecmp, shutil, sys, subprocess
+import os, filecmp, shutil, sys, subprocess, re
 
 class judge :
 
@@ -21,7 +21,7 @@ class judge :
 
         self.workdir = os.path.join(self.appdir, self.playerId+'/')
 
-        self.homedir = os.path.join(os.getcwd(), 'skel/home/')
+        # self.homedir = os.path.join(os.getcwd(), 'skel/home/')
 
         # if not os.path.exists(self.homedir) :
         #     os.makedirs(self.homedir)
@@ -31,7 +31,7 @@ class judge :
 
         # subprocess.Popen(['cp', '-r' , self.homedir, self.workdir])
 
-        os.chdir(os.path.join(self.workdir, 'home/'))
+        os.chdir(self.workdir)
 
     def execute(self, level, code, arg1, arg2) :
 
@@ -42,39 +42,52 @@ class judge :
 
         '''
         tout = False
-        codefile = os.path.join(self.workdir, 'home/code.sh')
-        with open(self.workdir+"home/code.sh", "w") as file :
-            # print(code)
-            file.writelines(code)
+        # print(code)
+        # codearr = code.splitlines()
+        # print(codearr)
+        codefile = os.path.join(self.workdir, 'code.sh')
+        with open(self.workdir+"code.sh", "w") as file :
+            file.write(code)
+            # for line in codearr :
+            #     file.write(line)
 
-        out = subprocess.Popen(['chmod', '+x', self.workdir+'home/code.sh'])
+        out = subprocess.Popen(['chmod', '+x', self.workdir+'code.sh'])
    
-        with open(self.workdir+'home/output.txt', 'w') as output :
-            with open(self.workdir+'home/error.txt', 'w') as error :
+        with open(self.workdir+'output.txt', 'w') as output :
+            with open(self.workdir+'error.txt', 'w') as error :
                 # cmd = 
-                out = subprocess.Popen(['bash', codefile], stdout=output, stderr=error)
+                out = subprocess.Popen(['rbash', codefile, arg1], stdout=output, stderr=error)
                 try :
-                    out.communicate(timeout=120)
+                    out.communicate(timeout=5)
                 except subprocess.TimeoutExpired :
                     tout = True
             
                 if tout :
                     error.write('Script Execution Timed Out!')
+        t = ''
+        with open(self.workdir+'output.txt', 'r') as output :
+            t = output.read()
+        with open(self.workdir+'output.txt', 'w') as output :
+            output.write(re.sub(r'/media[/ 0-9 a-z A-Z]+/', r'', t))
 
+        with open(self.workdir+'error.txt', 'r') as error :
+            t = error.read()
+        with open(self.workdir+'error.txt', 'w') as error :
+            error.write(re.sub(r'/media[/ 0-9 a-z A-Z]+/', r'', t))
         state = False
         # levelId = str(level) + str(question)
-        testfile = os.path.join(os.path.join(self.cwd, 'testcases/'), '1test.txt')  
+        testfile = os.path.join(os.path.join(self.cwd, 'testcases/'), level+'1.txt')  
         if not tout :
             state = self.validate(self.playerId, testfile)
 
         if state :
             state = False
-            with open(self.workdir+'home/output.txt', 'w') as output :
-                with open(self.workdir+'home/error.txt', 'w') as error :
-                    out = subprocess.Popen(['rbash', self.workdir+'home/code.sh', arg2], stdout=output, stderr=error)
+            with open(self.workdir+'output.txt', 'w') as output :
+                with open(self.workdir+'error.txt', 'w') as error :
+                    out = subprocess.Popen(['rbash', self.workdir+'code.sh', arg2], stdout=output, stderr=error)
 
                     try :
-                        out.communicate(timeout=120)
+                        out.communicate(timeout=5)
                     except subprocess.TimeoutExpired :
                         tout = True
             
@@ -82,7 +95,7 @@ class judge :
                         error.write('Script Execution Timed Out!')
 
                 # levelId = str(level) + str(question)
-            testfile = os.path.join(os.path.join(self.cwd, 'testcases/'), '1test.txt')  
+            testfile = os.path.join(os.path.join(self.cwd, 'testcases/'), level+'2.txt')  
             if not tout :
                 state = self.validate(self.playerId, testfile)
         
@@ -93,7 +106,7 @@ class judge :
             Compare output with the testcases
 
         '''
-        valid = filecmp.cmp(self.workdir+'home/output.txt', testfile)
+        valid = filecmp.cmp(self.workdir+'output.txt', testfile)
         
         return valid
 
