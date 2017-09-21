@@ -10,6 +10,8 @@ from common.decorators import isLoggedIn, playCookies
 from .models import *
 from .consumers import user_count_channel_push, disconnectAll
 
+from hashinclude.models import hiuser
+from kryptos.models import kryptosuser
 from urllib import request as rq
 import json
 
@@ -86,7 +88,27 @@ def testCache(request):
 def testLoginCheck(request):
 	return JsonResponse({'message': 'this user is logged in'})
 
-'''
+
+# Function that returns rank of all events
+
+@playCookies
+@isLoggedIn
+
+def user_rank(request):
+    loginUser=request.session['user']
+    try:
+        kryptos_rank=kryptosuser.objects.get(user_id=loginUser).rank
+    except kryptosuser.DoesNotExist:
+        kryptos_rank="N/A"
+    try:
+        hi_rank=hiuser.objects.get(user_id=loginUser).rank
+    except hiuser.DoesNotExist:
+        hi_rank="N/A"
+    user_ranklist=[{'krytosrank':kryptos_rank},{'hirank':hi_rank},{'echorank':'N/A'},{'dbrank':'N/A'},{'convrank':'N/A'}]
+    response={'userRankList':user_ranklist}
+    return JsonResponse(response)
+
+"""
 @csrf_exempt
 def signin(request):
 	# Get token from the js client in frontend 
@@ -117,4 +139,4 @@ def test(request,req_no):
 			x = y + 1
 		print('Processing req %s'%req_no)
 	return HttpResponse('Received req %s'%req_no)
-'''
+"""

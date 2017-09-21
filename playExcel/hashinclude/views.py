@@ -84,3 +84,13 @@ def recent_submissions(request):
         sub_list.append(sub)
     response={'sublist':sub_list}
     return JsonResponse(response)
+
+def total_submissions(request):
+    prob_lst=problems.objects.all()
+    tot_sub=[]
+    for prob in prob_lst:
+        sub={}
+        sub[prob.pid]=Submission.objects.filter(pid=prob.pid).count()
+        tot_sub.append(sub)
+    response={'totalSubmissions':tot_sub}
+    return JsonResponse(response)
