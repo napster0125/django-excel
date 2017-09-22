@@ -39,4 +39,14 @@ channel_routing = [
 		consumers.disconnect_from_user_channel,
 		path = r'^/userChannel/'
      	),
+
+	route('websocket.connect',
+    	consumers.conn_hashinclude_channel,
+    	path = r'^/hashinclude/submissions'
+     	),
+	route('websocket.disconnect',
+		consumers.disconn_hashinclude_channel,
+		path = r'^/hashinclude/submissions'
+     	),
+
 	]

@@ -11,12 +11,12 @@ from .models import Submission,problems
 from .models import hiuser
 from .forms import SubmissionForm
 from .tasks import run
-from common.consumers import userDataPush
+from common.consumers import hashinclude_channel_push
 
 
-#send data to specific user by calling userDataPush. Eg: userDataPush( 
+#send data to specific user by calling userDataPush. Eg: hashinclude_channel_push( 
 #                                                                      {
-#                                                                           'hashinclude':  { 'submit_result' : "....." }
+#                                                                           'tid':  { 'submit_result' : "....." }
 #                                                                      }
 #                                                                     )
 #
