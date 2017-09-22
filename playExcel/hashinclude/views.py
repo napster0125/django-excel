@@ -32,7 +32,6 @@ def home(request):
         obj.save()
     return JsonResponse({'result' : 'user added hashinclude_db'})
 
-@csrf_exempt
 @playCookies
 @isLoggedIn
 def submit(request):
@@ -45,10 +44,9 @@ def submit(request):
                         obj=Submission(user_id=usr,pid=prob,fid=request.FILES['cfile'],lang=request.POST['lang'])
                         obj.save()
                         res=run.delay(str(obj.pid),obj.fid.name,obj.lang)
-                        print(res.task_id)
-                        return JsonResponse({'result':'Success'})   
+                        return JsonResponse({'taskid':res.task_id})   
                 else:
-                        return JsonResponse({'result':'Failed'})
+                        return JsonResponse({'result':'Error'})
         else:
             return render(request,'upload.html')
 
@@ -85,6 +83,8 @@ def recent_submissions(request):
     response={'sublist':sub_list}
     return JsonResponse(response)
 
+@playCookies
+@isLoggedIn
 def total_submissions(request):
     prob_lst=problems.objects.all()
     tot_sub=[]
