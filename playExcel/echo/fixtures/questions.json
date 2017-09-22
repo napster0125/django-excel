@@ -1,0 +1,203 @@
+[
+    {
+        "model": "echo.echolevel", 
+        "fields": 
+    {
+        "levelId": 1, 
+        "qnDesc": "Today, Your Firm was attacked and vital informations may be retrieved from the system. Your job is to restore the state of all the systems in the firm and if possible traceback the attack.\nFirst order of business, you have to normalize the date of the current system to the format dd/mm/yyyy hh:MM p\nCurrent Date & Time will be provided as a command line argument.\nINPUT : \n2017-09-12 03:39:59 \n\nOUTPUT : \n12/09/2017 03:39:59 AM",
+        "testArg1": "2017-09-12 03:39:59",
+        "testArg2": "2011-03-11 23:11:58"
+        }
+    }, 
+    {
+        "model": "echo.echolevel", 
+        "fields": 
+        {
+            "levelId": 2, 
+            "qnDesc": "Oh Wait!, We have changed the date and time in the system, but we can't revert it back to the previous state because the time zone is off, adjust the time to IST. Like before, date and time will be given as command line argument.\nINPUT : \n2017-09-12T03:39:59+00:00 \nOUTPUT : \n12/09/2017 09:09:59 AM IST", 
+            "testArg1": "2017-09-12T03:39:59+00:00",
+            "testArg2": "2011-03-11T23:11:58-05:30"
+        }
+    }, 
+    {
+        "model": "echo.echolevel", 
+        "fields": 
+        {
+            "levelId": 3, 
+            "qnDesc": "There is a potentially dangerous file 'empRecord.c' present in our system, Unfortunately it is a readonly file. Hence, your job is to read the file and display the content without lines with certain keywords.\nThe keyword to be ignored will be provided as command line argument.", 
+            "testArg1": "free",
+            "testArg2": "printf"
+        }
+    }, 
+    {
+        "model": "echo.echolevel", 
+        "fields": 
+        {
+            "levelId": 4,  
+            "qnDesc": "'userlist.txt' contains all the users present in the system.You have noticed that there is a new User 'anon' in the list. Now that we have modified the C program, we can compute th password from it.\nHash the C file to obtain the password of the New User.\nThe password is of 32 characters length.\nUse that password to delete the user 'anon' and display changes to stdout.\nUsername will be provided as command line argument.", 
+            "testArg1": "anon",
+            "testArg2": "Test"
+        }
+    }, 
+    {
+        "model": "echo.echolevel", 
+        "fields": 
+        {
+            "levelId": 5, 
+            "qnDesc": "Even though we have successfully deleted the user 'anon', there can be other unauthorized users present in the system.\r\nYour job is to find all users having UID greater than a particular integer (say, 1000) from userlist.txt.\r\nUID will be provided as command line argument.", 
+            "testArg1": "1000",
+            "testArg2": "1500"
+        }
+    }, 
+    {
+        "model": "echo.echolevel", 
+        "fields": 
+        {
+            "levelId": 6, 
+            "qnDesc": "Find the login details of all the unauthorized users from which we can deduce the actual attack time.\nThis information might be vital in the future.\nUsernames will be provided as command line arguments(comma separated).", 
+            "testArg1": "test",
+            "testArg2": "test,jail"
+        }
+    },
+    {
+        "model": "echo.echolevel",
+        "fields":
+        {
+            "levelId": 7,
+            "qnDesc": "There are some files present in our current directory, check the attributes of all those files.\nIf any of those are executable, display those files.\nBe very careful with those files!",
+            "testArg1": "",
+            "testArg2": ""    
+        }
+        
+    },
+    {
+        "model": "echo.echolevel",
+        "fields":
+        {
+            "levelId": 8,
+            "qnDesc": "If any of the files in the current directory is having modification time between the time of the attack, those files might be affected.\nDisplay those files to stdout.\nTime of Attack : 09:30 PM - 11:00 PM 25/09/2017",
+            "testArg1": "",
+            "testArg2": ""
+        }
+    },
+    {
+        "model": "echo.echolevel",
+        "fields":
+        {
+            "levelId": 9,
+            "qnDesc": "Checkout the file encrypt.txt. This file was encrypted using Rail Fence cipher with 2 rails. Decrypt the file and store in decrypt.txt.\nFilename will be provided as command line argument.",
+            "testArg1": "encrypt.txt",
+            "testArg2": ".encrypt_test.txt" 
+        }
+    },
+    {
+        "model": "echo.echolevel",
+        "fields":
+        {
+            "levelId": 10,
+            "qnDesc": "Now that we have decrypt.txt which contains filenames and its hash values, compare these hash values with the SHA1 values of all files in 'quarantine.txt'.\nIf the values are same, display those files.",
+            "testArg1": "",
+            "testArg2": ""
+        }
+    },
+    {
+        "model": "echo.echolevel",
+        "fields":
+        {
+            "levelId": 11,
+            "qnDesc": "'nameserver.txt' contains list of IPv4 addresses.But some of those address are not in valid format. Remove those ones and display the output.\nFilename will be given as command line argument.\nValid IPv4 format : XXX.XXX.XXX.XXX \n Where XXX can have any value from 0-255.",
+            "testArg1": "nameserver.txt",
+            "testArg2": ".nameserver_test.txt"
+        }
+    },
+    {
+        "model": "echo.echolevel",
+        "fields":
+        {
+            "levelId": 12,
+            "qnDesc": "Alright, We now have a list of IP addresses and now its time to check which all are alive.\n Save the alive IPs to 'nameserver_alive.txt'.\n File to be used will be given as command line argument. ",
+            "testArg1": "nameserver.txt",
+            "testArg2": ".nameserver_test.txt"
+        }
+    },
+    {
+        "model": "echo.echolevel",
+        "fields":
+        {
+            "levelId": 13,
+            "qnDesc": "'ports.txt' contains list of all commonly used ports in communication.\n'connections.txt' contains all the connections to the system.\nYour job is to display all connections through other ports.\nPorts list and connections list will be provided as command line arguments.",
+            "testArg1": "ports.txt connections.txt",
+            "testArg2": "ports.txt .connections_test.txt"
+        }
+    },
+    {
+        "model": "echo.echolevel",
+        "fields":
+        {
+            "levelId": 14,
+            "qnDesc": "We have discovered a URL which could lead us to the attacker.\nEmbedded in the webpage associated with the URL, there are several hyperlinks, copy all those links and display it in stdout.\nThe URL will be given as command line argument.",
+            "testArg1": "https://en.wikipedia.org/wiki/Legion_(software)",
+            "testArg2": "https://en.wikipedia.org/wiki/Nmap"
+        }
+    },
+    {
+        "model": "echo.echolevel",
+        "fields":
+        {
+            "levelId": 15,
+            "qnDesc": "Use Netwrok Mapper to determine operating system of a used by a machine associated to a particular IP.\nDisplay result of each IP to stdout.\nFile containing the list of IPs will be given as command line argument.",
+            "testArg1": "system.txt",
+            "testArg2": ".system_test.txt"
+        }
+    },
+    {
+        "model": "echo.echolevel",
+        "fields":
+        {
+            "levelId": 16,
+            "qnDesc": "We now have the probability of operating systems for each system in the network.\nIf the second largest probability is greater than 70%, find the IP address having the largest difference between firswt and second choices of operating systems.\nDisplay result to stdout.\nFile containing the details will be given as command line argument.\nEg :\n IP 1\n OS 1 : x%\n OS 2 : y% \n IP 2\n OS 2 : a%\n OS 1 : b%\n OS 3 : y%",
+            "testArg1": "prob.txt",
+            "testArg2": ".prob_test.txt"
+        }
+    },
+    {
+        "model": "echo.echolevel",
+        "fields":
+        {
+            "levelId": 17,
+            "qnDesc": "We got a partial C++ file from our system. But some of the brackets are missing, hence we can't do anything with it.\nYour job is to add the missing brackets to the file.\nC++ file will be given as command line argument.",
+            "testArg1": "brac.txt",
+            "testArg2": ".brac_test.txt"
+        }
+    },
+    {
+        "model": "echo.echolevel",
+        "fields":
+        {
+            "levelId": 18,
+            "qnDesc": "Our machine has a log file which records all the services running in the system. We need to find 10 services that takes more aggregate time.\nOrder these services in decreasing order of aggregate time.\nLog file will be given as command line argument.\nSAMPLE : \n [32071.877914] eth0: renamed from vethe54a15b\n OUTPUT : \n service : time \n Time will be in seconds.",
+            "testArg1": "syslog.txt",
+            "testArg2": ".syslog_test.txt"
+        }
+    },
+    {
+        "model": "echo.echolevel",
+        "fields":
+        {
+            "levelId": 19,
+            "qnDesc": "We need to create backup to prevent further loss of data.\nYour job is to create a script that accepts a directory as argument and then create a tar file from it using gzip compression.\nDisplay the hash value of tar file to stdout.",
+            "testArg1": "backup",
+            "testArg2": ".backup_test"
+        }
+    },
+    {
+        "model": "echo.echolevel",
+        "fields":
+        {
+            "levelId": 20,
+            "qnDesc": "We successfully embedded a malware in an srt file 'english.srt'. To deploy the malware we have to combine subtitle with a video file 'movie.mkv' and create 10 copies of that video with names from 'movie01.mkv' to 'movie10.mkv'.\nVideo file and subtitle file will be given as command line arguments.",
+            "testArg1": "movie.mkv english.mkv",
+            "testArg2": ".movie_test.mkv .english_test.mkv"
+        }
+    }
+]

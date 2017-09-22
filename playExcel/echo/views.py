@@ -11,7 +11,7 @@ from common.utility import pushChangesEchoLeaderboard
 from .models import echoplayer,echolevel
 
 import json
-import subprocess, os
+import subprocess, os, re
 from threading import Timer
 # Create your views here.
 
@@ -26,14 +26,14 @@ def echoHome(request) :
     playerObj, created = echoplayer.objects.get_or_create(playerId = usrObj.user_id.split('|')[1],
     defaults={'playerLevel' : 1, 'partCode' : ''},
     ) 
-    if not os.path.exists(os.path.join(os.getcwd(), 'echo/skel/home/')) :
-        os.makedirs(os.path.join(os.getcwd(), 'echo/skel/home/'))
+    # if not os.path.exists(os.path.join(os.getcwd(), 'echo/skel/home/')) :
+    #     os.makedirs(os.path.join(os.getcwd(), 'echo/skel/home/'))
 
-    if not os.path.exists(os.path.join(os.getcwd(), 'echo/players/'+playerObj.playerId+'/home/')) :
-        os.makedirs(os.path.join(os.getcwd(), 'echo/players/'+playerObj.playerId+'/home/'))
+    if not os.path.exists(os.path.join(os.getcwd(), 'echo/media/players/'+playerObj.playerId+'/')) :
+        os.makedirs(os.path.join(os.getcwd(), 'echo/media/players/'+playerObj.playerId+'/'))
 
-    subprocess.Popen(['cp', '-r' , os.path.join(os.getcwd(), 'echo/skel/home/'), os.path.join(os.getcwd(), 'echo/players/'+playerObj.playerId+'/home/')])
-    
+        subprocess.Popen(['cp', '-r' , os.path.join(os.getcwd(), 'echo/skel/home/'), os.path.join(os.getcwd(), 'echo/media/players/'+playerObj.playerId+'/')])
+    # subprocess.Popen(['cp', '-r', os.path.join(os.getcwd(), 'echo/skel/level'+str(playerObj.playerLevel)+'/'), os.path.join(os.getcwd(), 'echo/media/players/'+playerObj.playerId+'/home/')])
     termStatus = False
     # if created == True :
     #     subprocess.Popen('mkdir ./echo/players/'+playerObj.playerId, shell=True, stdout=subprocess.PIPE)
@@ -51,13 +51,20 @@ def echoHome(request) :
         if 'term' in request.POST :
             termStatus = True
             termIn = request.POST.get('term')
+            trm = ''
             with open('/tmp/'+playerObj.playerId+'.txt', 'w') as temp :
-                t = subprocess.Popen([os.path.join(os.getcwd(),'echo/dockerscript.sh'), str(termStatus), termIn], stdout=temp, stderr=temp)
+                t = subprocess.Popen([os.path.join(os.getcwd(),'echo/dockerscript.sh'), str(termStatus), playerObj.playerId, str(playerObj.playerLevel), termIn], stdout=temp, stderr=temp)
             # with open('/tmp/'+playerObj.playerId+'.txt', 'r') as tmp :
                 try :
-                    t.communicate(timeout=10)
+                    t.communicate(timeout=5)
                 except subprocess.TimeoutExpired :
                     print("Timed Out!")
+            trm = ''
+            with open('/tmp/'+playerObj.playerId+'.txt', 'r') as temp :
+                trm = temp.read()
+            with open('/tmp/'+playerObj.playerId+'.txt', 'w') as temp :
+                temp.write(re.sub(r'/media[/ 0-9 a-z A-Z]+/', r'', trm))
+            
             with open('/tmp/'+playerObj.playerId+'.txt', 'r') as temp :
                 termOut = '\n'.join(str(line) for line in temp)
                 
@@ -73,6 +80,7 @@ def echoHome(request) :
         elif 'execute' in request.POST :
             playerObj.partCode = request.POST.get('code').replace('\r', '')
             playerObj.save()
+
             termStatus = False
 
             #Script Execution
@@ -109,9 +117,11 @@ def echoHome(request) :
                     t.communicate(timeout=1200)
                 except subprocess.TimeoutExpired :
                     print("Timed Out!")
+            st = ''
             with open('/tmp/'+playerObj.playerId+'status.txt', 'r') as stat :        
-                status = stat.read()
-            print(status)
+                st = stat.read()
+            if st.strip() == 'True' :
+                status = True
             
             if status == True :
                 # if playerObj.playerQn == 5 :
@@ -121,8 +131,8 @@ def echoHome(request) :
                 #     playerObj.playerQn = playerObj.playerQn + 1
                 playerObj.partCode = ''
                 playerObj.save()
-
-                with open('echo/player/'+playerObj.playerId+'/home/output.txt', 'r') as output :
+                                
+                with open('echo/media/players/'+playerObj.playerId+'/output.txt', 'r') as output :
                     termOut = output.read()
                 # toptenplayers = echoplayer.objects.order_by('-playerLevel', '-playerQn', 'ansTime')
                 toptenplayers = echoplayer.objects.order_by('-playerLevel', '-playerQn', 'ansTime')
@@ -132,9 +142,10 @@ def echoHome(request) :
                 pushChangesEchoLeaderboard(topten)
 
             else :
-                with open('echo/players/'+playerObj.playerId+'/home/output.txt', 'r') as out :
+                
+                with open('echo/media/players/'+playerObj.playerId+'/output.txt', 'r') as out :
                     termOut = out.read()
-                with open('echo/players/'+playerObj.playerId+'/home/error.txt', 'r') as error :
+                with open('echo/media/players/'+playerObj.playerId+'/error.txt', 'r') as error :
                     termOut += error.read()
 
     # response = {'level' : playerObj.playerLevel, 'qno' : playerObj.playerQn, 'question' : levelObj.qnDesc, 'termOut' : termOut, 'status' : status}
