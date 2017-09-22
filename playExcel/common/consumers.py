@@ -95,5 +95,34 @@ def userDataPush(userid,data):
 	)
 
 
+
+
+
+
+def conn_hashinclude_channel(message):
+	Group('hashinclude-channel').add(message.reply_channel)
+	message.reply_channel.send({
+		'text' : json.dumps({"accept": True}) #{ "close" : True }
+		})
+	return 
+
+
+def disconn_hashinclude_channel(message):
+	Group('hashinclude-channel').discard(message.reply_channel)
+
+
+def hashinclude_channel_push(data):
+	Group('hashinclude-channel').send( 
+		{
+			'text': json.dumps(data,cls=DjangoJSONEncoder)
+		})
+
+
+
+
+
+
 def disconnectAll(userid):
 	redis_conn.hdel("online-users",userid)
+
+
