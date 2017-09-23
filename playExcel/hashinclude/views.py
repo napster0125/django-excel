@@ -14,7 +14,7 @@ from .tasks import run
 from common.consumers import hashinclude_channel_push
 
 
-#send data to specific user by calling userDataPush. Eg: hashinclude_channel_push( 
+#send data to specific user by calling userDataPush. Eg: hashinclude_channel_push(
 #                                                                      {
 #                                                                           'tid':  { 'submit_result' : "....." }
 #                                                                      }
@@ -36,7 +36,7 @@ def home(request):
 @isLoggedIn
 def submit(request):
         if request.method=='POST':
-                loginUser=request.session['user']    
+                loginUser=request.session['user']
                 usr=hiuser.objects.get(user_id=loginUser)
                 form=SubmissionForm(request.POST,request.FILES)
                 if form.is_valid():
@@ -44,7 +44,7 @@ def submit(request):
                         obj=Submission(user_id=usr,pid=prob,fid=request.FILES['cfile'],lang=request.POST['lang'])
                         obj.save()
                         res=run.delay(str(obj.pid),obj.fid.name,obj.lang)
-                        return JsonResponse({'taskid':res.task_id})   
+                        return JsonResponse({'taskid':res.task_id})
                 else:
                         return JsonResponse({'result':'Error'})
         else:
@@ -87,10 +87,10 @@ def recent_submissions(request):
 @isLoggedIn
 def total_submissions(request):
     prob_lst=problems.objects.all()
-    tot_sub=[]
+    tot_sub={}
     for prob in prob_lst:
         sub={}
-        sub[prob.pid]=Submission.objects.filter(pid=prob.pid).count()
-        tot_sub.append(sub)
+        tot_sub[prob.pid]=Submission.objects.filter(pid=prob.pid).count()
+        # tot_sub.append(sub)
     response={'totalSubmissions':tot_sub}
     return JsonResponse(response)
