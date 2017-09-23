@@ -102,3 +102,4 @@ def sub_view(request):
         sub={'name':sub_obj.user_id.user_id.username,'pid':sub_obj.pid_id,'fid':sub_obj.fid.name,'lang':sub_obj.lang,'verdict':result}
         sub_list.append(sub)
     response={'sub_view ' : sub_list}
+    return JsonResponse(response)
