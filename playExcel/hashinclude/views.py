@@ -15,12 +15,6 @@ from .tasks import run
 from common.consumers import hashinclude_channel_push
 
 
-#send data to specific user by calling userDataPush. Eg: hashinclude_channel_push(
-#                                                                      {
-#                                                                           'tid':  { 'submit_result' : "....." }
-#                                                                      }
-#                                                                     )
-#
 @playCookies
 @isLoggedIn
 def home(request):
@@ -82,7 +76,8 @@ def recent_submissions(request):
     recent_submissions=(Submission.objects.order_by('sub_time')).filter(user_id=usr)[:5]
     sub_list=[]
     for sub_obj in recent_submissions:
-        sub={'pid':sub_obj.pid,'fid':sub_obj.fid,'lang':sub_obj.lang}
+        result=submissionTask.objects.get(tid=sub_obj.tid).results
+        sub={'pid':sub_obj.pid_id,'fid':sub_obj.fid.name,'lang':sub_obj.lang,'verdict':result}
         sub_list.append(sub)
     response={'sublist':sub_list}
     return JsonResponse(response)
@@ -97,3 +92,10 @@ def total_submissions(request):
         tot_sub[prob.pid]=Submission.objects.filter(pid=prob.pid).count()
     response={'totalSubmissions':tot_sub}
     return JsonResponse(response)
+
+@playCookies
+@isLoggedIn
+def sub_view(request):
+    p=submissionTask.objects.all()
+    for i in p:
+        

@@ -5,7 +5,7 @@ import subprocess,shlex
 
 from common.consumers import hashinclude_channel_push
 
-from .models import problems,hiuser,Submission
+from .models import problems,hiuser,Submission,submissionTask
 
 # To test celery without running django-runserver
 
@@ -26,11 +26,14 @@ def run(pid,fid,lang,loginUser):
         res=p.communicate()
         p.kill() 
         primes=[2,3,5,7,11,13,17]
+        obj=submissionTask(user_id=usr,tid=usr.taskId)
         if res[0].decode('utf8')=='AC':
             p=problems.object.get(pid=pid)
-            hashinclude_channel_push({'result':'AC'},{'score':p.points})
+            obj.result="AC"
+            hashinclude_channel_push({'result':obj.result},{'score':p.points})
             if usr.tries%primes[pid-1] == 0:
                 usr.points+=p.points 
         else:
             hashinclude_channel_push({'result':res[0].decode('utf8')},{'score':0})
-        return res[0].decode('utf8')  
+            obj.result=res[0].decode('utf8')
+        return obj.result

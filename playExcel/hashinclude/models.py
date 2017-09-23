@@ -22,8 +22,8 @@ class Submission(models.Model):
         lang=models.CharField(max_length=9)
         sub_time=models.DateTimeField(auto_now_add=True,blank=True)
         tid=models.CharField(null=True,max_length=255)
-        results=models.CharField(default="Pending",max_length=255)
 
 class submissionTask(models.Model):
         user_id=models.ForeignKey(hiuser,on_delete=models.CASCADE)
         tid=models.CharField(primary_key=True,max_length=255)        
+        results=models.CharField(default="Pending",max_length=255)
