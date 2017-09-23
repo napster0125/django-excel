@@ -44,7 +44,7 @@ def submit(request):
                         prob = problems.objects.get(pid=request.POST['pid'])
                         obj=Submission(user_id=usr,pid=prob,fid=request.FILES['file'],lang=request.POST['lang'])
                         obj.save()
-                        res=run.delay(str(obj.pid),obj.fid.name,obj.lang,usr)
+                        res=run.delay(str(obj.pid),obj.fid.name,obj.lang,loginUser)
                         obj.taskId=res.task_id
                         obj.save()
                         taskobj=submissionTask(user_id=usr,tid=res.task_id)

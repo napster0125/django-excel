@@ -5,7 +5,7 @@ import subprocess,shlex
 
 from common.consumers import hashinclude_channel_push
 
-from .models import problems,hiuser
+from .models import problems,hiuser,Submission
 
 # To test celery without running django-runserver
 
@@ -18,7 +18,8 @@ django.setup()
 '''
 
 @shared_task
-def run(pid,fid,lang,usr):
+def run(pid,fid,lang,loginUser):
+        usr = hiuser.objects.get(user_id_id=loginUser)
         sq=" "
         cmd="bash hashinclude/dockerrun.sh "+str(pid)+sq+fid+sq+lang
         p=subprocess.Popen(shlex.split(cmd),stdout=subprocess.PIPE,stderr=subprocess.PIPE)
