@@ -45,8 +45,6 @@ def submit(request):
                         return JsonResponse({'taskid':res.task_id})
                 else:
                         return JsonResponse({'result':'Error'})
-        else:
-            return render(request,'upload.html')
 
 @playCookies
 @isLoggedIn
@@ -96,6 +94,10 @@ def total_submissions(request):
 @playCookies
 @isLoggedIn
 def sub_view(request):
-    p=submissionTask.objects.all()
-    for i in p:
-        
+    p=Submission.objects.order_by('sub_time')[:20]
+    sub_list=[]
+    for sub_obj in p:
+        result=submissionTask.objects.get(tid=sub_obj.tid).results
+        sub={'name':sub_obj.user_id.user_id.username,'pid':sub_obj.pid_id,'fid':sub_obj.fid.name,'lang':sub_obj.lang,'verdict':result}
+        sub_list.append(sub)
+    response={'sub_view ' : sub_list}
