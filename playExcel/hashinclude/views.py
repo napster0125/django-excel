@@ -9,6 +9,7 @@ import json
 
 from .models import Submission,problems
 from .models import hiuser
+from .models import submissionTask
 from .forms import SubmissionForm
 from .tasks import run
 from common.consumers import hashinclude_channel_push
@@ -43,10 +44,11 @@ def submit(request):
                         prob = problems.objects.get(pid=request.POST['pid'])
                         obj=Submission(user_id=usr,pid=prob,fid=request.FILES['cfile'],lang=request.POST['lang'])
                         obj.save()
-                        res=run.delay(str(obj.pid),obj.fid.name,obj.lang)
-                        sList=[{'taskId':res.task_id,'user_id':usr,'prob':pid,'lang':lang,'result':'pending'}]
-                        response={'resp':sList}
-                        return JsonResponse(response)   
+                        res=run.delay(str(obj.pid),obj.fid.name,obj.lang,usr)
+                        obj.taskId=res.task_id
+                        obj.save()
+                        taskobj=submissionTask(user_id=usr,tid=res.task_id)
+                        return JsonResponse({'taskId':res.task_id})   
                 else:
                         return JsonResponse({'result':'Error'})
         else:
