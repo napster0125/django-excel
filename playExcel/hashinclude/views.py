@@ -42,6 +42,7 @@ def submit(request):
                         obj.taskId=res.task_id
                         obj.save()
                         taskobj=submissionTask(user_id=usr,tid=res.task_id)
+                        taskobj.save()
                         return JsonResponse({'taskid':res.task_id})
                 else:
                         return JsonResponse({'result':'Error'})
