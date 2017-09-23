@@ -42,7 +42,7 @@ def submit(request):
                 form=SubmissionForm(request.POST,request.FILES)
                 if form.is_valid():
                         prob = problems.objects.get(pid=request.POST['pid'])
-                        obj=Submission(user_id=usr,pid=prob,fid=request.FILES['cfile'],lang=request.POST['lang'])
+                        obj=Submission(user_id=usr,pid=prob,fid=request.FILES['file'],lang=request.POST['lang'])
                         obj.save()
                         res=run.delay(str(obj.pid),obj.fid.name,obj.lang,usr)
                         obj.taskId=res.task_id
@@ -95,8 +95,5 @@ def total_submissions(request):
     for prob in prob_lst:
         sub={}
         tot_sub[prob.pid]=Submission.objects.filter(pid=prob.pid).count()
-        # tot_sub.append(sub)
     response={'totalSubmissions':tot_sub}
     return JsonResponse(response)
-
-
