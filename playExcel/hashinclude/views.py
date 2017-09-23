@@ -99,7 +99,7 @@ def sub_view(request):
     sub_list=[]
     for sub_obj in p:
         result=submissionTask.objects.get(tid=sub_obj.tid).results
-        sub={'name':sub_obj.user_id.user_id.username,'pid':sub_obj.pid_id,'fid':sub_obj.fid.name,'lang':sub_obj.lang,'verdict':result}
+        sub={'name':sub_obj.user_id.user_id.username,'pid':sub_obj.pid_id,'fid':sub_obj.fid.name,'lang':sub_obj.lang,'verdict':result,'time':sub_obj.sub_time}
         sub_list.append(sub)
     response={'sub_view ' : sub_list}
     return JsonResponse(response)
