@@ -44,15 +44,11 @@ def submit(request):
                         prob = problems.objects.get(pid=request.POST['pid'])
                         obj=Submission(user_id=usr,pid=prob,fid=request.FILES['cfile'],lang=request.POST['lang'])
                         obj.save()
-<<<<<<< HEAD
                         res=run.delay(str(obj.pid),obj.fid.name,obj.lang,usr)
                         obj.taskId=res.task_id
                         obj.save()
                         taskobj=submissionTask(user_id=usr,tid=res.task_id)
-=======
-                        res=run.delay(str(obj.pid),obj.fid.name,obj.lang)
                         return JsonResponse({'taskid':res.task_id})
->>>>>>> d8b2b8886dc99863287352c46e1a04a959f05afc
                 else:
                         return JsonResponse({'result':'Error'})
         else:
@@ -102,3 +98,5 @@ def total_submissions(request):
         # tot_sub.append(sub)
     response={'totalSubmissions':tot_sub}
     return JsonResponse(response)
+
+

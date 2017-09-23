@@ -30,7 +30,6 @@ def run(pid,fid,lang,usr):
             hashinclude_channel_push({'result':'AC'},{'score':p.points})
             if usr.tries%primes[pid-1] == 0:
                 usr.points+=p.points 
-            
         else:
             hashinclude_channel_push({'result':res[0].decode('utf8')},{'score':0})
         return res[0].decode('utf8')  
