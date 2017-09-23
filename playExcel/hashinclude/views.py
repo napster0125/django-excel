@@ -44,7 +44,9 @@ def submit(request):
                         obj=Submission(user_id=usr,pid=prob,fid=request.FILES['cfile'],lang=request.POST['lang'])
                         obj.save()
                         res=run.delay(str(obj.pid),obj.fid.name,obj.lang)
-                        return JsonResponse({'taskid':res.task_id})   
+                        sList=[{'taskId':res.task_id,'user_id':usr,'prob':pid,'lang':lang,'result':'pending'}]
+                        response={'resp':sList}
+                        return JsonResponse(response)   
                 else:
                         return JsonResponse({'result':'Error'})
         else:
