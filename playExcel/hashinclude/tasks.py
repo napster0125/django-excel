@@ -25,11 +25,11 @@ def run(pid,fid,lang,loginUser):
         res=p.communicate()
         p.kill() 
         primes=[2,3,5,7,11,13,17]
-        obj=submissionTask(user_id=usr,tid=usr.tid)
+        obj=submissionTask(user_id=usr,tid=run.request.id)
         if res[0].decode('utf8')=='AC':
             p=problems.object.get(pid=pid)
             obj.result="AC"
-            hashinclude_channel_push({'result':obj.result},{'score':p.points})
+            hashinclude_channel_push({'result':obj.result})
             if usr.tries%primes[pid-1] == 0:
                 usr.total_points+=p.points 
                 usr.tries=usr.tries/primes[pid-1]
@@ -42,6 +42,6 @@ def run(pid,fid,lang,loginUser):
                     i.rank+=1
                 usr.rank=newrank
         else:
-            hashinclude_channel_push({'result':res[0].decode('utf8')},{'score':0})
+            hashinclude_channel_push({'result':res[0].decode('utf8')})
             obj.result=res[0].decode('utf8')
         return obj.result
