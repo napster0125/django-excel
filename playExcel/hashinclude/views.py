@@ -65,7 +65,8 @@ def get_ranklist(request):
 def user_rank(request):
     loginUser=request.session['user']
     rank=hiuser.objects.get(user_id=loginUser).rank
-    response={'rank':rank}
+    points=hiuser.objects.get(user_id=loginUser).total_points
+    response={'rank':rank,'points':points}
     return JsonResponse(response)
 
 @playCookies
