@@ -99,9 +99,12 @@ def sub_view(request):
     p=Submission.objects.order_by('-sub_time')[:20]
     sub_list=[]
     for sub_obj in p:
-        result=submissionTask.objects.get(tid=sub_obj.tid).results
-        sub={'picture':sub_obj.user_id.user_id.profile_picture,'name':sub_obj.user_id.user_id.username,'pid':sub_obj.pid_id,'fid':sub_obj.fid.name,'lang':sub_obj.lang,'verdict':result,'time':sub_obj.sub_time}
-        sub_list.append(sub)
+        try:
+                result=submissionTask.objects.get(tid=sub_obj.tid).results
+                sub={'picture':sub_obj.user_id.user_id.profile_picture,'name':sub_obj.user_id.user_id.username,'pid':sub_obj.pid_id,'fid':sub_obj.fid.name,'lang':sub_obj.lang,'verdict':result,'time':sub_obj.sub_time}
+                sub_list.append(sub)
+        except submissionTask.DoesNotExist:
+                pass
     response={'sub_view ' : sub_list}
     return JsonResponse(response)
 
@@ -113,10 +116,11 @@ def user_submissions(request):
     recent_submissions=(Submission.objects.order_by('-sub_time')).filter(user_id=usr)
     sub_list=[]
     for sub_obj in recent_submissions:
-        result=submissionTask.objects.get(tid=sub_obj.tid).results
-        sub={'pid':sub_obj.pid_id,'fid':sub_obj.fid.name,'lang':sub_obj.lang,'verdict':result}
-        sub_list.append(sub)
+        try:
+                result=submissionTask.objects.get(tid=sub_obj.tid).results
+                sub={'pid':sub_obj.pid_id,'fid':sub_obj.fid.name,'lang':sub_obj.lang,'verdict':result}
+                sub_list.append(sub)
+        except submissionTask.DoesNotExist:
+                pass
     response={'sublist':sub_list}
     return JsonResponse(response)
-
-
