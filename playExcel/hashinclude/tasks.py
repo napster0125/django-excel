@@ -30,7 +30,7 @@ def run(pid,fid,lang,loginUser):
         if res[0].decode('utf8')=='AC':
             p=problems.object.get(pid=pid)
             obj.results="AC"
-            hashinclude_channel_push({'result':obj.result})
+            hashinclude_channel_push({'result':obj.result,'tid':obj.tid})
             if usr.tries%primes[pid-1] == 0:
                 usr.total_points+=p.points 
                 usr.tries=usr.tries/primes[pid-1]
