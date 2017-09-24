@@ -7,14 +7,13 @@ from common.consumers import hashinclude_channel_push
 
 from .models import problems,hiuser,Submission,submissionTask
 
+'''
 # To test celery without running django-runserver
 
-'''
 
 sys.path.append("/home/sivasama/works/Play.Excel/playExcel/")
 os.environ["DJANGO_SETTINGS_MODULE"]="playExcel.settings"
 django.setup()
-
 '''
 
 @shared_task
@@ -26,7 +25,7 @@ def run(pid,fid,lang,loginUser):
         res=p.communicate()
         p.kill() 
         primes=[2,3,5,7,11,13,17]
-        obj=submissionTask(user_id=usr,tid=usr.taskId)
+        obj=submissionTask(user_id=usr,tid=usr.tid)
         if res[0].decode('utf8')=='AC':
             p=problems.object.get(pid=pid)
             obj.result="AC"
