@@ -20,7 +20,8 @@ django.setup()
 def run(pid,fid,lang,loginUser):
         usr = hiuser.objects.get(user_id_id=loginUser)
         sq=" "
-        cmd="bash hashinclude/dockerrun.sh "+str(pid)+sq+fid+sq+lang
+        cmd="bash hashinclude/dockerrun.sh "+str(pid)+sq+fid+sq+lang.title()
+        print(cmd)
         p=subprocess.Popen(shlex.split(cmd),stdout=subprocess.PIPE,stderr=subprocess.PIPE)
         res=p.communicate()
         p.kill() 
@@ -28,7 +29,7 @@ def run(pid,fid,lang,loginUser):
         obj=submissionTask(user_id=usr,tid=run.request.id)
         if res[0].decode('utf8')=='AC':
             p=problems.object.get(pid=pid)
-            obj.result="AC"
+            obj.results="AC"
             hashinclude_channel_push({'result':obj.result})
             if usr.tries%primes[pid-1] == 0:
                 usr.total_points+=p.points 
@@ -43,5 +44,7 @@ def run(pid,fid,lang,loginUser):
                 usr.rank=newrank
         else:
             hashinclude_channel_push({'result':res[0].decode('utf8')})
-            obj.result=res[0].decode('utf8')
-        return obj.result
+            obj.results=res[0].decode('utf8')
+        obj.save()
+        usr.save()
+        return obj.results

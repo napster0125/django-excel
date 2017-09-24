@@ -38,11 +38,11 @@ def submit(request):
                         prob = problems.objects.get(pid=request.POST['pid'])
                         obj=Submission(user_id=usr,pid=prob,fid=request.FILES['file'],lang=request.POST['lang'])
                         obj.save()
-                        res=run.delay(str(obj.pid),obj.fid.name,obj.lang,loginUser)
+                        res=run.delay(request.POST['pid'],obj.fid.name,obj.lang,loginUser)
                         obj.tid=res.task_id
                         obj.save()
-                        taskobj=submissionTask(user_id=usr,tid=res.task_id)
-                        taskobj.save()
+                        #taskobj=submissionTask(user_id=usr,tid=res.task_id)
+                        #taskobj.save()
                         return JsonResponse({'taskid':res.task_id})
                 else:
                         return JsonResponse({'result':'Error'})
