@@ -41,7 +41,8 @@ def submit(request):
                         res=run.delay(request.POST['pid'],obj.fid.name,obj.lang,loginUser)
                         obj.tid=res.task_id
                         obj.save()
-                        #taskobj=submissionTask(user_id=usr,tid=res.task_id)
+                        hashinclude_channel_push({'pid':request.POST['pid'],'fid':obj.fid.name,'lang':obj.lang,'tid':res.task_id,'result':'PENDING'})
+			#taskobj=submissionTask(user_id=usr,tid=res.task_id)
                         #taskobj.save()
                         return JsonResponse({'taskid':res.task_id})
                 else:
