@@ -27,21 +27,24 @@ def run(pid,fid,lang,loginUser):
         p.kill() 
         primes=[2,3,5,7,11,13,17]
         obj=submissionTask(user_id=usr,tid=run.request.id)
-        if res[0].decode('utf8')=='AC':
-            p=problems.object.get(pid=pid)
+        print(str(res[0].decode('utf8'))=='AC')
+        if(res[0].decode('utf8')[0]==(b'A'.decode('utf8'))):
+            p=problems.objects.get(pid=pid)
             obj.results="AC"
-            hashinclude_channel_push({'result':obj.result,'tid':obj.tid})
-            if usr.tries%primes[pid-1] == 0:
+            hashinclude_channel_push({'result':obj.results,'tid':obj.tid})
+            newrank=usr.rank
+            if usr.tries%int(primes[int(pid)-1]) == 0:
                 usr.total_points+=p.points 
-                usr.tries=usr.tries/primes[pid-1]
-                su=hiuser.objects.order_by('total_points','sub_time')
+                usr.tries=usr.tries/int(primes[int(pid)-1])
+                su=hiuser.objects.order_by('total_points','last_sub')
                 for i in enumerate(su):
-                    if i[1].total_points==usr.total_points and i[1].sub_time==usr.sub_time:
+                    if i[1].total_points==usr.total_points and i[1].last_sub==usr.last_sub:
                                newrank=i[0]+1
-                fu=hiuser.objects.filter(rank>usr.rank and rank<=newrank)
+                fu=hiuser.objects.filter(rank__gt=usr.rank,rank__lte=newrank)
                 for i in fu:
                     i.rank+=1
                 usr.rank=newrank
+                print(usr.total_points)
         else:
             hashinclude_channel_push({'result':res[0].decode('utf8')})
             obj.results=res[0].decode('utf8')
