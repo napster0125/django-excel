@@ -11,12 +11,19 @@ import re
 from .models import User,Portfolio,History,Pending,Transaction,Old_Stock_data,Stock_data
 from common.models import User as HomeUser
 
-
+from common.decorators import playCookies
 
 @playCookies
 def handShake(request):
-    return JsonResponse({'result': True})    
-
+	print("Cookies:", request.COOKIES )
+	if 'count' not in request.session:
+		request.session['count'] = 0
+	request.session['count'] += 1
+	return JsonResponse({
+			#'sessionid' : request.session.session_key,
+			#'csrftoken' : getCsrfToken(request),
+			'count' : request.session['count']
+		})
 def index(request):
     if 'logged_in' in request.session:
         if request.session['logged_in']:
