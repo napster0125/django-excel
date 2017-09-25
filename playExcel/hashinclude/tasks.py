@@ -39,8 +39,15 @@ def run(pid,fid,lang,loginUser):
                 usr.tries=usr.tries/int(primes[int(pid)-1])
                 su=hiuser.objects.order_by('-total_points','last_sub')
                 for i in enumerate(su):
-                    if i[1].total_points==usr.total_points and i[1].last_sub==usr.last_sub:
-                               newrank=i[0]+1
+                    if i[1].total_points > usr.total_points:                                
+                        newrank=i[0]+1
+                    elif  i[1].total_points == usr.total_points:
+                        if i[1].last_sub<=usr.last_sub:
+                                newrank=i[0]+1
+                        else:
+                                break
+                    else:
+                        break
                 print(usr.rank,newrank)
                 fu=hiuser.objects.filter(rank__lt=usr.rank,rank__gte=newrank)
                 for i in fu:
