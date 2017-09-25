@@ -11,23 +11,22 @@ import re
 from .models import User,Portfolio,History,Pending,Transaction,Old_Stock_data,Stock_data
 from common.models import User as HomeUser
 
-from common.decorators import playCookies
+from common.decorators import playCookies,androidFriendly
 
-@csrf_exempt
 @playCookies
+@csrf_exempt
+@androidFriendly
 def handShake(request):
-	print("Cookies:", request.COOKIES )
-	data = json.loads(request.body.decode('utf-8'))
-	if 'access_token' in data:
-		print('access_token: ',data['access_token'])
-	if 'count' not in request.session:
-		request.session['count'] = 0
-	request.session['count'] += 1
-	return JsonResponse({
-			#'sessionid' : request.session.session_key,
-			#'csrftoken' : getCsrfToken(request),
-			'count' : request.session['count'],
-		})
+    if 'access_token' in request.POST:
+            print('access_token: ',request.POST['access_token'])
+    if 'count' not in request.session:
+            request.session['count'] = 0
+    request.session['count'] += 1
+    return JsonResponse({
+                    #'sessionid' : request.session.session_key,
+                    #'csrftoken' : getCsrfToken(request),
+                    'count' : request.session['count'],
+            })
 def index(request):
     if 'logged_in' in request.session:
         if request.session['logged_in']:

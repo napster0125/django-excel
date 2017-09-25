@@ -90,14 +90,14 @@ class Stock_data(models.Model):
     def as_dict(self):
     	return {
     	'symbol' : self.symbol,
-    	'current_price' : float(self.current_price[0]),
-    	'high' : float(self.high[0]),
-    	'low' : float(self.low[0]),
-    	'open_price' : float(self.open_price[0]),
-    	'change' : float(self.change[0]),
-    	'change_per' : float(self.change_per[0]),
-    	'trade_Qty' : float(self.trade_Qty[0]),
-    	'trade_Value' : float(self.trade_Value[0]),
+    	'current_price' : float(self.current_price),
+    	'high' : float(self.high),
+    	'low' : float(self.low),
+    	'open_price' : float(self.open_price),
+    	'change' : float(self.change),
+    	'change_per' : float(self.change_per),
+    	'trade_Qty' : float(self.trade_Qty),
+    	'trade_Value' : float(self.trade_Value),
     	}
 
 #for graph

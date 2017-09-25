@@ -181,12 +181,12 @@ CELERYBEAT_SCHEDULE = {
      },
     'tq-every-second': {
             'task': 'dalalbull.tasks.tq',
-            'schedule': timedelta(seconds=1), 
+            'schedule': timedelta(seconds=5), 
             'args': ()
      },
      'broadcastNiftyData-every-1-seconds': {
             'task': 'dalalbull.tasks.broadcastNiftyData',
-            'schedule': timedelta(seconds=1),
+            'schedule': timedelta(seconds=5),
             'args': ()
      },
      'broadcastLeaderboardData-every-600-seconds': {
@@ -201,7 +201,7 @@ CELERYBEAT_SCHEDULE = {
      },
      'broadcastPortfolioData-every-1-seconds': {
             'task': 'dalalbull.tasks.broadcastPortfolioData',
-            'schedule': timedelta(seconds=1),
+            'schedule': timedelta(seconds=10),
             'args': ()
      },
      'broadcastSellData-every-20-seconds': {
@@ -211,7 +211,7 @@ CELERYBEAT_SCHEDULE = {
      },
      'broadcastTickerData-every-60-seconds': {
             'task': 'dalalbull.tasks.broadcastTickerData',
-            'schedule': timedelta(seconds=60),
+            'schedule': timedelta(seconds=10),
             'args': ()
      },
 }
