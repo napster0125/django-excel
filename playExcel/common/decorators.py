@@ -1,4 +1,3 @@
-from threading import Thread, Lock
 from django.http import JsonResponse
 from django.middleware.csrf import get_token as getCsrfToken
 def isLoggedIn(view_func):

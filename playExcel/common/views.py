@@ -26,6 +26,21 @@ import json
 # This function puts the login info inside request.session
 # from where all the other app can take the info like user_id
 # by accessing request.session['user']
+from django.middleware.csrf import get_token as getCsrfToken
+
+@playCookies
+def getCookieAsJson(request):
+	print("Cookies:", request.COOKIES )
+	if 'count' not in request.session:
+		request.session['count'] = 0
+	request.session['count'] += 1
+	return JsonResponse({
+			#'sessionid' : request.session.session_key,
+			#'csrftoken' : getCsrfToken(request),
+			'count' : request.session['count']
+		})
+
+
 
 @csrf_exempt
 @playCookies
@@ -86,6 +101,7 @@ def testCache(request):
 @playCookies
 @isLoggedIn
 def testLoginCheck(request):
+	print("Cookies: ",request.COOKIES)
 	return JsonResponse({'message': 'this user is logged in'})
 
 
