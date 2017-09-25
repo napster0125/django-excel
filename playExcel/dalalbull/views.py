@@ -12,6 +12,11 @@ from .models import User,Portfolio,History,Pending,Transaction,Old_Stock_data,St
 from common.models import User as HomeUser
 
 
+
+@playCookies
+def handShake(request):
+    return JsonResponse({'result': True})    
+
 def index(request):
     if 'logged_in' in request.session:
         if request.session['logged_in']:
