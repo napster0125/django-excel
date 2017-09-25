@@ -1,5 +1,7 @@
 from django.http import JsonResponse
 from django.middleware.csrf import get_token as getCsrfToken
+import json
+
 def isLoggedIn(view_func):
 	def new_view_func(request):
 		if request.session.get('logged_in',False):
@@ -14,5 +16,14 @@ def playCookies(view_func):
 		ret = view_func(request)
 		if 'csrftoken' not in request.COOKIES:
 			ret.set_cookie('csrftoken',getCsrfToken(request),2592000)
+		return ret
+	return new_view_func
+
+
+def androidFriendly(view_func):
+	def new_view_func(request):
+		if request.META.get('HTTP_MOBILE',False):
+			request.POST = json.loads(request.body.decode('utf-8')) 
+		ret = view_func(request)
 		return ret
 	return new_view_func
