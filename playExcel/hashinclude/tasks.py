@@ -7,6 +7,7 @@ from common.consumers import hashinclude_channel_push
 
 from .models import problems,hiuser,Submission,submissionTask
 
+from django.utils import timezone
 '''
 # To test celery without running django-runserver
 
@@ -41,6 +42,7 @@ def run(pid,fid,lang,loginUser):
             if usr.tries%int(primes[int(pid)-1]) == 0:
                 usr.total_points+=p.points 
                 usr.tries=usr.tries/int(primes[int(pid)-1])
+                usr.last_sub=timezone.now
                 usr.save()
                 su=hiuser.objects.order_by('-total_points','last_sub')
                 for i,j in enumerate(su):                              

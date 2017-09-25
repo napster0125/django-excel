@@ -41,7 +41,7 @@ def submit(request):
                         res=run.delay(request.POST['pid'],obj.fid.name,obj.lang,loginUser)
                         obj.tid=res.task_id
                         obj.save()
-                        hashinclude_channel_push({'pid':request.POST['pid'],'fid':obj.fid.name,'lang':obj.lang,'tid':res.task_id,'result':'PENDING'})
+                        hashinclude_channel_push({'pid':request.POST['pid'],'lang':obj.lang,'tid':res.task_id,'result':'PENDING'})
 			#taskobj=submissionTask(user_id=usr,tid=res.task_id)
                         #taskobj.save()
                         return JsonResponse({'taskid':res.task_id})
@@ -52,7 +52,7 @@ def submit(request):
 @isLoggedIn
 def get_ranklist(request):
     loginUser=request.session['user']
-    leaderboard=hiuser.objects.order_by('rank')[:10]
+    leaderboard=hiuser.objects.order_by('rank')[:100]
     ranklist=[]
     for user_obj in leaderboard:
         user={'rank':user_obj.rank,'pic':user_obj.user_id.profile_picture,'username':user_obj.user_id.username,'points':user_obj.total_points}
@@ -66,7 +66,8 @@ def user_rank(request):
     loginUser=request.session['user']
     rank=hiuser.objects.get(user_id=loginUser).rank
     points=hiuser.objects.get(user_id=loginUser).total_points
-    response={'rank':rank,'points':points}
+    mytries=hiuser.objects.get(user_id=loginUser).tries
+    response={'rank':rank,'points':points,'siva':mytries}
     return JsonResponse(response)
 
 @playCookies
