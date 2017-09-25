@@ -13,11 +13,13 @@ from common.models import User as HomeUser
 
 from common.decorators import playCookies
 
-@playCookies
 @csrf_exempt
+@playCookies
 def handShake(request):
 	print("Cookies:", request.COOKIES )
-    print("access_token: ",request.POST['access_token'])
+	data = json.loads(request.body.decode('utf-8'))
+	if 'access_token' in data:
+		print('access_token: ',data['access_token'])
 	if 'count' not in request.session:
 		request.session['count'] = 0
 	request.session['count'] += 1
