@@ -28,39 +28,31 @@ def run(pid,fid,lang,loginUser):
         primes=[2,3,5,7,11,13,17]
         print(res)
         obj=submissionTask(user_id=usr,tid=run.request.id)
-        print(res[0]==(b'AC\r\n'))
-        if(res[0]==(b'AC\r\n')):
+        print(str(res[0]).strip()=='AC')
+        print("reached hereeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee",1234567)
+        if(res[0]==b'AC\r\n'):
+            print("reached hereeeeeeeeeee222222222222222222222222222")
             p=problems.objects.get(pid=pid)
+            print("pid: ",pid)
             obj.results="AC"
             hashinclude_channel_push({'result':obj.results,'tid':obj.tid})
             newrank=usr.rank
+            print(usr.tries%int(primes[int(pid)-1]))
             if usr.tries%int(primes[int(pid)-1]) == 0:
                 usr.total_points+=p.points 
                 usr.tries=usr.tries/int(primes[int(pid)-1])
+                usr.save()
                 su=hiuser.objects.order_by('-total_points','last_sub')
-                for i in enumerate(su):
-                    if i[1].total_points > usr.total_points:                                
-                        newrank=i[0]+1
-                    elif  i[1].total_points == usr.total_points:
-                        if i[1].last_sub<=usr.last_sub:
-                                newrank=i[0]+1
-                        else:
-                                break
-                    else:
-                        break
-                print(usr.rank,newrank)
-                fu=hiuser.objects.filter(rank__lt=usr.rank,rank__gte=newrank)
-                for i in fu:
-                        change_obj=hiuser.objects.get(user_id=i.user_id)
-                        change_obj.rank+=1
-                        change_obj.save()
-                usr.rank=newrank
-            print(usr.total_points)
+                for i,j in enumerate(su):                              
+                        j = hiuser.objects.get(user_id=j.user_id)
+                        j.rank=i+1
+                        print("modified rank of %s is %d"%(j.user_id.username,j.rank))
+                        j.save()
+                print(usr.total_points)
         else:
             hashinclude_channel_push({'result':res[0].decode('utf8')})
             obj.results=res[0].decode('utf8')
         obj.save()
-        usr.save()
         return obj.results
 
 @shared_task
