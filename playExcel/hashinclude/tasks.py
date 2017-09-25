@@ -35,7 +35,7 @@ def run(pid,fid,lang,loginUser):
             p=problems.objects.get(pid=pid)
             #print("pid: ",pid)
             obj.results="AC"
-            hashinclude_channel_push({'result':obj.results,'tid':obj.tid})
+            hashinclude_channel_push({'verdict':obj.results,'tid':obj.tid,'time':usr.last_sub})
             newrank=usr.rank
             #print(usr.tries%int(primes[int(pid)-1]))
             if usr.tries%int(primes[int(pid)-1]) == 0:
@@ -50,7 +50,7 @@ def run(pid,fid,lang,loginUser):
                         j.save()
                 print(usr.total_points)
         else:
-            hashinclude_channel_push({'result':res[0].decode('utf8')})
+            hashinclude_channel_push({'verdict':res[0].decode('utf8'),'tid':obj.tid,'time':usr.last_sub})
             obj.results=res[0].decode('utf8')
         obj.save()
         return obj.results
