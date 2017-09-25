@@ -74,7 +74,7 @@ def user_rank(request):
 def recent_submissions(request):
     loginUser=request.session['user']
     usr=hiuser.objects.get(user_id=loginUser)
-    recent_submissions=(Submission.objects.order_by('sub_time')).filter(user_id=usr)[:5]
+    recent_submissions=(Submission.objects.order_by('-sub_time')).filter(user_id=usr)[:5]
     sub_list=[]
     for sub_obj in recent_submissions:
         result=submissionTask.objects.get(tid=sub_obj.tid).results

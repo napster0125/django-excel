@@ -26,9 +26,10 @@ def run(pid,fid,lang,loginUser):
         res=p.communicate()
         p.kill() 
         primes=[2,3,5,7,11,13,17]
+        print(res)
         obj=submissionTask(user_id=usr,tid=run.request.id)
-        print(str(res[0].decode('utf8'))=='AC')
-        if(res[0].decode('utf8')[0]==(b'A'.decode('utf8'))):
+        print(res[0]==(b'AC\r\n'))
+        if(res[0]==(b'AC\r\n')):
             p=problems.objects.get(pid=pid)
             obj.results="AC"
             hashinclude_channel_push({'result':obj.results,'tid':obj.tid})
@@ -36,18 +37,25 @@ def run(pid,fid,lang,loginUser):
             if usr.tries%int(primes[int(pid)-1]) == 0:
                 usr.total_points+=p.points 
                 usr.tries=usr.tries/int(primes[int(pid)-1])
-                su=hiuser.objects.order_by('total_points','last_sub')
+                su=hiuser.objects.order_by('-total_points','last_sub')
                 for i in enumerate(su):
                     if i[1].total_points==usr.total_points and i[1].last_sub==usr.last_sub:
                                newrank=i[0]+1
-                fu=hiuser.objects.filter(rank__gt=usr.rank,rank__lte=newrank)
+                print(usr.rank,newrank)
+                fu=hiuser.objects.filter(rank__lt=usr.rank,rank__gte=newrank)
                 for i in fu:
-                    i.rank+=1
+                        change_obj=hiuser.objects.get(user_id=i.user_id)
+                        change_obj.rank+=1
+                        change_obj.save()
                 usr.rank=newrank
-                print(usr.total_points)
+            print(usr.total_points)
         else:
             hashinclude_channel_push({'result':res[0].decode('utf8')})
             obj.results=res[0].decode('utf8')
         obj.save()
         usr.save()
         return obj.results
+
+@shared_task
+def add(a,b):
+	return a+b
