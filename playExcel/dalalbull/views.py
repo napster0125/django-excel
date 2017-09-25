@@ -14,15 +14,17 @@ from common.models import User as HomeUser
 from common.decorators import playCookies
 
 @playCookies
+@csrf_exempt
 def handShake(request):
 	print("Cookies:", request.COOKIES )
+    print("access_token: ",request.POST['access_token'])
 	if 'count' not in request.session:
 		request.session['count'] = 0
 	request.session['count'] += 1
 	return JsonResponse({
 			#'sessionid' : request.session.session_key,
 			#'csrftoken' : getCsrfToken(request),
-			'count' : request.session['count']
+			'count' : request.session['count'],
 		})
 def index(request):
     if 'logged_in' in request.session:
