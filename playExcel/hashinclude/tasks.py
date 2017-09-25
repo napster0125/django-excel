@@ -21,23 +21,23 @@ def run(pid,fid,lang,loginUser):
         usr = hiuser.objects.get(user_id_id=loginUser)
         sq=" "
         cmd="bash hashinclude/dockerrun.sh "+str(pid)+sq+fid+sq+lang.title()
-        print(cmd)
+        #print(cmd)
         p=subprocess.Popen(shlex.split(cmd),stdout=subprocess.PIPE,stderr=subprocess.PIPE)
         res=p.communicate()
         p.kill() 
         primes=[2,3,5,7,11,13,17]
-        print(res)
+        #print(res)
         obj=submissionTask(user_id=usr,tid=run.request.id)
-        print(str(res[0]).strip()=='AC')
-        print("reached hereeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee",1234567)
+        #print(str(res[0]).strip()=='AC')
+        #print("reached hereeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee",1234567)
         if(res[0]==b'AC\r\n'):
-            print("reached hereeeeeeeeeee222222222222222222222222222")
+            #print("reached hereeeeeeeeeee222222222222222222222222222")
             p=problems.objects.get(pid=pid)
-            print("pid: ",pid)
+            #print("pid: ",pid)
             obj.results="AC"
             hashinclude_channel_push({'result':obj.results,'tid':obj.tid})
             newrank=usr.rank
-            print(usr.tries%int(primes[int(pid)-1]))
+            #print(usr.tries%int(primes[int(pid)-1]))
             if usr.tries%int(primes[int(pid)-1]) == 0:
                 usr.total_points+=p.points 
                 usr.tries=usr.tries/int(primes[int(pid)-1])
@@ -46,7 +46,7 @@ def run(pid,fid,lang,loginUser):
                 for i,j in enumerate(su):                              
                         j = hiuser.objects.get(user_id=j.user_id)
                         j.rank=i+1
-                        print("modified rank of %s is %d"%(j.user_id.username,j.rank))
+                        #print("modified rank of %s is %d"%(j.user_id.username,j.rank))
                         j.save()
                 print(usr.total_points)
         else:
@@ -55,6 +55,3 @@ def run(pid,fid,lang,loginUser):
         obj.save()
         return obj.results
 
-@shared_task
-def add(a,b):
-	return a+b
