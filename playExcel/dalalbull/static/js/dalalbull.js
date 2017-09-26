@@ -2,23 +2,23 @@ var ws_scheme = window.location.protocol == "https:" ? "wss" : "ws";
 var url = window.location.host;
 var page_url = 'http://'+ url +'/api/dalalbull'; 
 
-var nifty_sock = new ReconnectingWebSocket(ws_scheme + '://' + url + "/nifty-channel/",null,{automaticOpen :false});
+var nifty_sock = new ReconnectingWebSocket(ws_scheme + '://' + url + "/channel/dalalbull/nifty-channel/",null,{automaticOpen :false});
 nifty_sock.automaticOpen = false;
 
-var leaderboard_sock = new ReconnectingWebSocket(ws_scheme + '://' + url + "/leaderboard-channel/",null,{automaticOpen :false}); 
+var leaderboard_sock = new ReconnectingWebSocket(ws_scheme + '://' + url + "/channel/dalalbull/leaderboard-channel/",null,{automaticOpen :false}); 
 leaderboard_sock.automaticOpen = false;
 
-var graph_sock = new ReconnectingWebSocket(ws_scheme + '://' + url + "/graph-channel/",null,{automaticOpen :false});  
+var graph_sock = new ReconnectingWebSocket(ws_scheme + '://' + url + "/channel/dalalbull/graph-channel/",null,{automaticOpen :false});  
 graph_sock.automaticOpen = false;
 
-var portfolio_sock = new ReconnectingWebSocket(ws_scheme + '://' + url + "/portfolio-channel/",null,{automaticOpen :false}); 
+var portfolio_sock = new ReconnectingWebSocket(ws_scheme + '://' + url + "/channel/dalalbull/portfolio-channel/",null,{automaticOpen :false}); 
 portfolio_sock.automaticOpen = false;
 
-var sell_sock = new ReconnectingWebSocket(ws_scheme + '://' + url + "/sell-channel/",null,{automaticOpen :false});  
+var sell_sock = new ReconnectingWebSocket(ws_scheme + '://' + url + "/channel/dalalbull/sell-channel/",null,{automaticOpen :false});  
 sell_sock.automaticOpen = false;
 
 
-var ticker_sock = new ReconnectingWebSocket(ws_scheme + '://' + url + "/ticker-channel/",null,{automaticOpen :false});  
+var ticker_sock = new ReconnectingWebSocket(ws_scheme + '://' + url + "/channel/dalalbull/ticker-channel/",null,{automaticOpen :false});  
 ticker_sock.automaticOpen = false;
 
 

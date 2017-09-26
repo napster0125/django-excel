@@ -6,7 +6,7 @@ from django.http import JsonResponse,HttpResponse
 
 from django.views.decorators.cache import cache_page
 from django.views.decorators.csrf import csrf_exempt
-from common.decorators import isLoggedIn, playCookies
+from common.decorators import isLoggedIn, playCookies, androidFriendly
 from .models import *
 from .consumers import user_count_channel_push, disconnectAll
 
@@ -42,8 +42,9 @@ def getCookieAsJson(request):
 
 
 
-@csrf_exempt
 @playCookies
+@csrf_exempt
+@androidFriendly
 def sign_in(request):
 	if 'access_token' in request.POST:
 		access_token = request.POST['access_token']

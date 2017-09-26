@@ -1,7 +1,7 @@
 $(function() {
     // When we're using HTTPS, use WSS too.
     var ws_scheme = window.location.protocol == "https:" ? "wss" : "ws";
-    var nifty_sock = new ReconnectingWebSocket(ws_scheme + '://' + window.location.host + "/nifty-channel/");  
+    var nifty_sock = new ReconnectingWebSocket(ws_scheme + '://' + window.location.host + "/channel/dalalbull/nifty-channel/");  
     var i=0;
     nifty_sock.onmessage = function(message) {
         var dat = message.data;
@@ -11,7 +11,7 @@ $(function() {
         $('#nifty-data').html (""+dat);
     };
 
-    var nifty_sock = new ReconnectingWebSocket(ws_scheme + '://' + window.location.host + "/leaderboard-channel/");  
+    var nifty_sock = new ReconnectingWebSocket(ws_scheme + '://' + window.location.host + "/channel/dalalbull/leaderboard-channel/");  
     var k=0;
     nifty_sock.onmessage = function(message) {
         var dat = message.data;
@@ -27,7 +27,7 @@ $(function() {
     };
 
 
-    var graph_sock = new ReconnectingWebSocket(ws_scheme + '://' + window.location.host + "/graph-channel/");  
+    var graph_sock = new ReconnectingWebSocket(ws_scheme + '://' + window.location.host + "/channel/dalalbull/graph-channel/");  
     var m=0;
     graph_sock.onmessage = function(message) {
         var dat = message.data;
@@ -53,7 +53,7 @@ $(function() {
 
 
 
-    var portfolio_sock = new ReconnectingWebSocket(ws_scheme + '://' + window.location.host + "/portfolio-channel/");  
+    var portfolio_sock = new ReconnectingWebSocket(ws_scheme + '://' + window.location.host + "/channel/dalalbull/portfolio-channel/");  
     var q=0;
     portfolio_sock.onmessage = function(message) {
         var dat = message.data;
@@ -67,7 +67,7 @@ $(function() {
          
     };
 
-    var sell_sock = new ReconnectingWebSocket(ws_scheme + '://' + window.location.host + "/sell-channel/");  
+    var sell_sock = new ReconnectingWebSocket(ws_scheme + '://' + window.location.host + "/channel/dalalbull/sell-channel/");  
     var z=0;
     sell_sock.onmessage = function(message) {
         var dat = message.data;

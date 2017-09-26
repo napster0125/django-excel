@@ -57,13 +57,12 @@ def leaderboardChannelDataPush():
 
 #=============== Graph Channel =======================#
 
-@channel_session
+
 def connect_to_graph_channel(message):
 	Group('NIFTY-50').add(message.reply_channel)
 	print('New graph listener!')
 
 
-@channel_session
 def disconnect_from_graph_channel(message):
 	Group('NIFTY-50').discard(message.reply_channel)
 
@@ -161,13 +160,17 @@ def sellDataPush():
 #================ Ticker Channel =======================#
 
 
-@channel_session
+
 def connect_to_ticker_channel(message):
 	Group('Ticker').add(message.reply_channel)
+	message.reply_channel.send({
+		'text' : json.dumps({"accept": True}) #{ "close" : True }
+		})
 	print('New ticker listener!')
 
 
-@channel_session
+
+
 def disconnect_from_ticker_channel(message):
 	Group('Ticker').discard(message.reply_channel)
 

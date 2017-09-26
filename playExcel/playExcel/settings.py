@@ -211,7 +211,7 @@ CELERYBEAT_SCHEDULE = {
      },
      'broadcastTickerData-every-60-seconds': {
             'task': 'dalalbull.tasks.broadcastTickerData',
-            'schedule': timedelta(seconds=10),
+            'schedule': timedelta(seconds=3),
             'args': ()
      },
 }
