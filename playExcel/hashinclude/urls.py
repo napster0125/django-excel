@@ -7,5 +7,7 @@ urlpatterns=[
         url(r'myrank',user_rank),
         url(r'mysub',recent_submissions),
         url(r'totsub',total_submissions),
-        url(r'',home),
+        url(r'subview',sub_view),
+        url(r'userview',user_submissions),
+	url(r'',home),
         ]
