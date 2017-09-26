@@ -13,8 +13,8 @@ from common.models import User as HomeUser
 
 from common.decorators import playCookies,androidFriendly
 
-@playCookies
 @csrf_exempt
+@playCookies
 @androidFriendly
 def handShake(request):
     if 'access_token' in request.POST:
