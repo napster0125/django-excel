@@ -22,8 +22,9 @@ def playCookies(view_func):
 
 def androidFriendly(view_func):
 	def new_view_func(request):
-		if request.META.get('HTTP_MOBILE',False):
-			request.POST = json.loads(request.body.decode('utf-8')) 
-		ret = view_func(request)
+		if request.method == 'POST':
+			if request.META.get('HTTP_MOBILE',False):
+				request.POST = json.loads(request.body.decode('utf-8')) 
+			ret = view_func(request)
 		return ret
 	return new_view_func
