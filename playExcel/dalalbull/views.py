@@ -12,12 +12,13 @@ from .models import User,Portfolio,History,Pending,Transaction,Old_Stock_data,St
 from common.models import User as HomeUser
 
 from common.decorators import playCookies,androidFriendly
-from .consumers import tickerDataPush
+
+
 @csrf_exempt
 @playCookies
 @androidFriendly
 def handShake(request):
-    tickerDataPush()
+#    tickerDataPush()
     if 'access_token' in request.POST:
             print('access_token: ',request.POST['access_token'])
     if 'count' not in request.session:
@@ -28,6 +29,9 @@ def handShake(request):
                     #'csrftoken' : getCsrfToken(request),
                     'count' : request.session['count'],
             })
+
+@playCookies
+@androidFriendly
 def index(request):
     if 'logged_in' in request.session:
         if request.session['logged_in']:
@@ -62,8 +66,8 @@ def index(request):
 
 
 #======Dashboard======#
-@ensure_csrf_cookie
-@never_cache
+@playCookies
+@androidFriendly
 def dashboard(request):
     request.session['is_dalalbull_user']=True
     if 'is_dalalbull_user' in request.session and request.session['is_dalalbull_user']==True:
@@ -87,19 +91,24 @@ def dashboard(request):
         return  HttpResponseForbidden("Access Denied")
 
 
-
+@playCookies
+@androidFriendly
 def nifty(request):
     return JsonResponse(niftyData())
 
+@playCookies
+@androidFriendly
 def portfolioView(request):
     if 'is_dalalbull_user' in request.session and request.session['is_dalalbull_user']==True:
         return JsonResponse(portfolio(request.session['dalalbull_uid'] )) 
 
-
+@playCookies
+@androidFriendly
 def leaderboard(request):
     if 'is_dalalbull_user' in request.session and request.session['is_dalalbull_user']==True:
         return JsonResponse(leaderboardData()) 
-
+@playCookies
+@androidFriendly
 def graphView(request):
     if 'is_dalalbull_user' in request.session and request.session['is_dalalbull_user']==True:
         return JsonResponse( graph('NIFTY 50')) 
@@ -112,7 +121,8 @@ def graphView(request):
 Page stock information.
 List of all companies.
 '''
-@csrf_exempt
+@playCookies
+@androidFriendly
 def stock_symbols():  
     stocks=Stock_data.objects.all()    
     companies =[]                      
@@ -124,7 +134,8 @@ def stock_symbols():
         }
     return data_to_send
 
-@csrf_exempt
+@playCookies
+@androidFriendly
 def stockinfo(request):                            
     if 'is_dalalbull_user' in request.session and request.session['is_dalalbull_user']==True:
         data_to_send = stock_symbols()
@@ -141,6 +152,8 @@ Post data format:
     }
 '''
 
+@playCookies
+@androidFriendly
 def companydetails(request):
     if 'is_dalalbull_user' in request.session and request.session['is_dalalbull_user']==True:                                
         company = request.POST['company']
@@ -161,7 +174,8 @@ def companydetails(request):
 
 #======Submit-Buy======#
 
-@ensure_csrf_cookie
+@playCookies
+@androidFriendly
 def submit_buy(request):
     '''
     POST DATA Format:
@@ -366,7 +380,8 @@ def submit_buy(request):
     # type of trans :   temp['disp']  
 
 
-@ensure_csrf_cookie
+@playCookies
+@androidFriendly
 def sell(request):
 
     if 'is_dalalbull_user' in request.session and request.session['is_dalalbull_user']==True:
@@ -448,7 +463,8 @@ def sell_data(user_id):
 
 
 #======Submit-Sell======#
-@ensure_csrf_cookie
+@playCookies
+@androidFriendly
 def submit_sell(request):
 
     ''' POST DATA format:
@@ -740,6 +756,8 @@ def ticker_data():
             'tickerData': tickerData,
         }
 
+@playCookies
+@androidFriendly
 def ticker(request):
     return JsonResponse(ticker_data())
 
@@ -752,7 +770,8 @@ def ticker(request):
 Data about pending transactions
 '''
 
-@ensure_csrf_cookie
+@playCookies
+@androidFriendly
 def pending(request):   
 
     if 'is_dalalbull_user' in request.session and request.session['is_dalalbull_user']==True:
@@ -795,7 +814,8 @@ def pending(request):
     return redirect('index')
 
 #=======Cancels========#
-@csrf_exempt
+@playCookies
+@androidFriendly
 def cancels(request):
     '''
     POST DATA Format:
@@ -856,6 +876,8 @@ def cancels(request):
 '''
     Details of all transactions.
 '''
+@playCookies
+@androidFriendly
 def history(request):
     
     if 'is_dalalbull_user' in request.session and request.session['is_dalalbull_user']==True:
@@ -888,7 +910,8 @@ in buy/short sell,
 UI performs the required calculations
 '''
 
-
+@playCookies
+@androidFriendly
 def currPrice(request):
     if 'is_dalalbull_user' in request.session and request.session['is_dalalbull_user']==True:
         user_id=request.session['dalalbull_uid']

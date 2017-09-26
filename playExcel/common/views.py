@@ -26,21 +26,27 @@ import json
 # This function puts the login info inside request.session
 # from where all the other app can take the info like user_id
 # by accessing request.session['user']
-from django.middleware.csrf import get_token as getCsrfToken
 
-@playCookies
-def getCookieAsJson(request):
-	print("Cookies:", request.COOKIES )
-	if 'count' not in request.session:
-		request.session['count'] = 0
-	request.session['count'] += 1
-	return JsonResponse({
-			#'sessionid' : request.session.session_key,
-			#'csrftoken' : getCsrfToken(request),
-			'count' : request.session['count']
-		})
+from dalalbull.consumers import sellDataPush,niftyChannelDataPush,leaderboardChannelDataPush,graphDataPush,portfolioDataPush,tickerDataPush
 
+@csrf_exempt
+def test_db_channels(request):
+	if request.method=="POST":
+		print(request.POST)
+		if 'ticker' in request.POST:
+			tickerDataPush()
+		if 'nifty' in request.POST:
+			niftyChannelDataPush()
+		if 'protfolio' in request.POST: 
+			portfolioDataPush()
+		if 'graph' in request.POST:
+			graphDataPush
+		if 'leaderboard' in request.POST:
+			leaderboardChannelDataPush()
+		if 'sell' in request.POST:
+			sellDataPush()
 
+	return render(request,'try_channels.html')
 
 @playCookies
 @csrf_exempt
