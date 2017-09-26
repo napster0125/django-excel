@@ -25,6 +25,6 @@ def androidFriendly(view_func):
 		if request.method == 'POST':
 			if request.META.get('HTTP_MOBILE',False):
 				request.POST = json.loads(request.body.decode('utf-8')) 
-			ret = view_func(request)
+		ret = view_func(request)
 		return ret
 	return new_view_func
