@@ -17,6 +17,9 @@ redis_conn = redis.Redis("localhost", 6379)
 
 def connect_to_nifty_channel(message):
 	Group('nifty-channel').add(message.reply_channel)
+	message.reply_channel.send({
+		'text' : json.dumps({"accept": True}) #{ "close" : True }
+		})
 	print("New nifty listener added!")
 
 
@@ -40,6 +43,9 @@ def niftyChannelDataPush():
 
 def connect_to_leaderboard_channel(message):
 	Group('leaderboard-channel').add(message.reply_channel)
+	message.reply_channel.send({
+		'text' : json.dumps({"accept": True}) #{ "close" : True }
+		})
 	print("New leaderboard listener added!")
 
 
@@ -60,6 +66,9 @@ def leaderboardChannelDataPush():
 
 def connect_to_graph_channel(message):
 	Group('NIFTY-50').add(message.reply_channel)
+	message.reply_channel.send({
+		'text' : json.dumps({"accept": True}) #{ "close" : True }
+		})
 	print('New graph listener!')
 
 
@@ -92,6 +101,9 @@ def connect_to_portfolio_channel(message):
 	except:
 		print("user not logged in, can't connect to portfolio channel!")
 		pass
+	message.reply_channel.send({
+		'text' : json.dumps({"accept": True}) #{ "close" : True }
+		})
 
 
 @http_session_user
@@ -132,6 +144,9 @@ def connect_to_sell_channel(message):
 	except:
 		print("user not logged in, can't connect to portfolio channel!")
 		pass
+	message.reply_channel.send({
+		'text' : json.dumps({"accept": True}) #{ "close" : True }
+		})
 
 
 @http_session_user
