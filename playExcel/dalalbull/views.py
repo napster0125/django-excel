@@ -121,8 +121,6 @@ def graphView(request):
 Page stock information.
 List of all companies.
 '''
-@playCookies
-@androidFriendly
 def stock_symbols():  
     stocks=Stock_data.objects.all()    
     companies =[]                      
