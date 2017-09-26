@@ -29,76 +29,84 @@ def echoHome(request) :
         os.makedirs(os.path.join(os.getcwd(), 'echo/media/players/'+playerObj.playerId+'/'))
 
     subprocess.Popen(['cp', '-r' , os.path.join(os.getcwd(), 'echo/skel/home/'), os.path.join(os.getcwd(), 'echo/media/players/'+playerObj.playerId+'/')])
-    termStatus = False
-
     levelObj = echolevel.objects.get(levelId = playerObj.playerLevel)
-    print(playerObj.playerLevel)
-    termOut = ''
     status = False
-    if request.POST :
-        status = False
-        if 'term' in request.POST :
-            termStatus = True
-            termIn = request.POST.get('term')
-            trm = ''
-            with open('/tmp/'+playerObj.playerId+'.txt', 'w') as temp :
+        
+    response = {'player' : playerObj.playerId, 'level' : playerObj.playerLevel, 'question' : levelObj.qnDesc, 'partCode' : playerObj.partCode, 'status' : status}
+    # return JsonResponse(response)
+    return render(request, 'echohome.html', response)
 
-                cmd = 'docker run -it --rm -v'+os.getcwd()+'/echo/media/players/'+str(playerObj.playerId)+'/home/level'+str(playerObj.playerLevel)+':/tmp -w /tmp echojudge rbash -c \"'+termIn+'\"'
+@isLoggedIn
+def echoSubmit(request) :
+    loginUser = request.session.get('user')
 
-                t = subprocess.Popen(shlex.split(str(cmd)), stdout=temp, stderr=temp)
-                try :
-                    t.communicate(timeout=5)
+    usrObj = User.objects.get(user_id = loginUser)   
+    playerObj, created = echoplayer.objects.get_or_create(playerId = usrObj.user_id.split('|')[1],
+    defaults={'playerLevel' : 1, 'partCode' : ''},
+    ) 
+    levelObj = echolevel.objects.get(levelId = playerObj.playerLevel)
+    status = False
+    if 'term' in request.POST :
+        termStatus = True
+        termIn = request.POST.get('term')
+        trm = ''
+        with open('/tmp/'+playerObj.playerId+'.txt', 'w') as temp :
 
-                except subprocess.TimeoutExpired :
-                    print("Timed Out!")
-            t = ''
-            with open('/tmp/'+playerObj.playerId+'.txt', 'r') as temp :
-                t = temp.read()
-            with open('/tmp/'+playerObj.playerId+'.txt', 'w') as temp :
-                temp.write(re.compile(r'\x1b[^m]*m').sub('', t))
-            
-            with open('/tmp/'+playerObj.playerId+'.txt', 'r') as temp :
-                termOut = '\n'.join(str(line) for line in temp)
-                     
-        elif 'save' in request.POST :
-            
-            playerObj.partCode = request.POST.get('code')
+            cmd = 'docker run -it --rm -v'+os.getcwd()+'/echo/media/players/'+str(playerObj.playerId)+'/home/level'+str(playerObj.playerLevel)+':/tmp -w /tmp echojudge rbash -c \"'+termIn+'\"'
+
+            t = subprocess.Popen(shlex.split(str(cmd)), stdout=temp, stderr=temp)
+            try :
+                t.communicate(timeout=5)
+
+            except subprocess.TimeoutExpired :
+                print("Timed Out!")
+        t = ''
+        with open('/tmp/'+playerObj.playerId+'.txt', 'r') as temp :
+            t = temp.read()
+        with open('/tmp/'+playerObj.playerId+'.txt', 'w') as temp :
+            temp.write(re.compile(r'\x1b[^m]*m').sub('', t))
+        
+        with open('/tmp/'+playerObj.playerId+'.txt', 'r') as temp :
+            termOut = '\n'.join(str(line) for line in temp)
+                    
+    elif 'save' in request.POST :
+        
+        playerObj.partCode = request.POST.get('code')
+        playerObj.save()
+        termStatus = False
+
+    elif 'execute' in request.POST :
+        playerObj.partCode = request.POST.get('code').replace('\r', '')
+        playerObj.save()
+
+        termStatus = False
+
+        status = judge.main(str(playerObj.playerId), str(playerObj.playerLevel), playerObj.partCode, levelObj.testArg1, levelObj.testArg2)
+
+        if status == True :
+
+            playerObj.playerLevel = playerObj.playerLevel + 1
+            playerObj.partCode = ''
             playerObj.save()
-            termStatus = False
-
-        elif 'execute' in request.POST :
-            playerObj.partCode = request.POST.get('code').replace('\r', '')
-            playerObj.save()
-
-            termStatus = False
-
-            status = judge.main(str(playerObj.playerId), str(playerObj.playerLevel), playerObj.partCode, levelObj.testArg1, levelObj.testArg2)
-
-            if status == True :
-
-                playerObj.playerLevel = playerObj.playerLevel + 1
-                playerObj.partCode = ''
-                playerObj.save()
-                   
-                with open('echo/media/players/'+playerObj.playerId+'/home/level'+str(playerObj.playerLevel-1)+'/output.txt', 'r') as output :
-                    termOut = output.read()
-                toptenplayers = echoplayer.objects.order_by('-playerLevel', 'ansTime')
-                topten = []
-                for player in toptenplayers :
-                    topten.append(playerObj.playerId)
-                pushChangesEchoLeaderboard(topten)
-
-            else :
                 
-                with open('echo/media/players/'+playerObj.playerId+'/home/level'+str(playerObj.playerLevel)+'/output.txt', 'r') as out :
-                    termOut = out.read()
-                with open('echo/media/players/'+playerObj.playerId+'/home/level'+str(playerObj.playerLevel)+'/error.txt', 'r') as error :
-                    termOut += error.read()
+            with open('echo/media/players/'+playerObj.playerId+'/home/level'+str(playerObj.playerLevel-1)+'/output.txt', 'r') as output :
+                termOut = output.read()
+            toptenplayers = echoplayer.objects.order_by('-playerLevel', 'ansTime')
+            topten = []
+            for player in toptenplayers :
+                topten.append(playerObj.playerId)
+            pushChangesEchoLeaderboard(topten)
+
+        else :
+            
+            with open('echo/media/players/'+playerObj.playerId+'/home/level'+str(playerObj.playerLevel)+'/output.txt', 'r') as out :
+                termOut = out.read()
+            with open('echo/media/players/'+playerObj.playerId+'/home/level'+str(playerObj.playerLevel)+'/error.txt', 'r') as error :
+                termOut += error.read()
 
     response = {'player' : playerObj.playerId, 'level' : playerObj.playerLevel, 'question' : levelObj.qnDesc, 'partCode' : playerObj.partCode, 'termOut' : termOut, 'status' : status}
     # return JsonResponse(response)
     return render(request, 'echohome.html', response)
-
 
 #Player Ranking
 
