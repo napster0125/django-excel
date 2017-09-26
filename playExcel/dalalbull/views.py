@@ -12,11 +12,12 @@ from .models import User,Portfolio,History,Pending,Transaction,Old_Stock_data,St
 from common.models import User as HomeUser
 
 from common.decorators import playCookies,androidFriendly
-
+from .consumers import tickerDataPush
 @csrf_exempt
 @playCookies
 @androidFriendly
 def handShake(request):
+    tickerDataPush()
     if 'access_token' in request.POST:
             print('access_token: ',request.POST['access_token'])
     if 'count' not in request.session:
