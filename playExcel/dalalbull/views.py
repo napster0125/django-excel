@@ -59,6 +59,29 @@ def index(request):
 
 
 
+@playCookies
+def handShake(request):
+    if request.session.get('logged_in',False):
+        user_id = request.session['user']
+        if not User.objects.filter(user_id=user_id).exists():
+            home_user = HomeUser.objects.get(user_id=user_id)
+            
+            User.objects.create(
+                user_id=home_user.user_id,
+                name=home_user.username,
+                email = home_user.email,
+                image_url = home_user.profile_picture,
+                )
+            print("new user................")
+            Portfolio.objects.create(
+            user_id=user_id,
+            net_worth=1000000.00,
+            cash_bal=1000000.00,
+            )
+        return JsonResponse({'success' : True})
+    else:
+        return JsonResponse({'success' : False})
+
 #======Dashboard======#
 @playCookies
 @isLoggedIn
