@@ -1,7 +1,8 @@
 from django.conf.urls import url,include
-from .views import echoHome, echoRank
+from .views import echoHome, echoRank, echoSubmit
 
 urlpatterns = [
     url(r'^$', echoHome),
-    url(r'leaderboard', echoRank)
+    url(r'submit', echoSubmit),
+    url(r'leaderboard', echoRank),
 ]
