@@ -11,107 +11,99 @@ import re
 from .models import User,Portfolio,History,Pending,Transaction,Old_Stock_data,Stock_data
 from common.models import User as HomeUser
 
-from common.decorators import playCookies,androidFriendly
+from common.decorators import playCookies,androidFriendly,isLoggedIn
 
 
-@csrf_exempt
+# @csrf_exempt
+# @playCookies
+# @androidFriendly
+# def handShake(request):
+# #    tickerDataPush()
+#     if 'access_token' in request.POST:
+#             print('access_token: ',request.POST['access_token'])
+#     if 'count' not in request.session:
+#             request.session['count'] = 0
+#     request.session['count'] += 1
+#     return JsonResponse({
+#                     #'sessionid' : request.session.session_key,
+#                     #'csrftoken' : getCsrfToken(request),
+#                     'count' : request.session['count'],
+#             })
+
 @playCookies
-@androidFriendly
-def handShake(request):
-#    tickerDataPush()
-    if 'access_token' in request.POST:
-            print('access_token: ',request.POST['access_token'])
-    if 'count' not in request.session:
-            request.session['count'] = 0
-    request.session['count'] += 1
-    return JsonResponse({
-                    #'sessionid' : request.session.session_key,
-                    #'csrftoken' : getCsrfToken(request),
-                    'count' : request.session['count'],
-            })
-
-@playCookies
+@isLoggedIn
 @androidFriendly
 def index(request):
-    if 'logged_in' in request.session:
-        if request.session['logged_in']:
-            user_id = request.session['user']
-            print("userid: %s"%user_id)
-            if not User.objects.filter(user_id=user_id).exists():
-                home_user = HomeUser.objects.get(user_id=user_id)
-                
-                User.objects.create(
-                    user_id=home_user.user_id,
-                    name=home_user.username,
-                    email = home_user.email,
-                    image_url = home_user.profile_picture,
-                    )
-                
-                Portfolio.objects.create(
-                user_id=user_id,
-                net_worth=1000000.00,
-                cash_bal=1000000.00,
-                )
-                
-            request.session['is_dalalbull_user'] = True
-            request.session['dalalbull_uid'] = user_id
-            
-            return render(request,'index.html',
-                {
-                    'user': User.objects.get(user_id = user_id),
-                }
+    user_id = request.session['user']
+    if not User.objects.filter(user_id=user_id).exists():
+        home_user = HomeUser.objects.get(user_id=user_id)
+        
+        User.objects.create(
+            user_id=home_user.user_id,
+            name=home_user.username,
+            email = home_user.email,
+            image_url = home_user.profile_picture,
             )
+        print("new user................")
+        Portfolio.objects.create(
+        user_id=user_id,
+        net_worth=1000000.00,
+        cash_bal=1000000.00,
+        )
 
-    return HttpResponseRedirect("/")
+    return render(request,'index.html',
+        {
+            'user': User.objects.get(user_id = user_id),
+        }
+    )
+
 
 
 #======Dashboard======#
 @playCookies
+@isLoggedIn
 @androidFriendly
 def dashboard(request):
-    request.session['is_dalalbull_user']=True
-    if 'is_dalalbull_user' in request.session and request.session['is_dalalbull_user']==True:
-        
-        total_users = User.objects.count()
+    total_users = User.objects.count()
 
-        data_to_send = {
-            # 'user_id': request.session['dalalbull_uid'],
-            # 'username' : username,
-            'total_users' : total_users,
-            'stockholdings':getStockholdings(request.session['dalalbull_uid']),
-            'topGainers' : getTopGainers(),
-            'topLosers' : getTopLosers(),
-            'mostActiveVol' : getMostActiveVolume(),
-            'mostActiveVal' : getMostActiveValue(),
-        }
+    data_to_send = {
+        # 'user_id': request.session['user'],
+        # 'username' : username,
+        'total_users' : total_users,
+        'stockholdings':getStockholdings(request.session['user']),
+        'topGainers' : getTopGainers(),
+        'topLosers' : getTopLosers(),
+        'mostActiveVol' : getMostActiveVolume(),
+        'mostActiveVal' : getMostActiveValue(),
+    }
 
-        return JsonResponse(data_to_send)
-    
-    else:
-        return  HttpResponseForbidden("Access Denied")
+    return JsonResponse(data_to_send)
 
 
 @playCookies
+@isLoggedIn
 @androidFriendly
 def nifty(request):
     return JsonResponse(niftyData())
 
 @playCookies
+@isLoggedIn
 @androidFriendly
 def portfolioView(request):
-    if 'is_dalalbull_user' in request.session and request.session['is_dalalbull_user']==True:
-        return JsonResponse(portfolio(request.session['dalalbull_uid'] )) 
+    return JsonResponse(portfolio(request.session['user'] )) 
 
 @playCookies
+@isLoggedIn
 @androidFriendly
 def leaderboard(request):
-    if 'is_dalalbull_user' in request.session and request.session['is_dalalbull_user']==True:
-        return JsonResponse(leaderboardData()) 
+    return JsonResponse(leaderboardData()) 
+
+
 @playCookies
+@isLoggedIn
 @androidFriendly
 def graphView(request):
-    if 'is_dalalbull_user' in request.session and request.session['is_dalalbull_user']==True:
-        return JsonResponse( graph('NIFTY 50')) 
+    return JsonResponse( graph('NIFTY 50')) 
 
 
     
@@ -133,13 +125,13 @@ def stock_symbols():
     return data_to_send
 
 @playCookies
+@isLoggedIn
 @androidFriendly
-def stockinfo(request):                            
-    if 'is_dalalbull_user' in request.session and request.session['is_dalalbull_user']==True:
-        data_to_send = stock_symbols()
-        return JsonResponse(data_to_send)
+def stockinfo(request):                           
+    data_to_send = stock_symbols()
+    return JsonResponse(data_to_send)
             
-    return  HttpResponseForbidden("Access Denied")
+
 #======Company Info=====#
 
 '''
@@ -151,18 +143,17 @@ Post data format:
 '''
 
 @playCookies
+@isLoggedIn
 @androidFriendly
-def companydetails(request):
-    if 'is_dalalbull_user' in request.session and request.session['is_dalalbull_user']==True:                                
-        company = request.POST['company']
-        try:
-            data_to_send = Stock_data.objects.get(symbol=company).as_dict()
-            return JsonResponse(data_to_send)
-        except:
-            return JsonResponse({ 
-                'result' : 'wrong company name!'}
-                )
-    return HttpResponseForbidden("Access Denied")
+def companydetails(request):                          
+    company = request.POST['company']
+    try:
+        data_to_send = Stock_data.objects.get(symbol=company).as_dict()
+        return JsonResponse(data_to_send)
+    except:
+        return JsonResponse({ 
+            'result' : 'wrong company name!'}
+            )
 
 
 #======Buy/Short-Sell======#
@@ -173,6 +164,7 @@ def companydetails(request):
 #======Submit-Buy======#
 
 @playCookies
+@isLoggedIn
 @androidFriendly
 def submit_buy(request):
     '''
@@ -185,187 +177,185 @@ def submit_buy(request):
     }
 
     '''
+    cclose = isWrongTime()
+    if(cclose):
+        return JsonResponse({ 'cclose': cclose, 'message': 'Wrong time', })
+    quantity_invalid=False
+    msg=""
+    cash_bal=0
+    margin=0
+    data=request.POST
+    if(len(data)!=0):
 
-    if 'is_dalalbull_user' in request.session and request.session['is_dalalbull_user']==True:
-        cclose = isWrongTime()
-        if(cclose):
-            return JsonResponse({ 'cclose': cclose, 'message': 'Wrong time', })
-        quantity_invalid=False
-        msg=""
-        cash_bal=0
-        margin=0
-        data=request.POST
-        if(len(data)!=0):
+        qnty_test = data['quantity']
 
-            qnty_test = data['quantity']
-
-            if(not is_number(qnty_test)):
+        if(not is_number(qnty_test)):
+            quantity_invalid=True
+        else:
+            qnty_test=int(float(data['quantity']))
+            if(qnty_test <= 0):
                 quantity_invalid=True
-            else:
-                qnty_test=int(float(data['quantity']))
-                if(qnty_test <= 0):
-                    quantity_invalid=True
 
 
-            if not quantity_invalid :
+        if not quantity_invalid :
 
-                company=data['company'] 
-                if(company != "none" and company !="" ):
-                    quantity=qnty_test
-                    if (is_number(data['pending'])):
-                        pending_price=float(data['pending'])
-                    else :
-                        pending_price=""
-                    if (data['b_ss'] == 'Buy' or data['b_ss'] == 'Short Sell'):
-                        b_ss=data['b_ss']
-                    else:
-                        b_ss = ""   
-                    try :
-                        stocks=Stock_data.objects.get(symbol=company)                   
-                        portfolio = Portfolio.objects.get(user_id=request.session['dalalbull_uid'])
-                        old_cash_bal = float(portfolio.cash_bal)
-                        current_price=float(stocks.current_price)
-                        no_trans = portfolio.no_trans
-                        if(no_trans+1<=100):
-                                brokerage=((0.5/100)*current_price)*float(quantity) 
-                        elif(no_trans+1<=1000):                     
-                                brokerage=((1/100)*current_price)*float(quantity)
-                        else :                      
-                                brokerage=((1.5/100)*current_price)*float(quantity)
+            company=data['company'] 
+            if(company != "none" and company !="" ):
+                quantity=qnty_test
+                if (is_number(data['pending'])):
+                    pending_price=float(data['pending'])
+                else :
+                    pending_price=""
+                if (data['b_ss'] == 'Buy' or data['b_ss'] == 'Short Sell'):
+                    b_ss=data['b_ss']
+                else:
+                    b_ss = ""   
+                try :
+                    stocks=Stock_data.objects.get(symbol=company)                   
+                    portfolio = Portfolio.objects.get(user_id=request.session['user'])
+                    old_cash_bal = float(portfolio.cash_bal)
+                    current_price=float(stocks.current_price)
+                    no_trans = portfolio.no_trans
+                    if(no_trans+1<=100):
+                            brokerage=((0.5/100)*current_price)*float(quantity) 
+                    elif(no_trans+1<=1000):                     
+                            brokerage=((1/100)*current_price)*float(quantity)
+                    else :                      
+                            brokerage=((1.5/100)*current_price)*float(quantity)
 
 
-                        if(quantity_invalid or b_ss=="" or company=='NIFTY 50'):
-                            msg= "Invalid Data"
-                        else :                          
-                            if((pending_price!="") and current_price!=pending_price):
-                                    percentager = 0.05 * current_price
-                                    t=current_price-percentager
-                                    l=current_price+percentager
-                                    q=False
-                                    if(pending_price > current_price or pending_price <= t ):
-                                        q=True
-                                    r=False
-                                    if(pending_price < current_price or pending_price >= l ):
-                                        r=True
+                    if(quantity_invalid or b_ss=="" or company=='NIFTY 50'):
+                        msg= "Invalid Data"
+                    else :                          
+                        if((pending_price!="") and current_price!=pending_price):
+                                percentager = 0.05 * current_price
+                                t=current_price-percentager
+                                l=current_price+percentager
+                                q=False
+                                if(pending_price > current_price or pending_price <= t ):
+                                    q=True
+                                r=False
+                                if(pending_price < current_price or pending_price >= l ):
+                                    r=True
 
-                                    if(not is_number(pending_price) or pending_price<0):
-                                        msg= "Invalid Data"                                                            
+                                if(not is_number(pending_price) or pending_price<0):
+                                    msg= "Invalid Data"                                                            
+                                else:
+                                    if(b_ss=='Buy' and q):
+                                    	msg= "Pending Price for Buying should be less than and maximum of 5% below Current Price"
+                                    elif b_ss == "Short Sell" and r:
+                                        msg = "Pending Price for Short Selling should be greater than and maximum of 5% above Current Price"
                                     else:
-                                        if(b_ss=='Buy' and q):
-                                        	msg= "Pending Price for Buying should be less than and maximum of 5% below Current Price"
-                                        elif b_ss == "Short Sell" and r:
-                                            msg = "Pending Price for Short Selling should be greater than and maximum of 5% above Current Price"
-                                        else:
-                                        	p=Pending(user_id=request.session['dalalbull_uid'],
-                                                symbol=company,
-                                                buy_ss=b_ss,
-                                                quantity=quantity,
-                                                value=pending_price,
-                                                time=datetime.datetime.now().time()
-                                                )
-                                        	p.save()
-                                        	msg= "You have made a Pending Order to "+b_ss+" "+str(quantity)+" shares of '"+company+"' at a Desired Price of'"+'RS. '+str(pending_price)
+                                    	p=Pending(user_id=request.session['user'],
+                                            symbol=company,
+                                            buy_ss=b_ss,
+                                            quantity=quantity,
+                                            value=pending_price,
+                                            time=datetime.datetime.now().time()
+                                            )
+                                    	p.save()
+                                    	msg= "You have made a Pending Order to "+b_ss+" "+str(quantity)+" shares of '"+company+"' at a Desired Price of'"+'RS. '+str(pending_price)
+                        else:
+                            if(((old_cash_bal-float(portfolio.margin)-brokerage)<=0) or ((old_cash_bal-float(portfolio.margin)-brokerage)< current_price*float(quantity) and b_ss=="Buy") or (((old_cash_bal-float(portfolio.margin)-brokerage) < (current_price*float(quantity)/2)) and b_ss=="Short Sell")):
+                                msg= "You do not have enough Cash Balance for this transaction"
+                                return JsonResponse({ 'message': msg, })
                             else:
                                 if(((old_cash_bal-float(portfolio.margin)-brokerage)<=0) or ((old_cash_bal-float(portfolio.margin)-brokerage)< current_price*float(quantity) and b_ss=="Buy") or (((old_cash_bal-float(portfolio.margin)-brokerage) < (current_price*float(quantity)/2)) and b_ss=="Short Sell")):
                                     msg= "You do not have enough Cash Balance for this transaction"
                                     return JsonResponse({ 'message': msg, })
-                                else:
-                                    if(((old_cash_bal-float(portfolio.margin)-brokerage)<=0) or ((old_cash_bal-float(portfolio.margin)-brokerage)< current_price*float(quantity) and b_ss=="Buy") or (((old_cash_bal-float(portfolio.margin)-brokerage) < (current_price*float(quantity)/2)) and b_ss=="Short Sell")):
-                                        msg= "You do not have enough Cash Balance for this transaction"
-                                        return JsonResponse({ 'message': msg, })
-                                    try:
-                                        t=Transaction.objects.get(
-                                            user_id=request.session['dalalbull_uid'],
-                                            symbol=company,
-                                            buy_ss=b_ss,
+                                try:
+                                    t=Transaction.objects.get(
+                                        user_id=request.session['user'],
+                                        symbol=company,
+                                        buy_ss=b_ss,
+                                        )
+                                    old_quantity=float(t.quantity)
+                                    old_val=float(t.value)
+                                    new_val=old_val+(float(quantity)*current_price)
+                                    new_quantity=old_quantity+float(quantity)
+                                    t.quantity=new_quantity
+                                    t.value=new_val
+                                    t.buy_ss=b_ss
+                                    if(b_ss=="Buy"):
+                                        cash_bal=old_cash_bal-(float(quantity)*current_price)
+                                        margin = float(portfolio.margin)
+                                    else:
+                                        cash_bal = old_cash_bal
+                                        margin = float(portfolio.margin)+(float(quantity)*current_price)/2
+                                    cash_bal -= brokerage
+                                    no_trans+=1
+                                    portfolio.cash_bal=cash_bal
+                                    portfolio.margin=margin
+                                    portfolio.no_trans=no_trans
+                                    portfolio.save()
+                                    kp=0
+                                    while (kp<25):
+                                    	portfolio2 = Portfolio.objects.get(
+                                            user_id=request.session['user']
                                             )
-                                        old_quantity=float(t.quantity)
-                                        old_val=float(t.value)
-                                        new_val=old_val+(float(quantity)*current_price)
-                                        new_quantity=old_quantity+float(quantity)
-                                        t.quantity=new_quantity
-                                        t.value=new_val
-                                        t.buy_ss=b_ss
-                                        if(b_ss=="Buy"):
-                                            cash_bal=old_cash_bal-(float(quantity)*current_price)
-                                            margin = float(portfolio.margin)
-                                        else:
-                                            cash_bal = old_cash_bal
-                                            margin = float(portfolio.margin)+(float(quantity)*current_price)/2
-                                        cash_bal -= brokerage
-                                        no_trans+=1
-                                        portfolio.cash_bal=cash_bal
-                                        portfolio.margin=margin
-                                        portfolio.no_trans=no_trans
-                                        portfolio.save()
-                                        kp=0
-                                        while (kp<25):
-                                        	portfolio2 = Portfolio.objects.get(
-                                                user_id=request.session['dalalbull_uid']
-                                                )
-                                        	if (portfolio2.cash_bal!=portfolio.cash_bal):
-                                        		portfolio.save()
-                                        	else:
-                                        		break
-                                        	kp=kp+1
-                                        t.save()
-                                    except Transaction.DoesNotExist:
-                                        new_val=float(quantity)*current_price
-                                        t=Transaction(user_id=request.session['dalalbull_uid'],
-                                            symbol=company,
-                                            buy_ss=b_ss,
-                                            quantity=quantity,
-                                            value=new_val)
-
-                                        if(b_ss=="Buy"):
-                                            cash_bal=old_cash_bal-(float(quantity)*current_price)
-                                            margin = float(portfolio.margin)
-                                        else:
-                                            cash_bal = old_cash_bal
-                                            margin = float(portfolio.margin)+(float(quantity)*current_price)/2
-                                        cash_bal -= brokerage
-                                        no_trans+=1
-                                        portfolio.cash_bal=cash_bal
-                                        portfolio.margin=margin
-                                        portfolio.no_trans=no_trans
-                                        portfolio.save()
-                                        kp=0
-                                        while (kp<25):
-                                            portfolio2 = Portfolio.objects.get(
-                                                user_id=request.session['dalalbull_uid']
-                                                )
-                                            if (portfolio2.cash_bal!=portfolio.cash_bal):
-                                                portfolio.save()
-                                            else:
-                                                break
-                                            kp=kp+1
-                                        t.save()
-                                    history=History(user_id=request.session['dalalbull_uid'],
-                                        time=datetime.datetime.now().time(),
+                                    	if (portfolio2.cash_bal!=portfolio.cash_bal):
+                                    		portfolio.save()
+                                    	else:
+                                    		break
+                                    	kp=kp+1
+                                    t.save()
+                                except Transaction.DoesNotExist:
+                                    new_val=float(quantity)*current_price
+                                    t=Transaction(user_id=request.session['user'],
                                         symbol=company,
                                         buy_ss=b_ss,
                                         quantity=quantity,
-                                        price=stocks.current_price
-                                        )
-                                    history.save()
+                                        value=new_val)
+
                                     if(b_ss=="Buy"):
-                                        msg+= "You have successfully bought "+str(quantity)+" shares of '"+company+"' at " +'RS. ' +str(stocks.current_price) +"  per share. Your Cash Balance is RS. "+str(portfolio.cash_bal)
-                                    elif(b_ss=="Short Sell"):
-                                        msg="You have successfully short sold "+str(quantity)+" shares of '"+company+"' at '" +'RS. '+str(stocks.current_price)+" per share"
-                                    msg = msg + "You have paid "+ 'RS. '+str(brokerage)+" as brokerage for the transaction"
+                                        cash_bal=old_cash_bal-(float(quantity)*current_price)
+                                        margin = float(portfolio.margin)
+                                    else:
+                                        cash_bal = old_cash_bal
+                                        margin = float(portfolio.margin)+(float(quantity)*current_price)/2
+                                    cash_bal -= brokerage
+                                    no_trans+=1
+                                    portfolio.cash_bal=cash_bal
+                                    portfolio.margin=margin
+                                    portfolio.no_trans=no_trans
+                                    portfolio.save()
+                                    kp=0
+                                    while (kp<25):
+                                        portfolio2 = Portfolio.objects.get(
+                                            user_id=request.session['user']
+                                            )
+                                        if (portfolio2.cash_bal!=portfolio.cash_bal):
+                                            portfolio.save()
+                                        else:
+                                            break
+                                        kp=kp+1
+                                    t.save()
+                                history=History(user_id=request.session['user'],
+                                    time=datetime.datetime.now().time(),
+                                    symbol=company,
+                                    buy_ss=b_ss,
+                                    quantity=quantity,
+                                    price=stocks.current_price
+                                    )
+                                history.save()
+                                if(b_ss=="Buy"):
+                                    msg+= "You have successfully bought "+str(quantity)+" shares of '"+company+"' at " +'RS. ' +str(stocks.current_price) +"  per share. Your Cash Balance is RS. "+str(portfolio.cash_bal)
+                                elif(b_ss=="Short Sell"):
+                                    msg="You have successfully short sold "+str(quantity)+" shares of '"+company+"' at '" +'RS. '+str(stocks.current_price)+" per share"
+                                msg = msg + "You have paid "+ 'RS. '+str(brokerage)+" as brokerage for the transaction"
 
-                    except Stock_data.DoesNotExist:
-                        msg= "Requested Company '"+str(company)+"' is not listed"
-                else:   
-                    msg = "Invalid Data"
-            else:
-                msg= "Invalid Data "                    
-        else:       
-            msg= "Please enter valid data in the necessary fields"
-        print(msg)
-        return JsonResponse({ 'message': msg, })
+                except Stock_data.DoesNotExist:
+                    msg= "Requested Company '"+str(company)+"' is not listed"
+            else:   
+                msg = "Invalid Data"
+        else:
+            msg= "Invalid Data "                    
+    else:       
+        msg= "Please enter valid data in the necessary fields"
+    print(msg)
+    return JsonResponse({ 'message': msg, })
 
-    return JsonResponse({ 'message': 'Not logged in.', })
+
 
 
 #=======Sell/Short-Cover=====#
@@ -379,17 +369,15 @@ def submit_buy(request):
 
 
 @playCookies
+@isLoggedIn
 @androidFriendly
 def sell(request):
-
-    if 'is_dalalbull_user' in request.session and request.session['is_dalalbull_user']==True:
-        data_to_send = sell_data(request.session['dalalbull_uid'])
-        return JsonResponse(data_to_send)
+    data_to_send = sell_data(request.session['user'])
+    return JsonResponse(data_to_send)
 
 
 
 def sell_data(user_id):                      
-
     cclose = isWrongTime()
     no_stock=False
     transactions=[]
@@ -462,6 +450,7 @@ def sell_data(user_id):
 
 #======Submit-Sell======#
 @playCookies
+@isLoggedIn
 @androidFriendly
 def submit_sell(request):
 
@@ -534,7 +523,7 @@ def submit_sell(request):
                 
 
                 try:
-                    t = Transaction.objects.get(user_id=request.session['dalalbull_uid'],
+                    t = Transaction.objects.get(user_id=request.session['user'],
                         symbol=company,buy_ss=b_ss)
 
                     old_quantity=float(t.quantity)  
@@ -554,7 +543,7 @@ def submit_sell(request):
                             msg = "Pending Price for Selling should be greater than Current Price"
                         
                         else:
-                            p=Pending(user_id=request.session['dalalbull_uid'],
+                            p=Pending(user_id=request.session['user'],
                                 symbol=company,quantity=quantity,
                                 value=pending_price,buy_ss=s_sc)
                             p.save()
@@ -573,13 +562,13 @@ def submit_sell(request):
 
                         if new_quantity==0:
                             del_t = Transaction.objects.get(
-                                user_id=request.session['dalalbull_uid'],
+                                user_id=request.session['user'],
                                 symbol=company,buy_ss=b_ss)
                             del_t.delete()
                         
                         else:
                             upd_t = Transaction.objects.get(
-                                user_id=request.session['dalalbull_uid'],
+                                user_id=request.session['user'],
                                 symbol=company,
                                 buy_ss=b_ss
                                 )
@@ -587,7 +576,7 @@ def submit_sell(request):
                             upd_t.value=new_val
                             upd_t.save()
                         
-                        pf= Portfolio.objects.get(user_id=request.session['dalalbull_uid'])
+                        pf= Portfolio.objects.get(user_id=request.session['user'])
                         margin=float(pf.margin)
 
                         if(s_sc=="Short Cover"):
@@ -617,7 +606,7 @@ def submit_sell(request):
                         pf.save()
                         kp=0
                         while (kp<25):
-                            portfolio2 = Portfolio.objects.get(user_id=request.session['dalalbull_uid'])
+                            portfolio2 = Portfolio.objects.get(user_id=request.session['user'])
                             if (portfolio2.cash_bal!=pf.cash_bal):
                                 pf.save()
                             else:
@@ -626,7 +615,7 @@ def submit_sell(request):
                         now = datetime.datetime.now().time     
 
                         h=History(
-                            user_id=request.session['dalalbull_uid'],
+                            user_id=request.session['user'],
                             time=now,symbol=company,
                             buy_ss=s_sc,quantity=quantity,
                             price=s.current_price
@@ -635,7 +624,7 @@ def submit_sell(request):
 
                         try:
                             pend=Pending.objects.get(
-                                user_id=request.session['dalalbull_uid'],
+                                user_id=request.session['user'],
                                 symbol=company,buy_ss=s_sc
                                 )
 
@@ -663,7 +652,7 @@ def submit_sell(request):
                         
     try:
         trow=""
-        t = Transaction.objects.filter(user_id=request.session['dalalbull_uid'])
+        t = Transaction.objects.filter(user_id=request.session['user'])
                     
         for i in t:
             temp={}
@@ -755,6 +744,7 @@ def ticker_data():
         }
 
 @playCookies
+@isLoggedIn
 @androidFriendly
 def ticker(request):
     return JsonResponse(ticker_data())
@@ -769,50 +759,49 @@ Data about pending transactions
 '''
 
 @playCookies
+@isLoggedIn
 @androidFriendly
-def pending(request):   
+def pending(request):      
+    cclose = isWrongTime()
+    no_stock=False
 
-    if 'is_dalalbull_user' in request.session and request.session['is_dalalbull_user']==True:
-        
-        cclose = isWrongTime()
-        no_stock=False
-
-        try:
-            t = Pending.objects.filter(user_id=request.session['dalalbull_uid'])
-            row=[]
-            for i in t:
-                temp={}
-                temp['quantity']=float(i.quantity)
-                temp['value']=float(i.value)
-                temp['type']=i.buy_ss
-                temp['symbol']=i.symbol
-                try:
-                    s=Stock_data.objects.get(symbol=temp['symbol'])
-                    temp['current_price']=(str(s.current_price))
-                except Stock_data.DoesNotExist:
-                    temp['current_price']='Not Listed'
-                temp['id']=i.id
-                row.append(temp)   
-            if(len(t)>0):
-                symbols = True         # DOUBT, DOUBT, DOUBT, DOUBT
-            else:
-                no_stock=True
-        except Pending.DoesNotExist:
-            no_stock=True 
+    try:
+        t = Pending.objects.filter(user_id=request.session['user'])
+        row=[]
+        for i in t:
+            temp={}
+            temp['quantity']=float(i.quantity)
+            temp['value']=float(i.value)
+            temp['type']=i.buy_ss
+            temp['symbol']=i.symbol
+            try:
+                s=Stock_data.objects.get(symbol=temp['symbol'])
+                temp['current_price']=(str(s.current_price))
+            except Stock_data.DoesNotExist:
+                temp['current_price']='Not Listed'
+            temp['id']=i.id
+            row.append(temp)   
+        if(len(t)>0):
+            symbols = True         # DOUBT, DOUBT, DOUBT, DOUBT
+        else:
+            no_stock=True
+    except Pending.DoesNotExist:
+        no_stock=True 
 
 
-        data = {
-        'cclose' : cclose,
-        #'time' : datetime.datetime.now(),
-        'no_pending': False,    #was True
-        'pending':row,
-        }
+    data = {
+    'cclose' : cclose,
+    #'time' : datetime.datetime.now(),
+    'no_pending': False,    #was True
+    'pending':row,
+    }
 
-        return JsonResponse(data)
-    return redirect('index')
+    return JsonResponse(data)
+
 
 #=======Cancels========#
 @playCookies
+@isLoggedIn
 @androidFriendly
 def cancels(request):
     '''
@@ -831,39 +820,38 @@ def cancels(request):
         to filter data.
     '''
 
-    if 'is_dalalbull_user' in request.session and request.session['is_dalalbull_user']==True:
-        cclose = isWrongTime()
-        if(cclose):
-            return JsonResponse({'cclose': True})
-        iddel=request.POST['iddel']
-        company=request.POST['company']
-        # quantity=request.POST['quantity']
-        username=request.session['dalalbull_uid']
-        # price=request.POST['price']
-        # trdtype=request.POST['type']
-        msg=""
-        if(iddel!="" and company !=""):
-            try:
-                p=Pending.objects.get(user_id=username,
-                    id=iddel,
-                    symbol=company,
-                    )
-                    #buy_ss=trdtype,
-                    # quantity=quantity,
-                    # value=price)
-                p.delete()
-                msg = "Specified pending order has been cancelled"
-                
-            except Pending.DoesNotExist:
-                msg="Error Cancelling"
-        else:
-            msg="Invalid Data"
-        
-        data_to_send = {
-        'message' : msg,
-        }
-        
-        return JsonResponse(data_to_send)
+    cclose = isWrongTime()
+    if(cclose):
+        return JsonResponse({'cclose': True})
+    iddel=request.POST['iddel']
+    company=request.POST['company']
+    # quantity=request.POST['quantity']
+    username=request.session['user']
+    # price=request.POST['price']
+    # trdtype=request.POST['type']
+    msg=""
+    if(iddel!="" and company !=""):
+        try:
+            p=Pending.objects.get(user_id=username,
+                id=iddel,
+                symbol=company,
+                )
+                #buy_ss=trdtype,
+                # quantity=quantity,
+                # value=price)
+            p.delete()
+            msg = "Specified pending order has been cancelled"
+            
+        except Pending.DoesNotExist:
+            msg="Error Cancelling"
+    else:
+        msg="Invalid Data"
+    
+    data_to_send = {
+    'message' : msg,
+    }
+    
+    return JsonResponse(data_to_send)
 
 
 
@@ -875,29 +863,25 @@ def cancels(request):
     Details of all transactions.
 '''
 @playCookies
+@isLoggedIn
 @androidFriendly
 def history(request):
-    
-    if 'is_dalalbull_user' in request.session and request.session['is_dalalbull_user']==True:
-        username = request.session['dalalbull_uid']
-        hist = History.objects.filter(user_id=username)
+    username = request.session['user']
+    hist = History.objects.filter(user_id=username)
 
-        hf = []
-        for i in hist:
-            h = i.as_dict()
-            h['time'] = h['time'].strftime("%a  %d %b %I:%M:%S %p")
-            h['total']= (float(i.quantity) * float(i.price))
-            hf.append(h)
+    hf = []
+    for i in hist:
+        h = i.as_dict()
+        h['time'] = h['time'].strftime("%a  %d %b %I:%M:%S %p")
+        h['total']= (float(i.quantity) * float(i.price))
+        hf.append(h)
 
-        data = {
-        'history' : hf,
-        }
+    data = {
+    'history' : hf,
+    }
 
-        return JsonResponse(data)
-    return redirect('index')
+    return JsonResponse(data)
 
-
-   
 
 
 #======To Get Current Price======#
@@ -909,28 +893,25 @@ UI performs the required calculations
 '''
 
 @playCookies
+@isLoggedIn
 @androidFriendly
 def currPrice(request):
-    if 'is_dalalbull_user' in request.session and request.session['is_dalalbull_user']==True:
-        user_id=request.session['dalalbull_uid']
-        
+    user_id=request.session['user']
+    comp = request.POST['company']
+    curr_price = Stock_data.objects.get(symbol=comp).current_price
+    portfo = Portfolio.objects.get(user_id=user_id)
+    cash_bal = portfo.cash_bal
+    margin = portfo.margin
+    no_trans = portfo.no_trans
 
-        comp = request.POST['company']
-        curr_price = Stock_data.objects.get(symbol=comp).current_price
-        portfo = Portfolio.objects.get(user_id=user_id)
-        cash_bal = portfo.cash_bal
-        margin = portfo.margin
-        no_trans = portfo.no_trans
+    data_to_send = {
+    'curr_price' : curr_price,
+    'cash_bal': cash_bal,
+    'margin' : margin,
+    'no_trans' : no_trans
+    }                    
 
-        data_to_send = {
-        'curr_price' : curr_price,
-        'cash_bal': cash_bal,
-        'margin' : margin,
-        'no_trans' : no_trans
-        }                    
-        
-        return JsonResponse(data_to_send)
-    return JsonResponse({ 'result': 'not logged in!'})
+    return JsonResponse(data_to_send)
 
 
 
@@ -941,11 +922,6 @@ def testChannels(request):
     
     
 #==========Utility Functions========#
-
-
-
-
-
 
 def getStockholdings(user_id):
     stockholdings=[]

@@ -10,6 +10,15 @@ def isLoggedIn(view_func):
 			return JsonResponse({'error' : 'User not logged in'})
 	return new_view_func
 
+def isLoggedInCh(conn_func):
+	def new_conn_func(message):
+		if message.http_session.get('logged_in',False):
+			return conn_func(message)
+		else:
+			message.reply_channel.send({
+				'text' : json.dumps({ "close" : True })
+			})
+	return new_conn_func
 
 def playCookies(view_func):
 	def new_view_func(request):

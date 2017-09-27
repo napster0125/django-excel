@@ -18,7 +18,7 @@ urlpatterns = [
 	url(r'^graph', views.graphView, name='graph'),	
 	url(r'^leaderboard', views.leaderboard, name='leaderboard'),	
 	url(r'^nifty', views.nifty, name='nifty'),	
-	url(r'^handShake', views.handShake, name='index'),
+	#url(r'^handShake', views.handShake, name='index'),
 	url(r'^channels$', views.testChannels, name='test'),
 	url(r'', views.index, name='index'),
 	

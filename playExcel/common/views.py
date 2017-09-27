@@ -9,7 +9,7 @@ from django.views.decorators.csrf import csrf_exempt
 from common.decorators import isLoggedIn, playCookies, androidFriendly
 from .models import *
 from .consumers import user_count_channel_push, disconnectAll
-
+from dalalbull.consumers import disconnectFromDalalbullCh
 from hashinclude.models import hiuser
 from kryptos.models import kryptosuser
 from urllib import request as rq
@@ -48,8 +48,8 @@ def test_db_channels(request):
 
 	return render(request,'try_channels.html')
 
-@playCookies
 @csrf_exempt
+@playCookies
 @androidFriendly
 def sign_in(request):
 	if 'access_token' in request.POST:
@@ -90,6 +90,7 @@ def getUserCount(request):
 @playCookies
 def signout(request):
 	disconnectAll(request.session['user'])
+	disconnectFromDalalbullCh(request.session['user'])
 	request.session.flush()
 	return JsonResponse({ 'success' : True })
 

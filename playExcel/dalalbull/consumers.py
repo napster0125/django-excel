@@ -11,10 +11,13 @@ import redis
 from channels import Channel
 redis_conn = redis.Redis("localhost", 6379)
 
+from common.decorators import isLoggedInCh
+
 
 #================ Nifty channel =======================#
 
-
+@http_session_user
+@isLoggedInCh
 def connect_to_nifty_channel(message):
 	Group('nifty-channel').add(message.reply_channel)
 	message.reply_channel.send({
@@ -40,7 +43,8 @@ def niftyChannelDataPush():
 
 #================ Leaderboard channel =======================#
 
-
+@http_session_user
+@isLoggedInCh
 def connect_to_leaderboard_channel(message):
 	Group('leaderboard-channel').add(message.reply_channel)
 	message.reply_channel.send({
@@ -63,7 +67,8 @@ def leaderboardChannelDataPush():
 
 #=============== Graph Channel =======================#
 
-
+@http_session_user
+@isLoggedInCh
 def connect_to_graph_channel(message):
 	Group('NIFTY-50').add(message.reply_channel)
 	message.reply_channel.send({
@@ -91,16 +96,13 @@ def graphDataPush():
 
 
 @http_session_user
+@isLoggedInCh
 def connect_to_portfolio_channel(message):
-	try:
-		print('Portfolio listner added!')
-		userid = message.http_session['dalalbull_uid']	
-		redis_conn.hset("online-users",
-			userid,
-			message.reply_channel.name)
-	except:
-		print("user not logged in, can't connect to portfolio channel!")
-		pass
+	userid = message.http_session['user']	
+	print('Portfolio listner added!',userid)
+	redis_conn.hset("online-users",
+		userid,
+		message.reply_channel.name)
 	message.reply_channel.send({
 		'text' : json.dumps({"accept": True}) #{ "close" : True }
 		})
@@ -108,24 +110,19 @@ def connect_to_portfolio_channel(message):
 
 @http_session_user
 def disconnect_from_portfolio_channel(message):
-	try:
-		if 'dalalbull_uid' in message.http_session:
-			userid = message.http_session['dalalbull_uid']	
-			redis_conn.hdel("online-users",userid)
-	except:
-		pass
-
-
+	userid = message.http_session['user']	
+	redis_conn.hdel("online-users",userid)
 
 def portfolioDataPush():
 	for userid in redis_conn.hkeys("online-users"):
-		portfolioData = portfolio(userid)
-		Channel( redis_conn.hget("online-users",userid)).send(
-			{
-			'text': json.dumps(portfolioData,cls=DjangoJSONEncoder)
-			})
-
-
+		try:
+			portfolioData = portfolio(userid)
+			Channel( redis_conn.hget("online-users",userid)).send(
+				{
+				'text': json.dumps(portfolioData,cls=DjangoJSONEncoder)
+				})
+		except:
+			print("Error in portfolioPush")
 
 
 
@@ -134,16 +131,11 @@ def portfolioDataPush():
 
 
 @http_session_user
+@isLoggedInCh
 def connect_to_sell_channel(message):
-	try:
-		userid = message.http_session['dalalbull_uid']
-		redis_conn.hset("online-sellers",
-			userid,
-			message.reply_channel.name)
-		print('New seller listener added!')
-	except:
-		print("user not logged in, can't connect to portfolio channel!")
-		pass
+	userid = message.http_session['user']
+	redis_conn.hset("online-sellers",userid,message.reply_channel.name)
+	print('New seller listener added!')
 	message.reply_channel.send({
 		'text' : json.dumps({"accept": True}) #{ "close" : True }
 		})
@@ -151,24 +143,20 @@ def connect_to_sell_channel(message):
 
 @http_session_user
 def disconnect_from_sell_channel(message):
-
-	try:
-		userid = message.http_session['dalalbull_uid']
-		redis_conn.hdel("online-sellers",userid)
-	except:
-		pass
+	userid = message.http_session['user']
+	redis_conn.hdel("online-sellers",userid)
 
 
 def sellDataPush():
-
 	for userid in redis_conn.hkeys("online-sellers"):
-
-		sellData = sell_data(userid)
-		Channel( redis_conn.hget("online-sellers",userid) ).send(
-			{
-			'text' : json.dumps(sellData,cls=DjangoJSONEncoder)
-			})
-
+		try:
+			sellData = sell_data(userid)
+			Channel( redis_conn.hget("online-sellers",userid) ).send(
+				{
+				'text' : json.dumps(sellData,cls=DjangoJSONEncoder)
+				})
+		except:
+			print("sellDataPush failed!")
 
 
 
@@ -202,6 +190,9 @@ def tickerDataPush():
 
 
 
+def disconnectFromDalalbullCh(user_id):
+	redis_conn.hdel("online-users",userid)
+	redis_conn.hdel("online-sellers",userid)
 
 
 
