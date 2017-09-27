@@ -96,7 +96,7 @@ def matchanswer(request):
 
 def rank(request):
 	loginUser = request.session['user']
-	topkryptosusers =kryptosuser.objects.order_by('rank')[:10]
+	topkryptosusers =kryptosuser.objects.order_by('rank')[:100]
 	ranklist = []
 	# rank=1
 	myrank = kryptosuser.objects.get(user_id=loginUser).rank
