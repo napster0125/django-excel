@@ -68,7 +68,7 @@ def sign_in(request):
 	created = False
 	if not User.objects.filter(user_id=data['sub']).exists():
 		print('This user exists')
-		obj,created = User.objects.create(user_id = data['sub'],
+		obj = User.objects.create(user_id = data['sub'],
 			username = data['name'],
 			profile_picture = data['picture'],
 			email = data['email']
