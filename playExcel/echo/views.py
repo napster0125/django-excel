@@ -25,6 +25,12 @@ def echoHome(request) :
     defaults={'playerLevel' : 1, 'partCode' : ''},
     ) 
 
+    if not os.path.exists(os.path.join(os.getcwd(), 'echo/media/')) :
+        os.makedirs(os.path.join(os.getcwd(), 'echo/media/players/'))
+
+    if not os.path.exists(os.path.join(os.getcwd(), 'echo/media/players/')) :
+        os.makedirs(os.path.join(os.getcwd(), 'echo/media/players/'))
+        
     if not os.path.exists(os.path.join(os.getcwd(), 'echo/media/players/'+playerObj.playerId+'/')) :
         os.makedirs(os.path.join(os.getcwd(), 'echo/media/players/'+playerObj.playerId+'/'))
 
