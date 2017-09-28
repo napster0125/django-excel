@@ -5,8 +5,10 @@ import json
 def isLoggedIn(view_func):
 	def new_view_func(request):
 		if request.session.get('logged_in',False):
+			print('User is logged in')
 			return view_func(request)
 		else:
+			print('User is not logged in')
 			return JsonResponse({'error' : 'User not logged in'})
 	return new_view_func
 
@@ -34,6 +36,8 @@ def androidFriendly(view_func):
 		if request.method == 'POST':
 			if request.META.get('HTTP_MOBILE',False):
 				request.POST = json.loads(request.body.decode('utf-8')) 
+		print("%s is about to be called",view_func.__name__)
 		ret = view_func(request)
+		print("%s was called",view_func.__name__)
 		return ret
 	return new_view_func
