@@ -110,9 +110,11 @@ def connect_to_portfolio_channel(message):
 
 @http_session_user
 def disconnect_from_portfolio_channel(message):
-	userid = message.http_session['user']	
-	redis_conn.hdel("online-users",userid)
-
+	try:
+		userid = message.http_session['user']	
+		redis_conn.hdel("online-users",userid)
+	except:
+		pass
 def portfolioDataPush():
 	for userid in redis_conn.hkeys("online-users"):
 		try:
@@ -143,9 +145,11 @@ def connect_to_sell_channel(message):
 
 @http_session_user
 def disconnect_from_sell_channel(message):
-	userid = message.http_session['user']
-	redis_conn.hdel("online-sellers",userid)
-
+	try:
+		userid = message.http_session['user']
+		redis_conn.hdel("online-sellers",userid)
+	except:
+		pass
 
 def sellDataPush():
 	for userid in redis_conn.hkeys("online-sellers"):
