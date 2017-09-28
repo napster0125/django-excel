@@ -1,8 +1,6 @@
-from __future__ import absolute_import
+from __future__ import absolute_import,unicode_literals
 
 from celery import shared_task
-from playExcel.celery import app
-
 from urllib import request
 import urllib
 import json
@@ -29,7 +27,7 @@ def tq():
 
 @shared_task
 def dq():
-	if isGoodTime() 
+	if isGoodTime(): 
 		print("Graph Values Update");
 		oldstockdata()
 		graphDataPush()
