@@ -26,11 +26,17 @@ def tq():
 	orders()
 	return 
 
+
 @shared_task
-def dq(): 
-	print("Graph Values Update");
-	oldstockdata()
+def dq():
+	if isGoodTime() 
+		print("Graph Values Update");
+		oldstockdata()
+		graphDataPush()
+	else:
+		print("Not the time for graph broadcast")
 	return 
+
 
 @shared_task
 def net():
@@ -56,13 +62,6 @@ def broadcastNiftyData():
 # 	else:
 # 		print("Not the time for leaderboard broadcast")
 
-@shared_task
-def broadcastGraphData():
-	if isGoodTime():
-		print("Grap data broadcasted!")
-		graphDataPush()
-	else:
-		print("Not the time for graph broadcast")
 
 
 @shared_task

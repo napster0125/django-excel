@@ -27,7 +27,7 @@ import json
 # from where all the other app can take the info like user_id
 # by accessing request.session['user']
 
-from dalalbull.consumers import sellDataPush,niftyChannelDataPush,leaderboardChannelDataPush,graphDataPush,portfolioDataPush,tickerDataPush
+from dalalbull.consumers import sellDataPush,niftyChannelDataPush,graphDataPush,portfolioDataPush,tickerDataPush
 
 @csrf_exempt
 def test_db_channels(request):
