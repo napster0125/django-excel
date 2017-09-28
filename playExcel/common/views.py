@@ -40,7 +40,7 @@ def test_db_channels(request):
 		if 'protfolio' in request.POST: 
 			portfolioDataPush()
 		if 'graph' in request.POST:
-			graphDataPush
+			graphDataPush()
 		if 'leaderboard' in request.POST:
 			leaderboardChannelDataPush()
 		if 'sell' in request.POST:
