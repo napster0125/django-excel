@@ -1078,7 +1078,7 @@ def niftyData():
 
 
 def leaderboardData():
-    p=Portfolio.objects.all().order_by('-net_worth')[:5]
+    p=Portfolio.objects.all().order_by('-net_worth')[:100]
     i=1
     l=[]
     for t in p:

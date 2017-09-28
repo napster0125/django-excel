@@ -48,13 +48,13 @@ def broadcastNiftyData():
 		print("Not the time for nifty broadcast")
 
 
-@shared_task
-def broadcastLeaderboardData():
-	if isGoodTime():
-		print("Leaderboard data broadcasted!")
-		leaderboardChannelDataPush()
-	else:
-		print("Not the time for leaderboard broadcast")
+# @shared_task
+# def broadcastLeaderboardData():
+# 	if isGoodTime():
+# 		print("Leaderboard data broadcasted!")
+# 		leaderboardChannelDataPush()
+# 	else:
+# 		print("Not the time for leaderboard broadcast")
 
 @shared_task
 def broadcastGraphData():

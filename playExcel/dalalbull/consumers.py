@@ -43,26 +43,26 @@ def niftyChannelDataPush():
 
 #================ Leaderboard channel =======================#
 
-@http_session_user
-@isLoggedInCh
-def connect_to_leaderboard_channel(message):
-	Group('leaderboard-channel').add(message.reply_channel)
-	message.reply_channel.send({
-		'text' : json.dumps({"accept": True}) #{ "close" : True }
-		})
-	print("New leaderboard listener added!")
+# @http_session_user
+# @isLoggedInCh
+# def connect_to_leaderboard_channel(message):
+# 	Group('leaderboard-channel').add(message.reply_channel)
+# 	message.reply_channel.send({
+# 		'text' : json.dumps({"accept": True}) #{ "close" : True }
+# 		})
+# 	print("New leaderboard listener added!")
 
 
-def disconnect_from_leaderboard_channel(message):
-	Group('leaderboard-channel').discard(message.reply_channel)
+# def disconnect_from_leaderboard_channel(message):
+# 	Group('leaderboard-channel').discard(message.reply_channel)
 
-def leaderboardChannelDataPush():
+# def leaderboardChannelDataPush():
 
-	leaderboard_data = leaderboardData()
-	Group('leaderboard-channel').send( 
-		{
-			'text': json.dumps(leaderboard_data,cls=DjangoJSONEncoder)
-		})
+# 	leaderboard_data = leaderboardData()
+# 	Group('leaderboard-channel').send( 
+# 		{
+# 			'text': json.dumps(leaderboard_data,cls=DjangoJSONEncoder)
+# 		})
 
 
 #=============== Graph Channel =======================#
