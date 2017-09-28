@@ -169,31 +169,31 @@ from datetime import timedelta
 
 
 CELERYBEAT_SCHEDULE = {
-    'net-every-20-seconds': {
+    'net-every-20-seconds': { #networth
             'task': 'dalalbull.tasks.net',
-            'schedule': timedelta(seconds=20),
+            'schedule': timedelta(seconds=5),
             'args': ()
      },
-    'dq-every-5-seconds': {
+    'dq-every-5-seconds': {      #graph data
             'task': 'dalalbull.tasks.dq',
             'schedule': timedelta(seconds=300),
             'args': ()
      },
-    'tq-every-second': {
+    'tq-every-second': {    #stock and orders
             'task': 'dalalbull.tasks.tq',
-            'schedule': timedelta(seconds=5), 
+            'schedule': timedelta(seconds=1), 
             'args': ()
      },
-     'broadcastNiftyData-every-1-seconds': {
+     'broadcastNiftyData-every-5-seconds': {
             'task': 'dalalbull.tasks.broadcastNiftyData',
             'schedule': timedelta(seconds=5),
             'args': ()
      },
-     'broadcastLeaderboardData-every-600-seconds': {
-            'task': 'dalalbull.tasks.broadcastLeaderboardData',
-            'schedule': timedelta(seconds=600),
-            'args': ()
-     },
+     # 'broadcastLeaderboardData-every-600-seconds': {
+     #        'task': 'dalalbull.tasks.broadcastLeaderboardData',
+     #        'schedule': timedelta(seconds=600),
+     #        'args': ()
+     # },
      'broadcastGraphData-every-300-seconds': {
             'task': 'dalalbull.tasks.broadcastGraphData',
             'schedule': timedelta(seconds=300),
@@ -201,12 +201,12 @@ CELERYBEAT_SCHEDULE = {
      },
      'broadcastPortfolioData-every-1-seconds': {
             'task': 'dalalbull.tasks.broadcastPortfolioData',
-            'schedule': timedelta(seconds=10),
+            'schedule': timedelta(seconds=1),
             'args': ()
      },
      'broadcastSellData-every-20-seconds': {
             'task': 'dalalbull.tasks.broadcastSellData',
-            'schedule': timedelta(seconds=20),
+            'schedule': timedelta(seconds=10),
             'args': ()
      },
      'broadcastTickerData-every-60-seconds': {

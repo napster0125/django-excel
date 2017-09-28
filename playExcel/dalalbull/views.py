@@ -8,6 +8,7 @@ from pytz import timezone
 import json
 import datetime
 import re
+from django.views.decorators.cache import cache_page
 from .models import User,Portfolio,History,Pending,Transaction,Old_Stock_data,Stock_data
 from common.models import User as HomeUser
 
@@ -117,6 +118,7 @@ def portfolioView(request):
 
 @playCookies
 @isLoggedIn
+@cache_page(60 * 15)
 @androidFriendly
 def leaderboard(request):
     return JsonResponse(leaderboardData()) 
@@ -766,9 +768,11 @@ def ticker_data():
             'tickerData': tickerData,
         }
 
+
 @playCookies
 @isLoggedIn
 @androidFriendly
+@cache_page(60*1)
 def ticker(request):
     return JsonResponse(ticker_data())
 
