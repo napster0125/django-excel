@@ -65,7 +65,7 @@ def sign_in(request):
 		return JsonResponse({ 'success' : False })
 
 	print("Data received: ",data)
-
+	created = False
 	if not User.objects.filter(user_id=data['sub']).exists():
 		print('This user exists')
 		obj,created = User.objects.get_or_create(user_id = data['sub'],
