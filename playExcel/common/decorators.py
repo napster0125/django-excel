@@ -36,8 +36,8 @@ def androidFriendly(view_func):
 		if request.method == 'POST':
 			if request.META.get('HTTP_MOBILE',False):
 				request.POST = json.loads(request.body.decode('utf-8')) 
-		print("%s is about to be called",view_func.__name__)
+		print("%s is about to be called",%view_func.__name__)
 		ret = view_func(request)
-		print("%s was called",view_func.__name__)
+		print("%s was called",%view_func.__name__)
 		return ret
 	return new_view_func

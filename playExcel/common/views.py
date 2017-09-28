@@ -64,12 +64,15 @@ def sign_in(request):
 	except:
 		return JsonResponse({ 'success' : False })
 
-		
-	obj,created = User.objects.get_or_create(user_id = data['sub'],
-		username = data['name'],
-		profile_picture = data['picture'],
-		email = data['email']
-		)
+	print("Data received: ",data)
+
+	if not User.objects.filter(user_id=data['sub']).exists():
+		print('This user exists')
+		obj,created = User.objects.get_or_create(user_id = data['sub'],
+			username = data['name'],
+			profile_picture = data['picture'],
+			email = data['email']
+			)
 
 	if created:
 		user_count_channel_push({'count': User.objects.all().count() })
