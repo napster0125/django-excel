@@ -9,7 +9,7 @@ import json
 import datetime
 from .models import User,Portfolio,Stock_data,Transaction,History,Pending,Old_Stock_data
 
-from .consumers import sellDataPush,niftyChannelDataPush,leaderboardChannelDataPush,graphDataPush,portfolioDataPush,tickerDataPush
+from .consumers import sellDataPush,niftyChannelDataPush,graphDataPush,portfolioDataPush,tickerDataPush
 
 
 #Deletes all old stock data

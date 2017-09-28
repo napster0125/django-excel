@@ -24,15 +24,15 @@ channel_routing = [
 
 
 
-	route('websocket.connect',
-    	consumers.connect_to_leaderboard_channel,
-    	path = r'^/leaderboard-channel/'
-     	),
+	# route('websocket.connect',
+ #    	consumers.connect_to_leaderboard_channel,
+ #    	path = r'^/leaderboard-channel/'
+ #     	),
 	
-	route('websocket.disconnect',
-		consumers.disconnect_from_leaderboard_channel,
-		path = r'^/leaderboard-channel/',
-     	),
+	# route('websocket.disconnect',
+	# 	consumers.disconnect_from_leaderboard_channel,
+	# 	path = r'^/leaderboard-channel/',
+ #     	),
 
 
     route('websocket.connect',

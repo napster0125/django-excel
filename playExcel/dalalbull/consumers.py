@@ -4,7 +4,7 @@ from channels.auth import http_session_user, channel_session_user
 from django.core.serializers.json import DjangoJSONEncoder
 
 import json
-from .views import niftyData,sell_data,leaderboardData,graph,portfolio,ticker_data
+from .views import niftyData,sell_data,graph,portfolio,ticker_data
 from .models import Stock_data
 
 import redis
