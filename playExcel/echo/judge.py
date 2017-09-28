@@ -62,7 +62,7 @@ class judge :
   
         state = False
 
-        testfile = os.path.join(os.path.join(self.cwd, 'echo/media/testcases/'), level+'1.txt')  
+        testfile = os.path.join(os.path.join(self.cwd, 'echo/testcases/'), level+'1.txt')  
         if not tout :
             state = self.validate(self.playerId, testfile)
         print(state)
@@ -81,7 +81,7 @@ class judge :
                     if tout :
                         error.write('Script Execution Timed Out!')
 
-            testfile = os.path.join(os.path.join(self.cwd, 'echo/media/testcases/'), level+'2.txt')  
+            testfile = os.path.join(os.path.join(self.cwd, 'echo/testcases/'), level+'2.txt')  
             if not tout :
                 state = self.validate(self.playerId, testfile)
         os.chdir(self.cwd)
