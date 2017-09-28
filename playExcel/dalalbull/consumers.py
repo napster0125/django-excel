@@ -115,8 +115,10 @@ def disconnect_from_portfolio_channel(message):
 		redis_conn.hdel("online-users",userid)
 	except:
 		pass
+
 def portfolioDataPush():
 	for userid in redis_conn.hkeys("online-users"):
+		userid = userid.decode("utf-8")
 		try:
 			portfolioData = portfolio(userid)
 			Channel( redis_conn.hget("online-users",userid)).send(
@@ -153,6 +155,7 @@ def disconnect_from_sell_channel(message):
 
 def sellDataPush():
 	for userid in redis_conn.hkeys("online-sellers"):
+		userid = userid.decode("utf-8")
 		try:
 			sellData = sell_data(userid)
 			Channel( redis_conn.hget("online-sellers",userid) ).send(
