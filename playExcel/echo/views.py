@@ -133,8 +133,7 @@ def echoRank(request) :
         if thisUser == player.playerId :
             myrank = rank
         rank = rank + 1
-    # print(leaderBoard)
-    response = {'ranklist' : leaderBoard, 'myrank' : myrank}
+    response = { 'myrank' : myrank}
     return JsonResponse(response)
 
 @isLoggedIn
