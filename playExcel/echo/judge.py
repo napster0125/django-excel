@@ -36,7 +36,7 @@ class judge :
 
         with open(os.getcwd()+'/output.txt', 'w') as output :
             with open(os.getcwd()+'/error.txt', 'w') as error :
-                cmd = 'docker run -it --rm -v '+os.getcwd()+':/tmp -w /tmp echojudge rbash ./code.sh '+arg1
+                cmd = 'docker run -t --rm -v '+os.getcwd()+':/tmp -w /tmp echojudge rbash ./code.sh '+arg1
                 out = subprocess.Popen(shlex.split(cmd), stdout=output, stderr=error)
                 try :
                     out.communicate(timeout=5)
@@ -71,7 +71,7 @@ class judge :
 
             with open(os.getcwd()+'/output.txt', 'w') as output :
                 with open(os.getcwd()+'/error.txt', 'w') as error :
-                    cmd = 'docker run -it --rm -v'+os.getcwd()+':/tmp -w /tmp echojudge rbash ./code.sh '+arg2
+                    cmd = 'docker run -t --rm -v'+os.getcwd()+':/tmp -w /tmp echojudge rbash ./code.sh '+arg2
                     out = subprocess.Popen(shlex.split(cmd), stdout=output, stderr=error)
                     try :
                         out.communicate(timeout=5)
