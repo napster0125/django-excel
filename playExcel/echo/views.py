@@ -25,6 +25,12 @@ def echoHome(request) :
     defaults={'playerLevel' : 1, 'partCode' : ''},
     ) 
 
+    if not os.path.exists(os.path.join(os.getcwd(), 'echo/media/')) :
+        os.makedirs(os.path.join(os.getcwd(), 'echo/media/players/'))
+
+    if not os.path.exists(os.path.join(os.getcwd(), 'echo/media/players/')) :
+        os.makedirs(os.path.join(os.getcwd(), 'echo/media/players/'))
+        
     if not os.path.exists(os.path.join(os.getcwd(), 'echo/media/players/'+playerObj.playerId+'/')) :
         os.makedirs(os.path.join(os.getcwd(), 'echo/media/players/'+playerObj.playerId+'/'))
 
@@ -46,6 +52,7 @@ def echoSubmit(request) :
     ) 
     levelObj = echolevel.objects.get(levelId = playerObj.playerLevel)
     status = False
+    termOut = ''
     if 'term' in request.POST :
         termStatus = True
         termIn = request.POST.get('term')
@@ -64,7 +71,8 @@ def echoSubmit(request) :
         with open('/tmp/'+playerObj.playerId+'.txt', 'r') as temp :
             t = temp.read()
         with open('/tmp/'+playerObj.playerId+'.txt', 'w') as temp :
-            temp.write(re.compile(r'\x1b[^m]*m').sub('', t))
+            query = re.compile(r'\x1b[^m]*m').sub('', t)
+            temp.write(re.sub(r"\w+_test.txt\b", "", query))
         
         with open('/tmp/'+playerObj.playerId+'.txt', 'r') as temp :
             termOut = '\n'.join(str(line) for line in temp)
@@ -91,11 +99,11 @@ def echoSubmit(request) :
                 
             with open('echo/media/players/'+playerObj.playerId+'/home/level'+str(playerObj.playerLevel-1)+'/output.txt', 'r') as output :
                 termOut = output.read()
-            toptenplayers = echoplayer.objects.order_by('-playerLevel', 'ansTime')
-            topten = []
-            for player in toptenplayers :
-                topten.append(playerObj.playerId)
-            pushChangesEchoLeaderboard(topten)
+            # toptenplayers = echoplayer.objects.order_by('-playerLevel', 'ansTime')[:10]
+            # topten = []
+            # for player in toptenplayers :
+            #     topten.append(playerObj.playerId)
+            # pushChangesEchoLeaderboard(topten)
 
         else :
             
@@ -113,16 +121,29 @@ def echoSubmit(request) :
 @isLoggedIn
 def echoRank(request) :
     loginUser = request.session.get('user')
-
+    usrObj = User.objects.get(user_id = loginUser)
+    thisUser = usrObj.user_id.split('|')[1]
     allPlayers = echoplayer.objects.order_by('-playerLevel', 'ansTime')
     rank = 1
     leaderBoard = []
     for player in allPlayers :
         playerInfo = {'rank' : rank, 'userId' : player.playerId, 'level' : player.playerLevel}
         leaderBoard.append(playerInfo)
-        if loginUser == player.playerId :
+        if thisUser == player.playerId :
             myrank = rank
         rank = rank + 1
-    print(leaderBoard)
+    # print(leaderBoard)
     response = {'ranklist' : leaderBoard, 'myrank' : myrank}
+    return JsonResponse(response)
+
+@isLoggedIn
+def echoLeaderboard(request) :
+    allPlayers = echoplayer.objects.order_by('-playerLevel', 'ansTime')[:100]
+    rank = 1
+    leaderBoard = []
+    for player in allPlayers :
+        playerInfo = {'rank' : rank, 'userId' : player.playerId, 'level' : player.playerLevel}
+        leaderBoard.append(playerInfo)
+        rank = rank + 1
+    response = {'ranklist' : leaderBoard}
     return JsonResponse(response)

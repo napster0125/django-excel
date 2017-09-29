@@ -28,7 +28,6 @@ class judge :
         os.chdir(os.path.join(self.workdir, 'home/level'+level+'/'))
         req_res = ['7', '8']
         tout = False
-
         codefile = os.path.join(os.getcwd(), '/code.sh')
         with open(os.getcwd()+"/code.sh", "w") as file :
             file.write(code)
@@ -52,19 +51,21 @@ class judge :
         with open(os.getcwd()+'/output.txt', 'r') as output :
             t = output.read()
         with open(os.getcwd()+'/output.txt', 'w') as output :
-            output.write(re.compile(r'\x1b[^m]*m').sub('', t))
+            query = re.compile(r'\x1b[^m]*m').sub('', t)
+            output.write(re.sub(r"\w+_test.txt\b", "", query))
 
         with open(os.getcwd()+'/error.txt', 'r') as error :
             t = error.read()
         with open(os.getcwd()+'/error.txt', 'w') as error :
-            error.write(re.compile(r'\x1b[^m]*m').sub('', t))
+            query = re.compile(r'\x1b[^m]*m').sub('', t)
+            error.write(re.sub(r"\w+_test.txt\b", "", query))
   
         state = False
 
-        testfile = os.path.join(os.path.join(self.cwd, 'echo/media/testcases/'), level+'1.txt')  
+        testfile = os.path.join(os.path.join(self.cwd, 'echo/testcases/'), level+'1.txt')  
         if not tout :
             state = self.validate(self.playerId, testfile)
-
+        print(state)
         if state == True :
             state = False
 
@@ -80,7 +81,7 @@ class judge :
                     if tout :
                         error.write('Script Execution Timed Out!')
 
-            testfile = os.path.join(os.path.join(self.cwd, 'echo/media/testcases/'), level+'2.txt')  
+            testfile = os.path.join(os.path.join(self.cwd, 'echo/testcases/'), level+'2.txt')  
             if not tout :
                 state = self.validate(self.playerId, testfile)
         os.chdir(self.cwd)
