@@ -134,7 +134,7 @@ def echoRank(request) :
             myrank = rank
         rank = rank + 1
     # print(leaderBoard)
-    #response = {'ranklist' : leaderBoard, 'myrank' : myrank}
+    response = {'ranklist' : leaderBoard, 'myrank' : myrank}
     return JsonResponse(response)
 
 @isLoggedIn
