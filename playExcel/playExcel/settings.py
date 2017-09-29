@@ -42,7 +42,7 @@ INSTALLED_APPS = [
     'kryptos',
     'echo',
     'hashinclude',
-
+    'convolution',
     'corsheaders',
     'django_ace',
     'channels'
