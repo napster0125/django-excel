@@ -22,8 +22,7 @@ def echoHome(request) :
     loginUser = request.session.get('user')
 
     usrObj = User.objects.get(user_id = loginUser)   
-    playerObj, created = echoplayer.objects.get_or_create(playerId = usrObj.user_id.split('|')[1]) 
-
+    playerObj, created = echoplayer.objects.get_or_create(playerId = usrObj.user_id.split('|')[1],ref_id=usrObj) 
     if not os.path.exists(os.path.join(os.getcwd(), 'echo/media/')) :
         os.makedirs(os.path.join(os.getcwd(), 'echo/media/players/'))
 
@@ -143,7 +142,8 @@ def echoLeaderboard(request) :
     rank = 1
     leaderBoard = []
     for player in allPlayers :
-        playerInfo = {'rank' : rank, 'userId' : player.playerId, 'level' : player.playerLevel}
+        usr=User.objects.get(user_id=player.ref_id_id)
+        playerInfo = {'rank' : rank, 'userId' : player.playerId, 'username':usr.username,'pic':usr.profile_picture,'level' : player.playerLevel}
         leaderBoard.append(playerInfo)
         rank = rank + 1
     response = {'ranklist' : leaderBoard}
