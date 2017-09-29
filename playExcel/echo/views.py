@@ -4,7 +4,7 @@ from __future__ import unicode_literals
 from django.shortcuts import render
 from django.http import JsonResponse
 
-from common.decorators import isLoggedIn
+from common.decorators import isLoggedIn,playCookies
 from common.models import User
 from common.utility import pushChangesEchoLeaderboard
 
@@ -17,13 +17,12 @@ from . import judge
 # Create your views here.
 
 @isLoggedIn
+@playCookies
 def echoHome(request) :
     loginUser = request.session.get('user')
 
     usrObj = User.objects.get(user_id = loginUser)   
-    playerObj, created = echoplayer.objects.get_or_create(playerId = usrObj.user_id.split('|')[1],
-    defaults={'playerLevel' : 1, 'partCode' : ''},
-    ) 
+    playerObj, created = echoplayer.objects.get_or_create(playerId = usrObj.user_id.split('|')[1]) 
 
     if not os.path.exists(os.path.join(os.getcwd(), 'echo/media/')) :
         os.makedirs(os.path.join(os.getcwd(), 'echo/media/players/'))
@@ -35,12 +34,12 @@ def echoHome(request) :
         os.makedirs(os.path.join(os.getcwd(), 'echo/media/players/'+playerObj.playerId+'/'))
 
     subprocess.Popen(['cp', '-r' , os.path.join(os.getcwd(), 'echo/skel/home/'), os.path.join(os.getcwd(), 'echo/media/players/'+playerObj.playerId+'/')])
-    levelObj = echolevel.objects.get(levelId = playerObj.playerLevel)
+    levelObj = echolevel.objects.get(levelId=playerObj.playerLevel)
     status = False
         
-    response = {'player' : playerObj.playerId, 'level' : playerObj.playerLevel, 'question' : levelObj.qnDesc, 'partCode' : playerObj.partCode, 'status' : status}
-    # return JsonResponse(response)
-    return render(request, 'echohome.html', response)
+    response = {'player' : playerObj.playerId, 'level' : playerObj.playerLevel,'question':levelObj.qnDesc, 'partCode' : playerObj.partCode, 'status' : status}
+    return JsonResponse(response)
+    #return render(request, 'echohome.html', response)
 
 @isLoggedIn
 def echoSubmit(request) :
@@ -113,8 +112,8 @@ def echoSubmit(request) :
                 termOut += error.read()
 
     response = {'player' : playerObj.playerId, 'level' : playerObj.playerLevel, 'question' : levelObj.qnDesc, 'partCode' : playerObj.partCode, 'termOut' : termOut, 'status' : status}
-    # return JsonResponse(response)
-    return render(request, 'echohome.html', response)
+    return JsonResponse(response)
+    #return render(request, 'echohome.html', response)
 
 #Player Ranking
 
@@ -133,7 +132,7 @@ def echoRank(request) :
             myrank = rank
         rank = rank + 1
     # print(leaderBoard)
-    response = {'ranklist' : leaderBoard, 'myrank' : myrank}
+    #response = {'ranklist' : leaderBoard, 'myrank' : myrank}
     return JsonResponse(response)
 
 @isLoggedIn
