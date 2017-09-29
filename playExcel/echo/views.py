@@ -42,6 +42,7 @@ def echoHome(request) :
     #return render(request, 'echohome.html', response)
 
 @isLoggedIn
+@playCookies
 def echoSubmit(request) :
     loginUser = request.session.get('user')
 
@@ -118,6 +119,7 @@ def echoSubmit(request) :
 #Player Ranking
 
 @isLoggedIn
+@playCookies
 def echoRank(request) :
     loginUser = request.session.get('user')
     usrObj = User.objects.get(user_id = loginUser)
@@ -136,6 +138,7 @@ def echoRank(request) :
     return JsonResponse(response)
 
 @isLoggedIn
+@playCookies
 def echoLeaderboard(request) :
     allPlayers = echoplayer.objects.order_by('-playerLevel', 'ansTime')[:100]
     rank = 1
