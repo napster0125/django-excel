@@ -37,8 +37,8 @@ def echoHome(request) :
     status = False
         
     response = {'player' : playerObj.playerId, 'level' : playerObj.playerLevel,'question':levelObj.qnDesc, 'partCode' : playerObj.partCode, 'status' : status}
-    return JsonResponse(response)
-    #return render(request, 'echohome.html', response)
+    # return JsonResponse(response)
+    return render(request, 'echohome.html', response)
 
 @isLoggedIn
 @playCookies
@@ -58,7 +58,7 @@ def echoSubmit(request) :
         trm = ''
         with open('/tmp/'+playerObj.playerId+'.txt', 'w') as temp :
 
-            cmd = 'docker run -t --rm -v'+os.getcwd()+'/echo/media/players/'+str(playerObj.playerId)+'/home/level'+str(playerObj.playerLevel)+':/tmp -w /tmp echojudge rbash -c \"'+termIn+'\"'
+            cmd = 'docker run -i -v'+os.getcwd()+'/echo/media/players/'+str(playerObj.playerId)+'/home/level'+str(playerObj.playerLevel)+':/tmp -w /tmp echojudge rbash -c \"'+termIn+'\"'
 
             t = subprocess.Popen(shlex.split(str(cmd)), stdout=temp, stderr=temp)
             try :
@@ -112,8 +112,8 @@ def echoSubmit(request) :
                 termOut += error.read()
 
     response = {'player' : playerObj.playerId, 'level' : playerObj.playerLevel, 'question' : levelObj.qnDesc, 'partCode' : playerObj.partCode, 'termOut' : termOut, 'status' : status}
-    return JsonResponse(response)
-    #return render(request, 'echohome.html', response)
+    # return JsonResponse(response)
+    return render(request, 'echohome.html', response)
 
 #Player Ranking
 

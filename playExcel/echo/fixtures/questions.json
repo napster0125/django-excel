@@ -15,8 +15,8 @@
         {
             "levelId": 2, 
             "qnDesc": "SYNDICATE, A TERRORIST ORGANISATION WAS PIGGYBACKING OUR NETWORK FOR THEIR COMMUNICATION. WE MANAGED TO INTERCEPT A MESSAGE, WHICH WAS ENCRYPTED. YOUR MISSION, SHOULD YOU CHOOSE TO ACCEPT IS TO DECRYPT THIS MESSAGE.\\nWE HAVE ALSO FOUND OUT THAT THE ENCRYPTION TECHNIQUE USED HERE IS RAIL FENCE ENCRYPTION.\\nMESSAGE FILE, KEY WILL BE PROVIDED TO YOU AS COMMAND LINE ARGUMENT.\\nINPUT :\\nTIAEEHSSSMLCDIAPO\\nKEY=3\\n\\nOUTPUT :\\nTHISISASAMPLECODE", 
-            "testArg1": "message.txt",
-            "testArg2": ".message_test.txt"
+            "testArg1": "message.txt 3",
+            "testArg2": ".message_test.txt 4"
         }
     }, 
     {
@@ -36,7 +36,7 @@
             "levelId": 4,  
             "qnDesc": "WE WERE TRACKING ONE OF THE KNOWN ASSOCIATES OF A WANTED PERSON AND WE SOMEHOW WERE ABLE TO GAIN ACCESS TO HIS PERSONAL COMPUTER. BUT IT WAS PASSWORD PROTECTED. YOUR MISSION, SHOULD YOU CHOODE TO ACCEPT, IS TO RETRIEVE THE PASSWORD OF THER USER. WE WERE ABLE TO GET THE KEYSTROKES LAST TIME HE LOGGED IN. IT IS ALSO KNOWN THAT THE PASSWORD IS THE NAME OF A FAMOUS CITY. KEYSTROKE FILE AND POSSIBLE CITIES FILE WILL BE PROVIDED TO YOU AS COMMAND LINE ARGUMENTS.\\nINPUT :   \\n  \\nKEYSTROKE :             CITIES :\\nERMO                    PARIS\\n                        ROME\\n                        LONDON\\n                        NEW YORK\\n                        SYDNEY\\n                        DELHI\\n                        MADRID\\n\\nOUTPUT :\\n\\nROME", 
             "testArg1": "keystroke.txt cities.txt",
-            "testArg2": ".keystrokes_test.txt cities.txt"
+            "testArg2": ".keystroke_test.txt cities.txt"
         }
     }, 
     {
