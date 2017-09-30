@@ -58,7 +58,7 @@ def echoSubmit(request) :
         trm = ''
         with open('/tmp/'+playerObj.playerId+'.txt', 'w') as temp :
 
-            cmd = 'docker run -it --rm -v'+os.getcwd()+'/echo/media/players/'+str(playerObj.playerId)+'/home/level'+str(playerObj.playerLevel)+':/tmp -w /tmp echojudge rbash -c \"'+termIn+'\"'
+            cmd = 'docker run -t --rm -v'+os.getcwd()+'/echo/media/players/'+str(playerObj.playerId)+'/home/level'+str(playerObj.playerLevel)+':/tmp -w /tmp echojudge rbash -c \"'+termIn+'\"'
 
             t = subprocess.Popen(shlex.split(str(cmd)), stdout=temp, stderr=temp)
             try :
