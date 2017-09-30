@@ -59,7 +59,7 @@ def echoSubmit(request) :
         trm = ''
         with open('/tmp/'+playerObj.playerId+'.txt', 'w') as temp :
 
-            cmd = 'docker run -i --rm -v'+os.getcwd()+'/echo/media/players/'+str(playerObj.playerId)+'/home/level'+str(playerObj.playerLevel)+':/tmp -w /tmp echojudge bash -c \"'+termIn+'\"'
+            cmd = 'docker run --memory=32M -i --rm -v'+os.getcwd()+'/echo/media/players/'+str(playerObj.playerId)+'/home/level'+str(playerObj.playerLevel)+':/tmp -w /tmp echojudge bash -c \"'+termIn+'\"'
 
             t = subprocess.Popen(shlex.split(str(cmd)), stdout=temp, stderr=temp)
             try :
