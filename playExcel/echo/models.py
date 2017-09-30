@@ -11,7 +11,7 @@ class echoplayer(models.Model) :
     playerLevel = models.IntegerField(default = 1)
     # playerQn = models.IntegerField(default = 1)
     partCode = models.CharField(max_length = 5000, default = '',blank=True)
-    ansTime = models.DateTimeField(auto_now = True)
+    ansTime = models.DateTimeField()
     ref_id = models.ForeignKey(User,on_delete=models.CASCADE)
     def __str__(self) :
         return str(self.playerId)

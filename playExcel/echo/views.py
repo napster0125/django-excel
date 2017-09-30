@@ -12,6 +12,7 @@ from .models import echoplayer,echolevel
 
 import json
 import subprocess, os, re, shlex
+from django.utils import timezone
 from threading import Timer
 from . import judge
 # Create your views here.
@@ -58,7 +59,7 @@ def echoSubmit(request) :
         trm = ''
         with open('/tmp/'+playerObj.playerId+'.txt', 'w') as temp :
 
-            cmd = 'docker run -i -v'+os.getcwd()+'/echo/media/players/'+str(playerObj.playerId)+'/home/level'+str(playerObj.playerLevel)+':/tmp -w /tmp echojudge rbash -c \"'+termIn+'\"'
+            cmd = 'docker run -i -v'+os.getcwd()+'/echo/media/players/'+str(playerObj.playerId)+'/home/level'+str(playerObj.playerLevel)+':/tmp -w /tmp echojudge bash -c \"'+termIn+'\"'
 
             t = subprocess.Popen(shlex.split(str(cmd)), stdout=temp, stderr=temp)
             try :
@@ -83,7 +84,7 @@ def echoSubmit(request) :
         termStatus = False
 
     elif 'execute' in request.POST :
-        playerObj.partCode = request.POST.get('code').replace('\r', '')
+        playerObj.partCode = request.POST.get('code').replace('\r', '').rstrip()
         playerObj.save()
 
         termStatus = False
@@ -94,6 +95,7 @@ def echoSubmit(request) :
 
             playerObj.playerLevel = playerObj.playerLevel + 1
             playerObj.partCode = ''
+            playerObj.ansTime = timezone.now
             playerObj.save()
                 
             with open('echo/media/players/'+playerObj.playerId+'/home/level'+str(playerObj.playerLevel-1)+'/output.txt', 'r') as output :
