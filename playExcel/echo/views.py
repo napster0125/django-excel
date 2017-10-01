@@ -140,7 +140,7 @@ def echoSubmit(request) :
 @playCookies
 def echoRank(request) :
     loginUser = request.session.get('user')
-    return JsonResponse({ 'myrank' :  echoplayer.objects.get(playerId=loginUser.split('|')[1])})
+    return JsonResponse({ 'myrank' :  echoplayer.objects.get(playerId=loginUser.split('|')[1]).rank })
 
 @isLoggedIn
 @playCookies
