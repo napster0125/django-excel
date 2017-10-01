@@ -150,7 +150,7 @@ def echoLeaderboard(request) :
     leaderBoard = []
     for player in allPlayers :
         usr=User.objects.get(user_id=player.ref_id_id)
-        playerInfo = {'rank' : rank, 'userId' : player.playerId, 'username':usr.username,'pic':usr.profile_picture,'level' : player.playerLevel}
+        playerInfo = {'rank' : rank, 'username':usr.username,'pic':usr.profile_picture,'level' : player.playerLevel}
         leaderBoard.append(playerInfo)
         rank = rank + 1
     response = {'ranklist' : leaderBoard}
