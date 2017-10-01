@@ -25,7 +25,7 @@ def echoHome(request) :
     usrObj = User.objects.get(user_id = loginUser)   
     playerObj, created = echoplayer.objects.get_or_create(playerId = usrObj.user_id.split('|')[1],ref_id=usrObj) 
     if created:
-        playerObj.rank = echoplayer.objects.count() + 1
+        playerObj.rank = echoplayer.objects.count()
         playerObj.save()
     if not os.path.exists(os.path.join(os.getcwd(), 'echo/media/')) :
         os.makedirs(os.path.join(os.getcwd(), 'echo/media/players/'))
@@ -55,7 +55,7 @@ def echoSubmit(request) :
     ) 
 
     if created:
-        playerObj.rank = echoplayer.objects.count() + 1
+        playerObj.rank = echoplayer.objects.count()
 
     levelObj = echolevel.objects.get(levelId = playerObj.playerLevel)
     status = False
@@ -145,7 +145,7 @@ def echoRank(request) :
 @isLoggedIn
 @playCookies
 def echoLeaderboard(request) :
-    allPlayers = echoplayer.objects.order_by('-playerLevel', 'ansTime')[:100]
+    allPlayers = echoplayer.objects.order_by('rank')[:100]
     rank = 1
     leaderBoard = []
     for player in allPlayers :
