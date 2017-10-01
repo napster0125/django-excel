@@ -93,7 +93,7 @@ class judge :
             Compare output with the testcases
 
         '''
-        valid = True
+        valid = False
         # valid = filecmp.cmp(os.getcwd()+'/output.txt', testfile, shallow=False)
         with open(testfile, 'r') as test :
             testlist = test.readlines()
@@ -102,10 +102,18 @@ class judge :
             outlist = out.readlines()
         outlist = [x.strip() for x in outlist]
 
-        compare = map(eq, testlist, outlist)
-        for c in compare : 
-            if c == False :
-                valid = False
+        if len(outlist) and outlist[-1]=='':
+            outlist = outlist[:-1]
+
+        if len(testlist) and testlist[-1]=='':
+            testlist = testlist[:-1]
+
+        if len(outlist)==len(testlist):
+            valid = True
+            compare = map(eq, testlist, outlist)
+            for c in compare : 
+                if c == False :
+                    valid = False
         
         print(valid)
         return valid
