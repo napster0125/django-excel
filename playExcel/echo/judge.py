@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 import os, filecmp, shutil, sys, subprocess, re, shlex
-
+from operator import eq
 class judge :
 
     def __init__(self, playerId) :
@@ -31,7 +31,7 @@ class judge :
         codefile = os.path.join(os.getcwd(), '/code.sh')
         with open(os.getcwd()+"/code.sh", "w") as file :
             file.write(code)
-
+       
         out = subprocess.Popen(['chmod', '+x', os.getcwd()+'/code.sh'])
 
         with open(os.getcwd()+'/output.txt', 'w') as output :
@@ -93,8 +93,20 @@ class judge :
             Compare output with the testcases
 
         '''
-        valid = False
-        valid = filecmp.cmp(os.getcwd()+'/output.txt', testfile, shallow=False)
+        valid = True
+        # valid = filecmp.cmp(os.getcwd()+'/output.txt', testfile, shallow=False)
+        with open(testfile, 'r') as test :
+            testlist = test.readlines()
+        testlist = [x.strip() for x in testlist]
+        with open(os.getcwd()+'/output.txt', 'r') as out :
+            outlist = out.readlines()
+        outlist = [x.strip() for x in outlist]
+
+        compare = map(eq, testlist, outlist)
+        for c in compare : 
+            if c == False :
+                valid = False
+        
         print(valid)
         return valid
 
