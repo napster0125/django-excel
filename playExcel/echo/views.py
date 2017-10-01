@@ -105,6 +105,7 @@ def echoSubmit(request) :
             min_rank = 1000000000
             for plr in players_:
                 min_rank = min(min_rank,plr.rank)
+                plr = echoplayer.objects.get(playerId=plr.playerId)
                 plr.rank = F('rank') + 1
                 plr.save()
 
