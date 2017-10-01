@@ -9,7 +9,7 @@ from common.models import User
 from common.utility import pushChangesEchoLeaderboard
 
 from .models import echoplayer,echolevel
-
+from django.db.models import F
 import json
 import subprocess, os, re, shlex
 from django.utils import timezone
@@ -102,7 +102,7 @@ def echoSubmit(request) :
 
 
             players_ = echoplayer.objects.filter(playerLevel=playerObj.playerLevel,rank__lt=playerObj.rank)
-            min_rank = 1000000000
+            min_rank = playerObj.rank
             for plr in players_:
                 min_rank = min(min_rank,plr.rank)
                 plr = echoplayer.objects.get(playerId=plr.playerId)
