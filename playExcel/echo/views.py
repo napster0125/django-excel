@@ -24,6 +24,9 @@ def echoHome(request) :
 
     usrObj = User.objects.get(user_id = loginUser)   
     playerObj, created = echoplayer.objects.get_or_create(playerId = usrObj.user_id.split('|')[1],ref_id=usrObj) 
+    if created:
+        playerObj.rank = echoplayer.objects.count() + 1
+        playerObj.save()
     if not os.path.exists(os.path.join(os.getcwd(), 'echo/media/')) :
         os.makedirs(os.path.join(os.getcwd(), 'echo/media/players/'))
 
@@ -50,6 +53,10 @@ def echoSubmit(request) :
     playerObj, created = echoplayer.objects.get_or_create(playerId = usrObj.user_id.split('|')[1],
     defaults={'playerLevel' : 1, 'partCode' : ''},
     ) 
+
+    if created:
+        playerObj.rank = echoplayer.objects.count() + 1
+
     levelObj = echolevel.objects.get(levelId = playerObj.playerLevel)
     status = False
     termOut = ''
@@ -93,9 +100,18 @@ def echoSubmit(request) :
 
         if status == True :
 
+
+            players_ = echoplayer.objects.filter(level=playerObj.playerLevel,rank_lt=playerObj.rank)
+            min_rank = 1000000000
+            for plr in players_:
+                min_rank = min(min_rank,plr.rank)
+                plr.rank = F('rank') + 1
+                plr.save()
+
+            playerObj.rank = min_rank
             playerObj.playerLevel = playerObj.playerLevel + 1
             playerObj.partCode = ''
-            playerObj.ansTime = timezone.now
+            playerObj.ansTime = timezone.now()
             playerObj.save()
                 
             with open('echo/media/players/'+playerObj.playerId+'/home/level'+str(playerObj.playerLevel-1)+'/output.txt', 'r') as output :
@@ -123,19 +139,7 @@ def echoSubmit(request) :
 @playCookies
 def echoRank(request) :
     loginUser = request.session.get('user')
-    usrObj = User.objects.get(user_id = loginUser)
-    thisUser = usrObj.user_id.split('|')[1]
-    allPlayers = echoplayer.objects.order_by('-playerLevel', 'ansTime')
-    rank = 1
-    leaderBoard = []
-    for player in allPlayers :
-        playerInfo = {'rank' : rank, 'userId' : player.playerId, 'level' : player.playerLevel}
-        leaderBoard.append(playerInfo)
-        if thisUser == player.playerId :
-            myrank = rank
-        rank = rank + 1
-    response = { 'myrank' : myrank}
-    return JsonResponse(response)
+    return JsonResponse({ 'myrank' :  echoplayer.objects.get(playerId=loginUser.split('|')[1])})
 
 @isLoggedIn
 @playCookies

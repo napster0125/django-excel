@@ -12,6 +12,7 @@ from .consumers import user_count_channel_push, disconnectAll
 
 from hashinclude.models import hiuser
 from kryptos.models import kryptosuser
+from echo.models import echoplayer
 from urllib import request as rq
 import json
 
@@ -104,7 +105,12 @@ def user_rank(request):
         hi_rank=hiuser.objects.get(user_id=loginUser).rank
     except hiuser.DoesNotExist:
         hi_rank="N/A"
-    user_ranklist={'krytosrank':kryptos_rank, 'hirank':hi_rank, 'echorank':'N/A', 'dbrank':'N/A', 'convrank':'N/A'}
+
+    try:
+        echo_rank = echoplayer.objects.get(playerId = loginUser.split('|')[1]).rank
+    except echoplayer.DoesNotExist:
+        echo_rank = "N/A"
+    user_ranklist={'krytosrank':kryptos_rank, 'hirank':hi_rank, 'echorank': echo_rank, 'dbrank':'N/A', 'convrank':'N/A'}
     response={'userRankList':user_ranklist}
     return JsonResponse(response)
 

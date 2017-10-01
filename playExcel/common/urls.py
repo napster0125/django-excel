@@ -8,6 +8,6 @@ urlpatterns = [
 	url(r'testCache', testCache ),
 	url(r'testLoginCheck', testLoginCheck ),
 	url(r'getUserCount', getUserCount ),
-        url(r'getRank',user_rank),
+	url(r'getRank',user_rank),
 	#url(r'',home),
 ]
