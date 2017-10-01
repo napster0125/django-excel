@@ -101,7 +101,7 @@ def echoSubmit(request) :
         if status == True :
 
 
-            players_ = echoplayer.objects.filter(level=playerObj.playerLevel,rank_lt=playerObj.rank)
+            players_ = echoplayer.objects.filter(playerLevel=playerObj.playerLevel,rank__lt=playerObj.rank)
             min_rank = 1000000000
             for plr in players_:
                 min_rank = min(min_rank,plr.rank)
