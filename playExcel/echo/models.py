@@ -3,7 +3,7 @@ from __future__ import unicode_literals
 
 from django.db import models
 from common.models import User
-
+from django.utils import timezone
 # Create your models here.
 
 class echoplayer(models.Model) :
@@ -11,7 +11,7 @@ class echoplayer(models.Model) :
     playerLevel = models.IntegerField(default = 1)
     # playerQn = models.IntegerField(default = 1)
     partCode = models.CharField(max_length = 5000, default = '',blank=True)
-    ansTime = models.DateTimeField()
+    ansTime = models.DateTimeField(auto_now_add=True)
     ref_id = models.ForeignKey(User,on_delete=models.CASCADE)
     def __str__(self) :
         return str(self.playerId)
