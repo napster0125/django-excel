@@ -21,7 +21,7 @@ from django.conf.urls.static import static
 
 
 urlpatterns = [
-    url(r'^api/adslksfhjchsj87673yf787df6sgdgfksk67135/', admin.site.urls),
+    url(r'^api/godpalliadslksfhjchsj87673yf787df6sgdgfksk67135/', admin.site.urls),
     url(r'^api/kryptos', include('kryptos.urls')),
     url(r'^api/echo', include('echo.urls')),
     url(r'^api/hashinclude',include('hashinclude.urls')),
