@@ -6,10 +6,10 @@ from django.http import JsonResponse,HttpResponse
 
 from django.views.decorators.cache import cache_page
 from django.views.decorators.csrf import csrf_exempt
-from common.decorators import isLoggedIn, playCookies
+from common.decorators import isLoggedIn, playCookies, androidFriendly
 from .models import *
 from .consumers import user_count_channel_push, disconnectAll
-
+from dalalbull.consumers import disconnectFromDalalbullCh
 from hashinclude.models import hiuser
 from kryptos.models import kryptosuser
 from echo.models import echoplayer
@@ -27,24 +27,31 @@ import json
 # This function puts the login info inside request.session
 # from where all the other app can take the info like user_id
 # by accessing request.session['user']
-from django.middleware.csrf import get_token as getCsrfToken
 
-@playCookies
-def getCookieAsJson(request):
-	print("Cookies:", request.COOKIES )
-	if 'count' not in request.session:
-		request.session['count'] = 0
-	request.session['count'] += 1
-	return JsonResponse({
-			#'sessionid' : request.session.session_key,
-			#'csrftoken' : getCsrfToken(request),
-			'count' : request.session['count']
-		})
+from dalalbull.consumers import sellDataPush,niftyChannelDataPush,graphDataPush,portfolioDataPush,tickerDataPush
 
+@csrf_exempt
+def test_db_channels(request):
+	if request.method=="POST":
+		print(request.POST)
+		if 'ticker' in request.POST:
+			tickerDataPush()
+		if 'nifty' in request.POST:
+			niftyChannelDataPush()
+		if 'protfolio' in request.POST: 
+			portfolioDataPush()
+		if 'graph' in request.POST:
+			graphDataPush()
+		if 'leaderboard' in request.POST:
+			leaderboardChannelDataPush()
+		if 'sell' in request.POST:
+			sellDataPush()
 
+	return render(request,'try_channels.html')
 
 @csrf_exempt
 @playCookies
+@androidFriendly
 def sign_in(request):
 	if 'access_token' in request.POST:
 		access_token = request.POST['access_token']
@@ -59,11 +66,16 @@ def sign_in(request):
 		return JsonResponse({ 'success' : False })
 
 
-	obj,created = User.objects.get_or_create(user_id = data['sub'],
-		username = data['name'],
-		profile_picture = data['picture'],
-		email = data['email']
-		)
+	created = False
+	if not User.objects.filter(user_id=data['sub']).exists():
+		print('This user exists')
+		obj = User.objects.create(user_id = data['sub'],
+			username = data['name'],
+			profile_picture = data['picture'],
+			email = data['email']
+			)
+	else:
+		obj = User.objects.get(user_id = data['sub'])l
 
 	if created:
 		user_count_channel_push({'count': User.objects.all().count() })
@@ -84,6 +96,7 @@ def getUserCount(request):
 @playCookies
 def signout(request):
 	disconnectAll(request.session['user'])
+	disconnectFromDalalbullCh(request.session['user'])
 	request.session.flush()
 	return JsonResponse({ 'success' : True })
 
