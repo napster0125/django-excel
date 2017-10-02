@@ -43,8 +43,12 @@ INSTALLED_APPS = [
     'kryptos',
     'echo',
     'hashinclude',
+<<<<<<< HEAD
     'dalalbull',
 
+=======
+    'convolution',
+>>>>>>> 01723599175603efac1b16a7668a4ccad3ec7176
     'corsheaders',
     'django_ace',
     'channels'

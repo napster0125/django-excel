@@ -12,6 +12,7 @@ from .consumers import user_count_channel_push, disconnectAll
 
 from hashinclude.models import hiuser
 from kryptos.models import kryptosuser
+from echo.models import echoplayer
 from urllib import request as rq
 import json
 
@@ -57,7 +58,7 @@ def sign_in(request):
 	except:
 		return JsonResponse({ 'success' : False })
 
-		
+
 	obj,created = User.objects.get_or_create(user_id = data['sub'],
 		username = data['name'],
 		profile_picture = data['picture'],
@@ -95,7 +96,7 @@ def testCache(request):
 	return JsonResponse({'message': 'Testing django cache'})
 
 
-# This will ensure that the function testLoginCheck is 
+# This will ensure that the function testLoginCheck is
 # only executed when user is logged in
 # otherwise it would return -> JsonResponse({'error' : 'User not logged in'})
 @playCookies
@@ -120,14 +121,19 @@ def user_rank(request):
         hi_rank=hiuser.objects.get(user_id=loginUser).rank
     except hiuser.DoesNotExist:
         hi_rank="N/A"
-    user_ranklist=[{'krytosrank':kryptos_rank},{'hirank':hi_rank},{'echorank':'N/A'},{'dbrank':'N/A'},{'convrank':'N/A'}]
+
+    try:
+        echo_rank = echoplayer.objects.get(playerId = loginUser.split('|')[1]).rank
+    except echoplayer.DoesNotExist:
+        echo_rank = "N/A"
+    user_ranklist={'krytosrank':kryptos_rank, 'hirank':hi_rank, 'echorank': echo_rank, 'dbrank':'N/A', 'convrank':'N/A'}
     response={'userRankList':user_ranklist}
     return JsonResponse(response)
 
 """
 @csrf_exempt
 def signin(request):
-	# Get token from the js client in frontend 
+	# Get token from the js client in frontend
 	try:
 		data = client.verify_id_token(request.POST['token'], CLIENT_ID)
 	except:

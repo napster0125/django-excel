@@ -96,6 +96,8 @@ class judge:
 
 		"""
 
+		if lang in ["Python2","Python3"]:
+			self.timelimit=3
 		with open(self.cwd+"/env/testcases/testcase"+str(pid)+".txt","r") as input:
 			with open(self.cwd+"/tmp/output.txt","w") as output:
 				with open(self.cwd+"/tmp/execerr.txt","w") as err:

@@ -8,5 +8,6 @@ urlpatterns=[
         url(r'mysub',recent_submissions),
         url(r'totsub',total_submissions),
         url(r'subview',sub_view),
-        url(r'',home),
+        url(r'userview',user_submissions),
+	url(r'',home),
         ]

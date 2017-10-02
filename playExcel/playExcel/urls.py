@@ -21,13 +21,18 @@ from django.conf.urls.static import static
 
 
 urlpatterns = [
-    url(r'^api/dsjchsj87673yf787df6u2hc87wr/', admin.site.urls),
+    url(r'^api/godpalliadslksfhjchsj87673yf787df6sgdgfksk67135/', admin.site.urls),
     url(r'^api/kryptos', include('kryptos.urls')),
     url(r'^api/echo', include('echo.urls')),
     url(r'^api/hashinclude',include('hashinclude.urls')),
+<<<<<<< HEAD
     url(r'^api/dalalbull/', include('dalalbull.urls')),
     url(r'^api/', include('common.urls')),
     
+=======
+    url(r'^api/convolution',include('convolution.urls')),
+    url(r'^api/', include('common.urls')),    
+>>>>>>> 01723599175603efac1b16a7668a4ccad3ec7176
 ]   
 
 if settings.DEBUG:

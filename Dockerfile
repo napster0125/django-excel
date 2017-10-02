@@ -7,8 +7,7 @@ RUN apt-get update && apt-get install -y \
   openjdk-8-jdk \
   g++ \
   python \
-  python3 \
-  python3-pip
+  python3 
 
 COPY playExcel/app/. /app/
 
