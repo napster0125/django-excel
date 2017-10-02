@@ -37,6 +37,18 @@ def dq():
 
 
 @shared_task
+def orderLeaderboard():
+	if isGoodTime():
+		print("Leaderboard ordered!")
+		ordered_data = Portfolio.objects.order_by('-net_worth')
+		rank = 1
+		for e in ordered_data:
+			e.rank = rank
+			rank += 1
+			e.save()
+	return
+
+@shared_task
 def net():
     print("Networth Update");
     networth()
@@ -300,6 +312,8 @@ def networth():
 
 
 #====== Utility functions =======#
+_start_time = datetime.time(hour=9,minute=15,second=00)
+_end_time = datetime.time(hour=15,minute=30,second=00)
 def isGoodTime():
 	return 1
 	now = datetime.datetime.now()
@@ -317,8 +331,7 @@ def onlyAtGoodTime(func):
 			return None
 	return new_func
 
-_start_time = datetime.time(hour=9,minute=15,second=00)
-_end_time = datetime.time(hour=15,minute=30,second=00)
+
 
 
 hdr = {

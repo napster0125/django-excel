@@ -214,6 +214,11 @@ CELERYBEAT_SCHEDULE = {
             'schedule': timedelta(seconds=3),
             'args': ()
      },
+     'orderLeaderboard-every-60-seconds': {
+            'task': 'dalalbull.tasks.orderLeaderboard',
+            'schedule': timedelta(seconds=3),
+            'args': ()
+     },
 }
 
 

@@ -20,6 +20,7 @@ class User(models.Model):
 
 class Portfolio(models.Model):
 	user_id = models.CharField(max_length=200,primary_key=True)
+	rank = models.IntegerField(default=131)
 	cash_bal = models.DecimalField(max_digits=19, decimal_places=2, default=Decimal('100000'))
 	net_worth = models.DecimalField(max_digits=19, decimal_places=2, default=Decimal('0.00'),validators=[MinValueValidator(Decimal('0.00'))])
 	margin = models.DecimalField(max_digits=19, decimal_places=2, default=Decimal('0.00'))

@@ -1027,14 +1027,6 @@ def getMostActiveValue():
             break
     return active
 
-def getRank(user_id):
-    p=Portfolio.objects.all().order_by('-net_worth')
-    i=1
-    for t in p:
-        if(t.user_id==user_id):
-            return i
-        i+=1
-    return 0
 
 
 def isWrongTime():
@@ -1106,9 +1098,6 @@ def leaderboardData():
 
 
 def portfolio(user_id):
-    data=[]
-    dat=[]
-
     user=Portfolio.objects.get(user_id=user_id)
     total_no = User.objects.count() 
     total_transactions = Transaction.objects.filter(user_id=user_id).count()                            
@@ -1117,7 +1106,7 @@ def portfolio(user_id):
     'net_worth' : user.net_worth,
     'margin' : user.margin,
     'total_users' : total_no,
-    'rank' : getRank(user_id),
+    'rank' : user.rank,
     'total_transactions' : user.no_trans,
     }
 
