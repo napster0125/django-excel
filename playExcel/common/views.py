@@ -9,10 +9,14 @@ from django.views.decorators.csrf import csrf_exempt
 from common.decorators import isLoggedIn, playCookies, androidFriendly
 from .models import *
 from .consumers import user_count_channel_push, disconnectAll
+
 from dalalbull.consumers import disconnectFromDalalbullCh
+
 from hashinclude.models import hiuser
 from kryptos.models import kryptosuser
 from echo.models import echoplayer
+from dalalbull.models import Portfolio
+
 from urllib import request as rq
 import json
 
@@ -33,7 +37,6 @@ from dalalbull.consumers import sellDataPush,niftyChannelDataPush,graphDataPush,
 @csrf_exempt
 def test_db_channels(request):
 	if request.method=="POST":
-		print(request.POST)
 		if 'ticker' in request.POST:
 			tickerDataPush()
 		if 'nifty' in request.POST:
@@ -68,14 +71,13 @@ def sign_in(request):
 
 	created = False
 	if not User.objects.filter(user_id=data['sub']).exists():
-		print('This user exists')
 		obj = User.objects.create(user_id = data['sub'],
 			username = data['name'],
 			profile_picture = data['picture'],
 			email = data['email']
 			)
 	else:
-		obj = User.objects.get(user_id = data['sub'])l
+		obj = User.objects.get(user_id = data['sub'])
 
 	if created:
 		user_count_channel_push({'count': User.objects.all().count() })
@@ -105,7 +107,6 @@ def signout(request):
 #This is how we cache a view. Here the result of function will be cached for 10secs.
 @playCookies
 def testCache(request):
-	print('This func called')
 	return JsonResponse({'message': 'Testing django cache'})
 
 
@@ -115,7 +116,6 @@ def testCache(request):
 @playCookies
 @isLoggedIn
 def testLoginCheck(request):
-	print("Cookies: ",request.COOKIES)
 	return JsonResponse({'message': 'this user is logged in'})
 
 
@@ -139,6 +139,13 @@ def user_rank(request):
         echo_rank = echoplayer.objects.get(playerId = loginUser.split('|')[1]).rank
     except echoplayer.DoesNotExist:
         echo_rank = "N/A"
+
+	try:
+        dbrank = Portfolio.objects.get(user_id = loginUser).rank
+    except Portfolio.DoesNotExist:
+        dbrank = "N/A"
+
+
     user_ranklist={'krytosrank':kryptos_rank, 'hirank':hi_rank, 'echorank': echo_rank, 'dbrank':'N/A', 'convrank':'N/A'}
     response={'userRankList':user_ranklist}
     return JsonResponse(response)
