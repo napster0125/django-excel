@@ -2,6 +2,8 @@ from django.http import JsonResponse
 from django.middleware.csrf import get_token as getCsrfToken
 import json
 
+from django.views.decorators.csrf import ensure_csrf_cookie,csrf_exempt,csrf_protect
+
 def isLoggedIn(view_func):
 	def new_view_func(request):
 		if request.session.get('logged_in',False):
@@ -38,19 +40,23 @@ def convert(inp):
                 except:
                         return inp
 
-
 def androidFriendly(view_func):
-        def new_view_func(request):
-                if request.method == 'POST':
-                        if request.META.get('HTTP_MOBILE',False):
-                                print('\n\nData: ',request.body,'\n\n')
-                                temp = str(request.body)[2:-1].split('&')
-                                try:
-                                        request.POST = json.loads(request.body.decode('utf-8').replace('\0', '')) 
-                                except:
-                                        request.POST = { i.split('=')[0] : convert(i.split('=')[1]) for i in temp }
-                print("%s is about to be called"%view_func.__name__)
-                ret = view_func(request)
-                print("%s was called"%view_func.__name__)
-                return ret
-        return new_view_func
+    @csrf_exempt    
+    def new_view_func(request):
+        print('Cookies: ',request.COOKIES,'\n\n\n',request.META)
+        if request.method == 'POST':
+            if request.META.get('HTTP_MOBILE',False):
+                print('\n\nData: ',request.body,'\n\n')
+
+                #temp = str(request.body)[2:-1].split('&')
+                #try:
+                request.POST = json.loads(request.body.decode('utf-8'))#.replace('\0', '')) 
+                #except:
+                #    request.POST = { i.split('=')[0] : convert(i.split('=')[1]) for i in temp }
+
+        print("%s is about to be called"%view_func.__name__)
+        ret = csrf_protect(view_func)(request)
+        print("%s was called"%view_func.__name__)
+        return ret
+    return new_view_func
+

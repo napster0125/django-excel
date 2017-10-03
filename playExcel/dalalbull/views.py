@@ -167,9 +167,9 @@ Post data format:
     }
 '''
 
+@androidFriendly
 @playCookies
 @isLoggedIn
-@androidFriendly
 def companydetails(request):                          
     company = request.POST['company']
     try:
@@ -919,9 +919,9 @@ in buy/short sell,
 UI performs the required calculations
 '''
 
+@androidFriendly
 @playCookies
 @isLoggedIn
-@androidFriendly
 def currPrice(request):
     user_id=request.session['user']
     comp = request.POST['company']
@@ -1070,7 +1070,8 @@ def niftyData():
 
 
 def leaderboardData():
-    p=Portfolio.objects.all().order_by('-net_worth')[:100]
+    #p=Portfolio.objects.all().order_by('-net_worth')[:100]
+    p=Portfolio.objects.all().order_by('rank')[:100]
     i=1
     l=[]
     for t in p:
