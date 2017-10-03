@@ -4,8 +4,9 @@ from django.utils import timezone
 
 class convolution_user(models.Model):
     user_id=models.OneToOneField(User,primary_key=True,on_delete=models.CASCADE)
-    score=models.IntegerField()
+    score=models.IntegerField(default=0)
     tries=models.IntegerField(default=5)
+    rank=models.IntegerField(null=True)
     def __str__(self):
         return self.user_id.username
 

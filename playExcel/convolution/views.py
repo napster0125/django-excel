@@ -3,6 +3,7 @@ from django.http import JsonResponse
 
 from django.views.decorators.csrf import csrf_exempt
 from common.decorators import isLoggedIn,playCookies
+from common.models import User
 
 import json
 import datetime
@@ -13,15 +14,18 @@ from .models import Submission
 from .forms import SubmissionForm
 # Create your views here.
 
+@isLoggedIn
+@playCookies
 def home(request):
     loginUser=request.session['user']
     usr=User.objects.get(user_id=loginUser)
     try:
-        user_obj=convolution_user.get(user_id=usr.user_id)
+        user_obj=convolution_user.objects.get(user_id=usr.user_id)
     except convolution_user.DoesNotExist:
         user_obj=convolution_user(user_id=usr,rank=(convolution_user.objects.count()+1))
         user_obj.save()
         return JsonResponse({'result': ' Added user to convolution db '})
+    return JsonResponse({'result': ' User in convolution db ' })
 
 def submit(request):
     if request.method=='POST':
@@ -35,11 +39,13 @@ def submit(request):
             else:
                 return JsonResponse({'result':error})
 
+@isLoggedIn
+@playCookies
 def leaderboard(request):
     loginUser=request.session['user']
-    top_users=hiuser.objects.order_by('rank')[:100]
+    top_users=convolution_user.objects.order_by('rank')[:100]
     ranklist=[]
     for user in top_users:
-        user_obj={'rank':user.rank,'pic':user_obj.user_id.profile_picture,'username':user_obj.user_id.username,'score':user_obj.score}
+        user_obj={'rank':user.rank,'pic':user.user_id.profile_picture,'username':user.user_id.username,'score':user.score}
         ranklist.append(user_obj)
     return JsonResponse({'ranklist':ranklist})

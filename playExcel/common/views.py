@@ -15,8 +15,8 @@ from dalalbull.consumers import disconnectFromDalalbullCh
 from hashinclude.models import hiuser
 from kryptos.models import kryptosuser
 from echo.models import echoplayer
+from convolution.models import convolution_user
 from dalalbull.models import Portfolio
-
 from urllib import request as rq
 import json
 
@@ -141,13 +141,17 @@ def user_rank(request):
         echo_rank = "N/A"
 
     try:
+        cv_rank = convolution_user.objects.get(user_id=loginUser).rank
+    except convolution_user.DoesNotExist:
+        cv_rank = "N/A"
+    try:
         dbrank = Portfolio.objects.get(user_id = loginUser).rank
     except Portfolio.DoesNotExist:
         dbrank = "N/A"
 
 
-    user_ranklist={'krytosrank':kryptos_rank, 'hirank':hi_rank, 'echorank': echo_rank, 'dbrank':'N/A', 'convrank':'N/A'}
-    response={'userRankList':user_ranklist}
+    user_ranklist={'krytosrank':kryptos_rank, 'hirank':hi_rank, 'echorank': echo_rank, 'dbrank':dbrank, 'convrank':cv_rank}
+    response={'ranklist':user_ranklist}
     return JsonResponse(response)
 
 """
