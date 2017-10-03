@@ -26,7 +26,13 @@ class Portfolio(models.Model):
 	margin = models.DecimalField(max_digits=19, decimal_places=2, default=Decimal('0.00'))
 	no_trans = models.DecimalField(max_digits=19, decimal_places=0, default=Decimal('0'))
 	def __str__(self):
-		return self.user_id
+		return '%-30s| %10s | %10s | %10s | %10s '%(User.objects.get(user_id=self.user_id).name,
+			self.rank,
+			self.cash_bal,
+			self.net_worth,
+			self.no_trans,
+			)
+
 		
 	def as_dict(self):
 		return {
@@ -50,7 +56,7 @@ class Transaction(models.Model):
 			self.time,
 			self.buy_ss,
 			self.quantity,
-			#self.price,
+			self.value,
 			)
 
 
@@ -64,6 +70,13 @@ class Pending(models.Model):
 	value=models.DecimalField(max_digits=19,decimal_places=2)
 	time=models.DateTimeField(auto_now_add=True)
 
+	def __str__(self):
+		return '%-30s| %10s | %10s | %10s | %10s '%(User.objects.get(user_id=self.user_id).name,
+			self.time,
+			self.buy_ss,
+			self.quantity,
+			self.value,
+			)
 
 class History(models.Model):
 	user_id=models.CharField(max_length=200)
@@ -102,7 +115,9 @@ class Stock_data(models.Model):
     trade_Value=models.DecimalField(max_digits=19, decimal_places=2,null=True)
 
     def __str__(self):
-    	return self.symbol
+    	return '%10s    |   %10s '%(self.symbol,
+			self.current_price,
+			)
 
     def as_dict(self):
     	return {
@@ -122,3 +137,8 @@ class Old_Stock_data(models.Model):
     symbol=models.CharField(max_length=30)
     current_price=models.DecimalField(max_digits=19, decimal_places=2,null=True)
     time=models.DateTimeField(auto_now_add=True)
+    def __str__(self):
+    	return '%10s    |   %10s |   %10s'%(self.symbol,
+			self.current_price,
+			self.time,
+			)
