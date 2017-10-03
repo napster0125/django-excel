@@ -32,9 +32,9 @@ from common.decorators import playCookies,androidFriendly,isLoggedIn
 #                     'count' : request.session['count'],
 #             })
 
+@androidFriendly
 @playCookies
 @isLoggedIn
-@androidFriendly
 def index(request):
     user_id = request.session['user']
     if not User.objects.filter(user_id=user_id).exists():
@@ -85,9 +85,9 @@ def handShake(request):
         return JsonResponse({'success' : False})
 
 #======Dashboard======#
+@androidFriendly
 @playCookies
 @isLoggedIn
-@androidFriendly
 def dashboard(request):
     total_users = User.objects.count()
 
@@ -105,28 +105,28 @@ def dashboard(request):
     return JsonResponse(data_to_send)
 
 
+@androidFriendly
 @playCookies
 @isLoggedIn
-@androidFriendly
 def nifty(request):
     return JsonResponse(niftyData())
 
+@androidFriendly
 @playCookies
 @isLoggedIn
-@androidFriendly
 def portfolioView(request):
     return JsonResponse(portfolio(request.session['user'] )) 
 
+@androidFriendly
 @playCookies
 @isLoggedIn
-@androidFriendly
 def leaderboard(request):
     return JsonResponse(leaderboardData()) 
 
 
+@androidFriendly
 @playCookies
 @isLoggedIn
-@androidFriendly
 def graphView(request):
     return JsonResponse( graph('NIFTY 50')) 
 
@@ -149,9 +149,10 @@ def stock_symbols():
         }
     return data_to_send
 
+
+@androidFriendly
 @playCookies
 @isLoggedIn
-@androidFriendly
 def stockinfo(request):                           
     data_to_send = stock_symbols()
     return JsonResponse(data_to_send)
@@ -188,9 +189,9 @@ def companydetails(request):
 
 #======Submit-Buy======#
 
+@androidFriendly
 @playCookies
 @isLoggedIn
-@androidFriendly
 def submit_buy(request):
     '''
     POST DATA Format:
@@ -393,9 +394,9 @@ def submit_buy(request):
     # type of trans :   temp['disp']  
 
 
+@androidFriendly
 @playCookies
 @isLoggedIn
-@androidFriendly
 def sell(request):
     data_to_send = sell_data(request.session['user'])
     return JsonResponse(data_to_send)
@@ -474,9 +475,9 @@ def sell_data(user_id):
 
 
 #======Submit-Sell======#
+@androidFriendly
 @playCookies
 @isLoggedIn
-@androidFriendly
 def submit_sell(request):
 
     ''' POST DATA format:
@@ -769,9 +770,9 @@ def ticker_data():
         }
 
 
+@androidFriendly
 @playCookies
 @isLoggedIn
-@androidFriendly
 @cache_page(60*1)
 def ticker(request):
     return JsonResponse(ticker_data())
@@ -784,10 +785,9 @@ def ticker(request):
 '''
 Data about pending transactions
 '''
-
+@androidFriendly
 @playCookies
 @isLoggedIn
-@androidFriendly
 def pending(request):      
     cclose = isWrongTime()
     no_stock=False
@@ -827,9 +827,9 @@ def pending(request):
 
 
 #=======Cancels========#
+@androidFriendly
 @playCookies
 @isLoggedIn
-@androidFriendly
 def cancels(request):
     '''
     POST DATA Format:
@@ -889,9 +889,9 @@ def cancels(request):
 '''
     Details of all transactions.
 '''
+@androidFriendly
 @playCookies
 @isLoggedIn
-@androidFriendly
 def history(request):
     username = request.session['user']
     hist = History.objects.filter(user_id=username)

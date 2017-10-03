@@ -7,7 +7,7 @@ urlpatterns = [
 	#url(r'test/(\d+)', test ),
 	url(r'testCache', testCache ),
 	url(r'testLoginCheck', testLoginCheck ),
-	#url(r'test-channel',test_db_channels),
+	url(r'test-channel',test_db_channels),
 	url(r'getUserCount', getUserCount ),
 	url(r'getRank',user_rank),
 	#url(r'',home),
