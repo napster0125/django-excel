@@ -1032,6 +1032,7 @@ _start_time=datetime.time(hour=9,minute=15,second=00)
 _end_time=datetime.time(hour=15,minute=30,second=00)
 def isWrongTime():
     cclose = True
+    now = datetime.datetime.now().time()
     if (now.strftime("%A")!='Sunday' and now.strftime("%A")!='Saturday'):
         now = datetime.datetime.now().time()
         if(_start_time<now.time()<_end_time):
