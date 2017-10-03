@@ -5,6 +5,7 @@ from django.views.decorators.cache import never_cache
 from django.http import HttpResponse,HttpResponseForbidden,JsonResponse,HttpResponseRedirect
 from playExcel import settings
 from pytz import timezone
+import pytz
 import json
 import datetime
 import re
@@ -118,7 +119,6 @@ def portfolioView(request):
 
 @playCookies
 @isLoggedIn
-@cache_page(60 * 15)
 @androidFriendly
 def leaderboard(request):
     return JsonResponse(leaderboardData()) 
@@ -1028,19 +1028,14 @@ def getMostActiveValue():
     return active
 
 
-
+_start_time=datetime.time(hour=9,minute=15,second=00)
+_end_time=datetime.time(hour=15,minute=30,second=00)
 def isWrongTime():
-    return False
-    cclose=True
-    now = datetime.datetime.now()
-
+    cclose = True
     if (now.strftime("%A")!='Sunday' and now.strftime("%A")!='Saturday'):
-        start_time=datetime.time(hour=9,minute=15,second=00)
-        end_time=datetime.time(hour=15,minute=30,second=00)
         now = datetime.datetime.now().time()
-        if(start_time<now<end_time):
-            cclose=False
-
+        if(_start_time<now.time()<_end_time):
+            cclose = False
     return cclose
 
 

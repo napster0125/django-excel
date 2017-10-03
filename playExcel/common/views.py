@@ -140,7 +140,7 @@ def user_rank(request):
     except echoplayer.DoesNotExist:
         echo_rank = "N/A"
 
-	try:
+    try:
         dbrank = Portfolio.objects.get(user_id = loginUser).rank
     except Portfolio.DoesNotExist:
         dbrank = "N/A"
