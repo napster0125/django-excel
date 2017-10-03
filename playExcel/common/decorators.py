@@ -29,15 +29,28 @@ def playCookies(view_func):
 			ret.set_cookie('csrftoken',getCsrfToken(request),2592000)
 		return ret
 	return new_view_func
+def convert(inp):
+        try:
+                return int(inp)
+        except ValueError:
+                try:
+                        return float(inp)
+                except:
+                        return inp
 
 
 def androidFriendly(view_func):
-	def new_view_func(request):
-		if request.method == 'POST':
-			if request.META.get('HTTP_MOBILE',False):
-				request.POST = json.loads(request.body.decode('utf-8')) 
-		print("%s is about to be called"%view_func.__name__)
-		ret = view_func(request)
-		print("%s was called"%view_func.__name__)
-		return ret
-	return new_view_func
+        def new_view_func(request):
+                if request.method == 'POST':
+                        if request.META.get('HTTP_MOBILE',False):
+                                print('\n\nData: ',request.body,'\n\n')
+                                temp = str(request.body)[2:-1].split('&')
+                                try:
+                                        request.POST = json.loads(request.body.decode('utf-8').replace('\0', '')) 
+                                except:
+                                        request.POST = { i.split('=')[0] : convert(i.split('=')[1]) for i in temp }
+                print("%s is about to be called"%view_func.__name__)
+                ret = view_func(request)
+                print("%s was called"%view_func.__name__)
+                return ret
+        return new_view_func
