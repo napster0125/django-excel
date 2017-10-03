@@ -23,7 +23,12 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 SECRET_KEY = 'hsiw!ugnh+wf$i8n9#o(l^8+^rrd70k+$20s*8306$e5a5_ous'
 
 # SECURITY WARNING: don't run with debug turned on in production!
+<<<<<<< HEAD
 DEBUG = True
+=======
+
+DEBUG = 1#False 
+>>>>>>> d2c68834ac2bc06516b9490560bb5f451054c999
 
 ALLOWED_HOSTS = ['*']
 
@@ -42,7 +47,9 @@ INSTALLED_APPS = [
     'kryptos',
     'echo',
     'hashinclude',
+    'dalalbull',
     'convolution',
+
     'corsheaders',
     'django_ace',
     'channels'
@@ -152,6 +159,73 @@ CELERY_RESULT_BACKEND = 'redis://localhost:6379'
 CELERY_ACCEPT_CONTENT = ['application/json']
 CELERY_TASK_SERIALIZER = 'json'
 CELERY_RESULT_SERIALIZER = 'json'
+
+
+#CELERY_IMPORTS = ('dalalbull.tasks',)#, 'hashinclude.tasks')
+
+
+# CELERY_ANNOTATIONS = {
+#     'tasks.tq': {'rate_limit': '1/s'},
+#     'tasks.dq': {'rate_limit': '1/s'},
+#     #'tasks.broadcastNiftyData': {'rate_limit': '1/s'}
+# }
+
+from datetime import timedelta
+
+
+CELERYBEAT_SCHEDULE = {
+    'net-every-20-seconds': { #networth
+            'task': 'dalalbull.tasks.net',
+            'schedule': timedelta(seconds=5),
+            'args': ()
+     },
+    'dq-every-5-seconds': {      #graph data
+            'task': 'dalalbull.tasks.dq',
+            'schedule': timedelta(seconds=300),
+            'args': ()
+     },
+    'tq-every-second': {    #stock and orders
+            'task': 'dalalbull.tasks.tq',
+            'schedule': timedelta(seconds=1), 
+            'args': ()
+     },
+     'broadcastNiftyData-every-5-seconds': {
+            'task': 'dalalbull.tasks.broadcastNiftyData',
+            'schedule': timedelta(seconds=5),
+            'args': ()
+     },
+     # 'broadcastLeaderboardData-every-600-seconds': {
+     #        'task': 'dalalbull.tasks.broadcastLeaderboardData',
+     #        'schedule': timedelta(seconds=600),
+     #        'args': ()
+     # },
+     'broadcastGraphData-every-300-seconds': {
+            'task': 'dalalbull.tasks.broadcastGraphData',
+            'schedule': timedelta(seconds=300),
+            'args': ()
+     },
+     'broadcastPortfolioData-every-1-seconds': {
+            'task': 'dalalbull.tasks.broadcastPortfolioData',
+            'schedule': timedelta(seconds=1),
+            'args': ()
+     },
+     'broadcastSellData-every-20-seconds': {
+            'task': 'dalalbull.tasks.broadcastSellData',
+            'schedule': timedelta(seconds=10),
+            'args': ()
+     },
+     'broadcastTickerData-every-60-seconds': {
+            'task': 'dalalbull.tasks.broadcastTickerData',
+            'schedule': timedelta(seconds=3),
+            'args': ()
+     },
+     'orderLeaderboard-every-60-seconds': {
+            'task': 'dalalbull.tasks.orderLeaderboard',
+            'schedule': timedelta(seconds=3),
+            'args': ()
+     },
+}
+
 
 # CORS settings
 CORS_ORIGIN_ALLOW_ALL = True

@@ -8,6 +8,7 @@ redis_conn = redis.Redis("localhost", 6379)
 
 def conn_user_count_channel(message):
 	Group('user-count-channel').add(message.reply_channel)
+	print("conntendffhbdf")
 	message.reply_channel.send({
 		'text' : json.dumps({"accept": True}) #{ "close" : True }
 		})
@@ -126,3 +127,19 @@ def disconnectAll(userid):
 	redis_conn.hdel("online-users",userid)
 
 
+
+
+@http_session_user
+def test_conn(message):
+	print("channel subs: ",message.http_session['count'])
+	message.reply_channel.send({
+		'text' : json.dumps({"accept": True}) #{ "close" : True }
+		})
+	return
+
+def test_push(data):
+	pass 
+
+
+def test_disconn(message):
+	pass

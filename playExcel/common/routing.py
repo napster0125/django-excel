@@ -49,4 +49,15 @@ channel_routing = [
 		path = r'^/hashinclude/submissions'
      	),
 
+
+	route('websocket.connect',
+    	consumers.test_conn,
+    	path = r'^/test'
+     	),
+	route('websocket.disconnect',
+		consumers.test_disconn,
+		path = r'^/test'
+     	),
+
+
 	]
