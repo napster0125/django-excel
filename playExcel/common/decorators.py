@@ -60,3 +60,14 @@ def androidFriendly(view_func):
         return ret
     return new_view_func
 
+def androidFriendlyWithouCsrf(view_func):
+    @csrf_exempt
+    def new_view_func(request):
+        print('Cookies: ',request.COOKIES,'\n\n\n',request.META)
+        if request.method == 'POST':
+            if request.META.get('HTTP_MOBILE',False):
+                print('\n\nData: ',request.body,'\n\n')
+                request.POST = json.loads(request.body.decode('utf-8'))#.replace('\0', '')) 
+        ret = view_func(request)
+        return ret
+    return new_view_func
