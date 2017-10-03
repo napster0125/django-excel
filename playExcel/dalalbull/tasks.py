@@ -312,8 +312,8 @@ def networth():
 
 
 #====== Utility functions =======#
-_start_time = datetime.time(hour=9,minute=15,second=00)
-_end_time = datetime.time(hour=15,minute=30,second=00)
+_start_time = datetime.time(hour=9,minute=15,second=30)#,second=00)
+_end_time = datetime.time(hour=15,minute=29,second=30)#,minute=30,second=00)
 def isGoodTime():
 	now = datetime.datetime.now()
 	if(now.strftime("%A")!='Sunday' and now.strftime("%A")!='Saturday'):		
@@ -327,6 +327,7 @@ def onlyAtGoodTime(func):
 		if isGoodTime():
 			return func(*args,**kwargs)
 		else:
+			print("Not the time for %s"%func.__name__)
 			return None
 	return new_func
 

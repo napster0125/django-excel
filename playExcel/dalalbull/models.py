@@ -45,6 +45,13 @@ class Transaction(models.Model):
 	value=models.DecimalField(max_digits=19,decimal_places=2)
 	time=models.DateTimeField(auto_now_add=True)
 
+	return '%-30s| %10s | %10s | %10s | %10s '%(User.objects.get(user_id=self.user_id).name,
+		self.time,
+		self.buy_ss,
+		self.quantity,
+		#self.price,
+		)
+
 
 	
 
@@ -74,8 +81,16 @@ class History(models.Model):
 		'price' : float(self.price),
 		}
 
+	def __str__(self):
+		return '%-30s| %10s | %10s | %10s | %10s '%(User.objects.get(user_id=self.user_id).name,
+			self.time,
+			self.buy_ss,
+			self.quantity,
+			self.price,
+			)
+
 class Stock_data(models.Model):
-    symbol=models.CharField(max_length=30,primary_key=True)
+    symbol=models.CharField(max_length=30, primary_key=True)
     current_price=models.DecimalField(max_digits=19, decimal_places=2,null=True)
     high=models.DecimalField(max_digits=19, decimal_places=2,null=True)
     low=models.DecimalField(max_digits=19, decimal_places=2,null=True)
