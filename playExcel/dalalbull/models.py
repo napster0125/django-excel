@@ -45,12 +45,13 @@ class Transaction(models.Model):
 	value=models.DecimalField(max_digits=19,decimal_places=2)
 	time=models.DateTimeField(auto_now_add=True)
 
-	return '%-30s| %10s | %10s | %10s | %10s '%(User.objects.get(user_id=self.user_id).name,
-		self.time,
-		self.buy_ss,
-		self.quantity,
-		#self.price,
-		)
+	def __str__(self):
+		return '%-30s| %10s | %10s | %10s | %10s '%(User.objects.get(user_id=self.user_id).name,
+			self.time,
+			self.buy_ss,
+			self.quantity,
+			#self.price,
+			)
 
 
 	
